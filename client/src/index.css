@@ -291,3 +291,27 @@ button:disabled{cursor:wait;opacity:.72;transform:none!important}
   .settings-layout{grid-template-columns:1fr!important;gap:10px!important}.settings-nav{display:flex;overflow-x:auto;gap:6px;padding:8px!important}.settings-nav button{min-width:max-content;min-height:42px;padding:0 12px!important}.settings-content{padding:14px!important}.settings-section-heading{align-items:flex-start;flex-wrap:wrap;gap:10px}.settings-section-heading .small-action{width:100%;margin-left:0}.settings-form-grid{grid-template-columns:1fr!important}.settings-card,.integration-row,.toggle-card{gap:10px;padding:12px!important;flex-wrap:wrap}.settings-card button,.integration-row button{width:100%;min-height:42px}.modal-backdrop{padding:12px}.action-modal{max-height:calc(100dvh - 24px);overflow:auto;border-radius:14px;padding:20px 16px}.modal-actions button{min-height:44px}
 }
 @media (max-width:430px){.topbar h1{font-size:18px!important}.topbar p{display:none}.main-content{padding:10px 10px 20px}.top-actions .top-dropdown{display:none}.summary-card{padding:13px 12px}.total{font-size:21px}.report-kpis{grid-template-columns:1fr}.reports-filters,.payments-filters,.counterparties-filterbar,.global-filters{grid-template-columns:1fr!important}.receipts-header-actions{grid-template-columns:1fr}.quick-actions button{height:46px;min-height:46px}}
+
+/* Bitaxus design reminder: scroll guidance must feel like a crafted product detail, not a browser artifact. Coral action, ink text, subtle paper surface. */
+.horizontal-scroll-hint { position: relative; min-width: 0; }
+.horizontal-scroll-viewport { min-width: 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; outline: none; }
+.horizontal-scroll-viewport::-webkit-scrollbar { display: none; }
+.horizontal-scroll-viewport:focus-visible { box-shadow: inset 0 0 0 2px rgba(232, 107, 90, .35); border-radius: 12px; }
+.scroll-hint-overlay { display: flex; align-items: center; justify-content: center; gap: 7px; position: absolute; left: 50%; bottom: 13px; transform: translateX(-50%); z-index: 2; padding: 5px 6px; border: 1px solid rgba(255,255,255,.78); border-radius: 999px; background: rgba(255,255,255,.88); box-shadow: 0 8px 24px rgba(23, 27, 36, .12); color: #747987; font-size: 10px; font-weight: 700; letter-spacing: .01em; white-space: nowrap; pointer-events: none; backdrop-filter: blur(12px); transition: opacity 180ms ease, transform 180ms ease; }
+.scroll-hint-overlay::before, .scroll-hint-overlay::after { content: ""; position: absolute; top: -1px; bottom: -1px; width: 42px; pointer-events: none; }
+.scroll-hint-overlay::before { right: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.84)); }
+.scroll-hint-overlay::after { left: 100%; background: linear-gradient(90deg, rgba(255,255,255,.84), transparent); }
+.scroll-hint-label { display: inline-flex; align-items: center; gap: 5px; }
+.scroll-hint-label svg { color: #e86b5a; }
+.scroll-hint-arrow { display: inline-flex; align-items: center; justify-content: center; width: 23px; height: 23px; padding: 0; border: 0; border-radius: 50%; background: #f6f4f2; color: #242733; pointer-events: auto; cursor: pointer; transition: background 160ms ease, color 160ms ease, transform 160ms ease; }
+.scroll-hint-arrow:hover:not(:disabled) { background: #e86b5a; color: #fff; transform: scale(1.06); }
+.scroll-hint-arrow:active:not(:disabled) { transform: scale(.95); }
+.scroll-hint-arrow:disabled { opacity: .28; cursor: default; }
+.scroll-hint-overlay.is-end { color: #4d8d72; }
+.scroll-hint-overlay.is-end .scroll-hint-label svg { color: #4d8d72; }
+@media (max-width: 760px) {
+  .scroll-hint-overlay { bottom: 10px; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint-overlay, .scroll-hint-arrow { transition: none; }
+}
