@@ -206,3 +206,15 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 
 /* Payments and reports filters share the same controlled dropdown language as Contrapartes. */
 .payments-filters .receipt-filter-menu{min-width:112px}.payments-filters .receipt-filter-menu>.secondary-filter{height:42px!important}.reports-filter-menu{position:relative;min-width:170px;z-index:24}.reports-filter-trigger{display:grid!important;grid-template-columns:1fr auto;grid-template-rows:auto auto;align-items:center;width:100%;height:58px;padding:10px 14px!important;text-align:left;cursor:pointer}.reports-filter-trigger span{grid-column:1;font-size:10px;color:#9b9da4;line-height:1.2}.reports-filter-trigger b{grid-column:1;font-size:12px;color:var(--ink);line-height:1.2}.reports-filter-trigger svg{grid-column:2;grid-row:1 / span 2;transition:transform .18s}.reports-filter-menu.open .reports-filter-trigger{border-color:#d98e90;box-shadow:0 0 0 3px rgba(232,62,73,.08)}.reports-filter-menu.open .reports-filter-trigger svg{transform:rotate(180deg)}.reports-filter-options{position:absolute;left:0;right:0;top:calc(100% + 6px);padding:5px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 16px 32px rgba(17,23,34,.14);animation:dropdownIn .18s cubic-bezier(.23,1,.32,1)}.reports-filter-options button{display:flex;align-items:center;justify-content:space-between;width:100%;padding:9px 10px;border:0;border-radius:7px;background:transparent;color:var(--ink);font-size:10px;text-align:left;cursor:pointer}.reports-filter-options button:hover,.reports-filter-options button:focus-visible{background:#fff1f0;color:var(--coral-dark);outline:none}.reports-filter-options button.selected{background:#fff7f6;color:var(--coral-dark);font-weight:800}@media (max-width:760px){.reports-filter-menu{min-width:0;flex:1}.payments-filters .receipt-filter-menu{min-width:0;flex:1}}
+
+/* Inicio spacing pass: compact rhythm between quick actions and lower activity panels. */
+.quick-actions{gap:12px!important;margin-bottom:14px!important}
+.quick-actions button{height:42px!important;min-height:42px!important;padding:0 13px!important}
+.lower-grid{gap:14px!important;grid-template-columns:minmax(0,1.9fr) minmax(300px,.86fr)!important}
+.activity-card,.review-card{padding:16px 16px 13px!important;min-height:0!important}
+.card-heading{margin-bottom:6px!important}
+.activity-row{padding:8px 0!important;gap:7px!important;min-height:49px}
+.review-list button{padding:9px 0!important;min-height:49px}
+.view-all{margin-top:10px!important}
+@media (max-width:800px){.lower-grid{grid-template-columns:1fr!important;gap:12px!important}.activity-card,.review-card{padding:14px 13px 12px!important}}
+@media (max-width:560px){.quick-actions{gap:7px!important;margin-bottom:10px!important}.quick-actions button{height:39px!important;min-height:39px!important}.activity-row{min-height:44px;padding:7px 0!important}.review-list button{min-height:44px;padding:8px 0!important}}
