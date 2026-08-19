@@ -403,3 +403,21 @@ button:disabled{cursor:wait;opacity:.72;transform:none!important}
   .reports-page .report-kpis .report-kpi, .global-page .quick-global > button { animation: none !important; }
   .reports-page .report-kpi:hover, .global-page .balance-card:hover { transform: none !important; }
 }
+
+/* Financial table rows: one restrained interaction language across every operational table. */
+.receipts-table tbody tr, .payments-table tbody tr, .counterparties-table tbody tr, .global-table tbody tr, .reports-table table tbody tr {
+  transition: background-color 180ms ease, transform 180ms cubic-bezier(.23,1,.32,1), box-shadow 180ms ease !important;
+}
+.receipts-table tbody tr:hover, .payments-table tbody tr:hover, .counterparties-table tbody tr:hover, .global-table tbody tr:hover, .reports-table table tbody tr:hover {
+  background: #fff8f7 !important;
+  transform: translateX(2px);
+  box-shadow: inset 3px 0 var(--coral), 0 3px 10px rgba(17,23,34,.035);
+}
+.receipts-table tbody tr:active, .payments-table tbody tr:active, .counterparties-table tbody tr:active, .global-table tbody tr:active, .reports-table table tbody tr:active {
+  transform: scale(.998);
+}
+@media (prefers-reduced-motion: reduce) {
+  .receipts-table tbody tr, .payments-table tbody tr, .counterparties-table tbody tr, .global-table tbody tr, .reports-table table tbody tr { transition: background-color 120ms ease, box-shadow 120ms ease !important; }
+  .receipts-table tbody tr:hover, .payments-table tbody tr:hover, .counterparties-table tbody tr:hover, .global-table tbody tr:hover, .reports-table table tbody tr:hover,
+  .receipts-table tbody tr:active, .payments-table tbody tr:active, .counterparties-table tbody tr:active, .global-table tbody tr:active, .reports-table table tbody tr:active { transform: none !important; }
+}
