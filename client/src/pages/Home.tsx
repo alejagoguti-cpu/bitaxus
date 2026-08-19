@@ -35,7 +35,7 @@ export default function Home() {
 
   return <div className="app-shell" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}assets/bitaxus-texture.webp)` }}>
     <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-      <div className="brand"><img src="/manus-storage/bitaxus-logo-user_f57b2e2d.png" alt="Bitaxus" /><span>BITAXUS</span></div>
+      <div className="brand"><img src={`${import.meta.env.BASE_URL}bitaxus-logo.png`} alt="Bitaxus" /><span>BITAXUS</span></div>
       <button className="mobile-close" onClick={() => setSidebarOpen(false)} aria-label="Cerrar menú"><X size={18} /></button>
       <nav className="nav-list" aria-label="Navegación principal">{nav.map(([IconComp, label]) => <button key={label} className={`nav-item ${active === label ? "active" : ""}`} onClick={() => chooseNav(label)}><IconComp size={15} />{label}</button>)}</nav>
       <div className="agent-card"><div className="agent-head"><span className="agent-icon"><ClipboardList size={14}/></span><b>Agente Bitaxus</b></div><p>¿Necesitas ayuda con una operación?</p><button onClick={() => quickAction("Agente Bitaxus", "Escribe tu consulta y un agente te ayudará con la operación.")}>Abrir chat <ArrowRight size={13}/></button></div>
