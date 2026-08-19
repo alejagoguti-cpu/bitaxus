@@ -315,3 +315,17 @@ button:disabled{cursor:wait;opacity:.72;transform:none!important}
 @media (prefers-reduced-motion: reduce) {
   .scroll-hint-overlay, .scroll-hint-arrow { transition: none; }
 }
+
+/* Bitaxus shell correction: the black rail is viewport-fixed on desktop; only its nav scrolls internally, while the content keeps its own document scroll. */
+@media (min-width: 801px) {
+  .app-shell { display: block; min-height: 100vh; }
+  .sidebar { position: fixed !important; inset: 0 auto 0 0 !important; width: 154px !important; height: 100dvh !important; min-height: 100dvh !important; max-height: none !important; overflow: hidden !important; align-self: auto !important; }
+  .nav-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: #333 #050505; }
+  .main-content { margin-left: 154px; width: calc(100% - 154px); min-height: 100vh; }
+}
+@media (max-width: 800px) {
+  .sidebar { position: fixed !important; inset: 0 auto 0 -260px !important; width: 248px !important; height: 100dvh !important; min-height: 100dvh !important; max-height: none !important; overflow: hidden !important; }
+  .sidebar.open { left: 0 !important; }
+  .nav-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; }
+  .main-content { margin-left: 0; width: 100%; }
+}
