@@ -248,3 +248,11 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 .spin{animation:bitaxus-spin .8s linear infinite}
 button:disabled{cursor:wait;opacity:.72;transform:none!important}
 @keyframes bitaxus-spin{to{transform:rotate(360deg)}}
+
+/* Unified module headers: the greeting remains independent, while every inner section uses one calibrated scale. */
+.payments-header,.receipts-header,.counterparties-header,.global-header,.reports-header,.settings-header{min-height:64px!important;padding:18px 0 12px!important;margin:0!important;align-items:center!important;box-sizing:border-box!important}
+.payments-header h2,.receipts-header h2,.counterparties-header h2,.global-header h2,.reports-header h2,.settings-header h2{font-size:24px!important;line-height:1.1!important;letter-spacing:-.03em!important;margin:0 0 5px!important}
+.payments-header p,.receipts-header p,.counterparties-header p,.global-header p,.reports-header p,.settings-header p{font-size:11px!important;line-height:1.3!important;margin:0!important}
+.payments-header>div:first-child>div:first-child svg,.receipts-header>div:first-child>div:first-child svg,.counterparties-header>div:first-child>div:first-child svg,.global-header>div:first-child>div:first-child svg,.reports-header>div:first-child>div:first-child svg,.settings-header>div:first-child>div:first-child svg{width:24px!important;height:24px!important}
+.payments-header .primary-action,.receipts-header-actions .primary-action,.counterparties-header .primary-action,.global-header .go-payments,.reports-header .primary-action,.settings-header .settings-save{height:42px!important;min-height:42px!important}
+@media (max-width:760px){.payments-header,.receipts-header,.counterparties-header,.global-header,.reports-header,.settings-header{min-height:0!important;padding:16px 0 11px!important;align-items:flex-start!important}.payments-header h2,.receipts-header h2,.counterparties-header h2,.global-header h2,.reports-header h2,.settings-header h2{font-size:22px!important}.payments-header>div:first-child,.receipts-header>div:first-child,.counterparties-header>div:first-child,.global-header>div:first-child,.reports-header>div:first-child,.settings-header>div:first-child{min-width:0!important}}
