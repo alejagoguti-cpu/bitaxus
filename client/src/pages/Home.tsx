@@ -33,9 +33,9 @@ export default function Home() {
   const quickAction = (message: string) => toast(message, { description: "La acción está lista para continuar.", duration: 2200 });
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}assets/bitaxus-texture.webp)` }}>
       <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-        <div className="brand"><img src="/assets/bitaxus-mark.webp" alt="" /><span>BITAXUS</span></div>
+        <div className="brand"><img src={`${import.meta.env.BASE_URL}assets/bitaxus-mark.webp`} alt="" /><span>BITAXUS</span></div>
         <button className="mobile-close" onClick={() => setSidebarOpen(false)} aria-label="Cerrar menú"><X size={18} /></button>
         <nav className="nav-list" aria-label="Navegación principal">
           {nav.map(([IconComp, label]) => <button key={label} className={`nav-item ${active === label ? "active" : ""}`} onClick={() => { setActive(label); setSidebarOpen(false); }}>{<IconComp size={15} />}{label}</button>)}
