@@ -194,3 +194,6 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 .quick-actions button b{min-width:0!important;flex:1 1 auto!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;margin-left:8px!important}
 .quick-actions button>svg:last-child{width:15px!important;height:15px!important;min-width:15px!important;flex:0 0 15px!important;margin-left:auto!important}
 @media (max-width:560px){.quick-actions button{height:39px!important;min-height:39px!important;padding:0 11px!important}.quick-actions button .icon-bubble{width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important;flex-basis:27px!important}}
+
+/* Operation detail: make activity-row arrows open a clear, actionable detail surface. */
+.operation-detail{display:flex;flex-direction:column;gap:5px;margin:14px 0;padding:12px 13px;border:1px solid #f0d8d7;border-radius:10px;background:#fff8f7}.operation-detail span{font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#9a6d6d}.operation-detail strong{font-size:12px;line-height:1.45;color:var(--ink)}
