@@ -454,3 +454,14 @@ button:disabled{cursor:wait;opacity:.72;transform:none!important}
   .receipt-guide-steps { gap: 5px; padding-inline: 7px; }
   .receipt-guide-steps small { font-size: 8px; }
 }
+
+/* Home review panel: content-sized card instead of stretching to the taller activity column. */
+.lower-grid { align-items: start !important; }
+.lower-grid .review-card { align-self: start; height: fit-content; min-height: 0 !important; }
+.lower-grid .review-card.collapsed, .lower-grid .activity-card.collapsed { height: fit-content; }
+.lower-grid .review-card .card-heading button, .lower-grid .activity-card .card-heading button { cursor: pointer; }
+.lower-grid .review-card .card-heading button svg, .lower-grid .activity-card .card-heading button svg { transition: transform 180ms cubic-bezier(.23,1,.32,1); }
+.lower-grid .review-card.collapsed .card-heading button svg, .lower-grid .activity-card.collapsed .card-heading button svg { transform: rotate(-90deg); }
+@media (prefers-reduced-motion: reduce) {
+  .lower-grid .review-card .card-heading button svg, .lower-grid .activity-card .card-heading button svg { transition: none; }
+}
