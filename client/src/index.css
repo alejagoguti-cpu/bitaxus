@@ -645,3 +645,29 @@ button, input, select, textarea { max-width: 100%; }
 .dark .action-modal p, .dark .action-modal label { color: #b6bfcc; }
 .dark .action-modal textarea, .dark input, .dark select, .dark textarea { background: #121720; border-color: #384354; color: #f3f5f8; }
 .dark .view-all, .dark .view-all-reports { color: #ff9a8e !important; }
+
+/* Density control for data-heavy views. */
+.density-control { display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 7px; border: 1px solid #ebedf0; border-radius: 7px; background: #fff; color: #777f8a; font-size: 8px; font-weight: 700; }
+.density-control select { border: 0; outline: 0; background: transparent; color: #424854; font-size: 9px; font-weight: 700; cursor: pointer; }
+.density-compact .receipts-table td, .density-compact .payments-table td, .density-compact .counterparties-table td, .density-compact .global-table td, .density-compact .reports-table table td { height: 44px !important; padding-block: 4px !important; }
+.density-compact .receipts-table th, .density-compact .payments-table th, .density-compact .counterparties-table th, .density-compact .global-table th, .density-compact .reports-table table th { height: 36px !important; }
+.density-compact .activity-row { padding-block: 6px; }
+.density-spacious .receipts-table td, .density-spacious .payments-table td, .density-spacious .counterparties-table td, .density-spacious .global-table td, .density-spacious .reports-table table td { height: 72px !important; padding-block: 12px !important; }
+.density-spacious .receipts-table th, .density-spacious .payments-table th, .density-spacious .counterparties-table th, .density-spacious .global-table th, .density-spacious .reports-table table th { height: 54px !important; }
+.density-spacious .activity-row { padding-block: 13px; }
+.dark .density-control { background: #1a202b; border-color: #384354; color: #b7c0cd; }
+.dark .density-control select { color: #f3f5f8; }
+.dark .report-chart, .dark .status-report, .dark .chart-card, .dark .donut-card { background: #1a202b !important; border-color: #384354 !important; }
+.dark .report-chart svg text, .dark .status-report svg text, .dark .chart-label, .dark .chart-legend, .dark .status-legend { color: #dce3ec !important; fill: #dce3ec !important; }
+.dark .report-chart svg line, .dark .report-chart svg .grid-line { stroke: #3b4656 !important; }
+.dark .report-chart svg .bar, .dark .report-chart .bar { fill: #ff8278 !important; background: #ff8278 !important; }
+.dark .report-chart svg .bar-secondary, .dark .report-chart .bar-secondary { fill: #88a9e6 !important; background: #88a9e6 !important; }
+.dark .donut { background: conic-gradient(#5dd0a0 0 68%, #f0c35b 68% 88%, #ff8278 88% 100%) !important; }
+.dark .donut:after { background: #1a202b !important; }
+.dark .donut strong, .dark .donut small { color: #f3f5f8 !important; }
+.dark .status-legend { color: #dce3ec !important; }
+/* Theme transition: keep it short and disable it for reduced-motion users. */
+@media (prefers-reduced-motion: no-preference) {
+  html, body, .app-shell, .main-content, .panel, .quick-actions button, .select-wrap, .density-control, .theme-toggle, input, select, textarea, .action-modal, .popover, .receipts-table-wrap, .report-chart, .status-report, .balance-card { transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease, box-shadow 220ms ease !important; }
+}
+@media (max-width: 800px) { .density-control { max-width: 74px; padding: 0 6px; } .density-control span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .density-control select { width: 58px; max-width: 58px; font-size: 9px; } .density-control select option { font-size: 12px; } }
