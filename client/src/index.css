@@ -106,3 +106,7 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 .payments-header p{font-size:11px!important;line-height:1.35!important;margin:0!important}
 .payments-header .schedule-menu,.payments-header .schedule-menu-wrap,.payments-header .primary-action{min-height:42px!important}
 @media (max-width:760px){.topbar{min-height:60px!important}.payments-header{padding:18px 0 12px!important}.payments-header h2{font-size:22px!important}}
+
+/* Greeting emphasis: readable hierarchy without changing the compact header height. */
+.topbar h1{font-size:24px!important;line-height:1.08!important;letter-spacing:-.035em!important}
+@media (max-width:760px){.topbar h1{font-size:21px!important}}
