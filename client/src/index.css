@@ -243,3 +243,8 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 .nav-list::-webkit-scrollbar{display:none}
 .agent-card{flex:0 0 auto!important;margin-top:auto!important;margin-bottom:16px!important}
 @media (max-width:800px){.sidebar{position:fixed!important;top:0!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important}.nav-list{padding-bottom:16px!important}.agent-card{margin-bottom:16px!important}}
+
+/* Inline loading feedback for exports and saves: visible inside the active control, never as a floating toast. */
+.spin{animation:bitaxus-spin .8s linear infinite}
+button:disabled{cursor:wait;opacity:.72;transform:none!important}
+@keyframes bitaxus-spin{to{transform:rotate(360deg)}}
