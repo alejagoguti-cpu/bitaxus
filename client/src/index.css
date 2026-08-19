@@ -96,3 +96,13 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 
 /* Header integrated with canvas: no white rectangle behind the greeting or top controls. */
 .topbar{background:transparent!important;border-bottom:0!important;backdrop-filter:none!important;box-shadow:none!important}
+
+/* Compact executive header: measured for the 1695px reference viewport. */
+.topbar{min-height:64px!important;padding-top:0!important;padding-bottom:0!important}
+.topbar h1{font-size:18px!important;line-height:1.15!important;margin:0!important}
+.topbar p{font-size:9px!important;line-height:1.25!important;margin:4px 0 0!important}
+.payments-header{padding:22px 0 14px!important;min-height:0!important;align-items:center!important}
+.payments-header h2{font-size:24px!important;line-height:1.1!important;margin:0 0 5px!important}
+.payments-header p{font-size:11px!important;line-height:1.35!important;margin:0!important}
+.payments-header .schedule-menu,.payments-header .schedule-menu-wrap,.payments-header .primary-action{min-height:42px!important}
+@media (max-width:760px){.topbar{min-height:60px!important}.payments-header{padding:18px 0 12px!important}.payments-header h2{font-size:22px!important}}
