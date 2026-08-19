@@ -513,3 +513,79 @@ button:disabled{cursor:wait;opacity:.72;transform:none!important}
   .modal-close, .form-close, .notification-popover button, .profile-popover button { transition: none; }
   .modal-close:hover, .form-close:hover { transform: none; }
 }
+
+/* Responsive pass: preserve the premium desktop rhythm while making tablet and phone layouts deliberate. */
+.main-content, .topbar, .topbar > *, .lower-grid, .quick-actions, .summary-card, .panel, .section-view,
+.payments-page, .receipts-page, .counterparties-page, .global-page, .reports-page, .settings-page { min-width: 0; }
+button, input, select, textarea { max-width: 100%; }
+@media (min-width: 801px) and (max-width: 1180px) {
+  .main-content { padding: 22px 24px 36px !important; }
+  .topbar { gap: 16px; }
+  .top-actions { gap: 7px; }
+  .top-dropdown-trigger { max-width: 150px; }
+  .lower-grid { grid-template-columns: minmax(0, 1.35fr) minmax(250px, .85fr); gap: 12px; }
+  .quick-actions { gap: 10px; }
+  .quick-actions button { padding-inline: 12px; }
+  .summary-card { padding-inline: 20px; }
+  .receipts-workspace.with-form { grid-template-columns: minmax(0, 1fr) 360px; }
+  .global-layout { grid-template-columns: minmax(0, 1fr) 290px; gap: 14px; }
+  .reports-main-grid { grid-template-columns: minmax(0, 1.25fr) minmax(280px, .9fr); }
+}
+@media (max-width: 800px) {
+  .topbar { width: 100%; }
+  .top-actions { min-width: 0; }
+  .top-actions .top-dropdown-trigger { padding-inline: 9px; }
+  .top-actions .top-dropdown-trigger span { overflow: hidden; text-overflow: ellipsis; }
+  .summary-head, .metrics, .card-heading { min-width: 0; }
+  .summary-head > div, .card-heading h2 { min-width: 0; }
+  .summary-head .total { white-space: nowrap; }
+  .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .metric { min-width: 0; }
+  .metric > div { min-width: 0; }
+  .metric b, .metric p, .metric em { overflow-wrap: anywhere; }
+  .activity-card, .review-card { width: 100%; }
+  .review-list button { width: 100%; min-width: 0; }
+  .review-list button > div { min-width: 0; }
+  .review-list button span, .activity-main span { overflow-wrap: anywhere; }
+  .receipts-header-actions, .payments-header > div, .reports-header > div, .global-header > div, .settings-header > div { min-width: 0; }
+  .receipts-header-actions .primary-action, .payments-header .primary-action, .reports-header .primary-action, .global-header .go-payments, .settings-header .settings-save { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .receipt-form, .payment-drawer { max-height: none; }
+  .horizontal-scroll-viewport { touch-action: pan-x pan-y; }
+}
+@media (max-width: 560px) {
+  .topbar { align-items: flex-start !important; }
+  .mobile-title { flex: 1 1 auto; min-width: 0; }
+  .mobile-title > div { min-width: 0; }
+  .topbar h1 { overflow: hidden; text-overflow: ellipsis; }
+  .top-actions { padding-top: 1px; }
+  .metrics { grid-template-columns: 1fr; gap: 7px; }
+  .metric { display: grid; grid-template-columns: 30px minmax(0, 1fr); align-items: center; padding: 8px 0 !important; border-top: 1px solid #f0f1f3; }
+  .metric:first-child { border-top: 0; }
+  .metric > div { display: grid; grid-template-columns: 1fr auto; column-gap: 8px; align-items: baseline; }
+  .metric > div > span { grid-column: 1 / -1; }
+  .metric p { grid-column: 1 / -1; }
+  .quick-actions b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lower-grid { gap: 10px; }
+  .activity-card, .review-card { padding: 13px 11px 12px !important; }
+  .activity-row { grid-template-columns: 28px minmax(0, 1fr) auto 13px; }
+  .activity-amount { min-width: 70px; }
+  .activity-amount b { font-size: 9px; }
+  .view-all { min-height: 42px; }
+  .receipts-filters, .payments-filters, .reports-filters, .counterparties-filterbar, .global-filters { width: 100%; }
+  .receipts-table-wrap, .payments-table-wrap, .counterparties-table-wrap, .global-table-wrap, .report-table-wrap { max-width: 100%; }
+  .receipts-table, .payments-table, .counterparties-table, .global-table, .reports-table table { min-width: 640px; }
+  .receipt-guide-steps { grid-template-columns: repeat(2, 1fr); row-gap: 14px; }
+  .payment-drawer { width: 100vw; padding: 20px 14px !important; }
+}
+@media (max-width: 380px) {
+  .main-content { padding-inline: 8px !important; }
+  .top-actions .notification, .top-actions .avatar { width: 30px; height: 30px; }
+  .menu-button { width: 36px; min-width: 36px; height: 36px; }
+  .topbar h1 { font-size: 17px !important; }
+  .summary-card { padding-inline: 10px; }
+  .summary-head { flex-direction: column; align-items: flex-start; }
+  .summary-head .hide-button { align-self: flex-end; margin-top: -22px; }
+  .activity-row { grid-template-columns: 26px minmax(0, 1fr) 12px; }
+  .activity-amount { grid-column: 2; }
+  .activity-row > svg:last-child { grid-column: 3; grid-row: 1 / span 2; }
+}
