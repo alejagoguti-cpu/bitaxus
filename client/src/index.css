@@ -223,3 +223,16 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 .topbar{margin-bottom:8px!important}
 .payments-header,.receipts-header,.counterparties-header,.global-header,.reports-header,.settings-header{padding-top:8px!important}
 @media (max-width:760px){.topbar{margin-bottom:6px!important}.payments-header,.receipts-header,.counterparties-header,.global-header,.reports-header,.settings-header{padding-top:6px!important}}
+
+/* Bitaxus brand rail: black sidebar with a white wordmark and high-contrast navigation. */
+.sidebar{background:#050505!important;color:#aeb2bb!important;border-right:1px solid #17191d!important}
+.brand{background:#050505!important;border-bottom:1px solid #1b1d22!important;color:#fff!important}
+.brand img{filter:brightness(0) invert(1)!important;width:108px!important;height:auto!important;object-fit:contain!important}
+.brand span{display:none!important}
+.nav-list{background:#050505!important}
+.nav-item{color:#aeb2bb!important;background:transparent!important}
+.nav-item:hover{color:#fff!important;background:#17191d!important}
+.nav-item.active{color:#ff7773!important;background:linear-gradient(90deg,rgba(239,91,89,.2),rgba(239,91,89,.05))!important;box-shadow:inset 3px 0 #ef5b59!important}
+.agent-card{background:#111318!important;border-color:#2b2f36!important;color:#fff!important}
+.agent-head{color:#e9ebef!important}.agent-card p{color:#aeb2bb!important}.agent-card button{color:#ff7773!important}
+@media (max-width:800px){.sidebar{background:#050505!important}}
