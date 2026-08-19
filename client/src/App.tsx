@@ -86,7 +86,7 @@ function App() {
       <AccessibilityLayer />
       <ThemeProvider
         defaultTheme="light"
-        // switchable
+        switchable
       >
         <TooltipProvider>
           <Router />
