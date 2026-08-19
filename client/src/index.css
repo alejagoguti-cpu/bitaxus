@@ -218,3 +218,8 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 .view-all{margin-top:10px!important}
 @media (max-width:800px){.lower-grid{grid-template-columns:1fr!important;gap:12px!important}.activity-card,.review-card{padding:14px 13px 12px!important}}
 @media (max-width:560px){.quick-actions{gap:7px!important;margin-bottom:10px!important}.quick-actions button{height:39px!important;min-height:39px!important}.activity-row{min-height:44px;padding:7px 0!important}.review-list button{min-height:44px;padding:8px 0!important}}
+
+/* Global header rhythm: keep section content close to the greeting instead of leaving a large blank band. */
+.topbar{margin-bottom:8px!important}
+.payments-header,.receipts-header,.counterparties-header,.global-header,.reports-header,.settings-header{padding-top:8px!important}
+@media (max-width:760px){.topbar{margin-bottom:6px!important}.payments-header,.receipts-header,.counterparties-header,.global-header,.reports-header,.settings-header{padding-top:6px!important}}
