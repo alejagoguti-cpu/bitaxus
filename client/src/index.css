@@ -659,3 +659,7 @@ button, input, select, textarea { max-width: 100%; }
 .receipts-tabs button.selected, .payments-tabs button.selected, .counterparties-tabs button.selected { color: var(--coral); border-bottom-color: var(--coral); }
 .receipts-tabs button:hover, .payments-tabs button:hover, .counterparties-tabs button:hover { background: #fff8f7; }
 @media (max-width: 760px) { .receipts-tabs, .payments-tabs, .counterparties-tabs { height: 52px !important; padding: 0 10px !important; } .receipts-tabs > div, .payments-tabs, .counterparties-tabs > div { height: 52px !important; } .receipts-tabs button, .payments-tabs button, .counterparties-tabs button { height: 52px !important; min-width: 112px; padding: 0 16px !important; } }
+
+/* Subtle tab content transition. */
+@keyframes tab-panel-enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: no-preference) { .receipts-table-card, .payments-card, .counterparties-card { animation: tab-panel-enter 220ms cubic-bezier(.23,1,.32,1); } }
