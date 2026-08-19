@@ -359,3 +359,16 @@ button:disabled{cursor:wait;opacity:.72;transform:none!important}
   .global-page, .reports-page, .settings-page { animation: sectionContentEnter 360ms cubic-bezier(.23,1,.32,1) both; }
   @keyframes sectionContentEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 }
+
+/* Section switching + KPI reveal: motion is intentional, short, and fully disabled for reduced-motion users. */
+@media (prefers-reduced-motion: no-preference) {
+  .settings-page .settings-content { animation: settingsSubsectionEnter 260ms cubic-bezier(.23,1,.32,1) both; }
+  .reports-page .report-kpis .report-kpi:nth-child(1) { animation-delay: 0ms; }
+  .reports-page .report-kpis .report-kpi:nth-child(2) { animation-delay: 45ms; }
+  .reports-page .report-kpis .report-kpi:nth-child(3) { animation-delay: 90ms; }
+  .reports-page .report-kpis .report-kpi:nth-child(4) { animation-delay: 135ms; }
+  @keyframes settingsSubsectionEnter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .settings-page .settings-content { animation: none !important; }
+}
