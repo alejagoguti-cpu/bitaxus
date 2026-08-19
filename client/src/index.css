@@ -421,3 +421,36 @@ button:disabled{cursor:wait;opacity:.72;transform:none!important}
   .receipts-table tbody tr:hover, .payments-table tbody tr:hover, .counterparties-table tbody tr:hover, .global-table tbody tr:hover, .reports-table table tbody tr:hover,
   .receipts-table tbody tr:active, .payments-table tbody tr:active, .counterparties-table tbody tr:active, .global-table tbody tr:active, .reports-table table tbody tr:active { transform: none !important; }
 }
+
+/* Recaudos drawer refinement: scoped only to the Programar recaudo panel. */
+.receipt-form {
+  position: relative;
+  background: #fff !important;
+  padding: 22px 20px 18px !important;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d9dde3 transparent;
+}
+.receipt-form .form-close { top: 20px !important; right: 18px !important; width: 34px; height: 34px; border-radius: 8px; }
+.receipt-form h3 { margin: 0 42px 5px !important; font-size: 23px !important; line-height: 1.1 !important; letter-spacing: -.03em; }
+.receipt-form > p { margin: 0 42px 22px !important; max-width: 270px; font-size: 12px !important; line-height: 1.45 !important; color: #68717e; }
+.receipt-form > label { gap: 7px !important; margin-bottom: 15px !important; font-size: 11px !important; font-weight: 700; color: var(--ink) !important; }
+.receipt-form > label em { color: var(--coral); }
+.receipt-form .form-input, .receipt-form .amount-input, .receipt-form .full-select { min-height: 42px; border-radius: 9px; }
+.receipt-form textarea { min-height: 74px !important; border-radius: 9px !important; }
+.receipt-form .form-actions { margin-top: 22px !important; padding-top: 0; gap: 10px; }
+.receipt-form .form-actions .primary-action, .receipt-form .form-actions .secondary-action { min-height: 42px; height: 42px; border-radius: 8px; }
+.receipt-form .import-link { margin: 14px 0 16px !important; }
+.receipt-guide { border: 1px solid #e6e9ed; border-radius: 10px; background: linear-gradient(145deg,#fff,#fcfdfe); overflow: hidden; }
+.receipt-guide-title { display: flex; align-items: center; gap: 8px; padding: 13px 14px 11px; border-bottom: 1px solid #eef0f3; color: var(--ink); font-size: 12px; }
+.receipt-guide-title svg { color: var(--coral); }
+.receipt-guide-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px 10px 14px; }
+.receipt-guide-steps span { display: flex; flex-direction: column; align-items: center; gap: 7px; text-align: center; }
+.receipt-guide-steps i { display: grid; place-items: center; width: 23px; height: 23px; border-radius: 50%; background: #fff0ef; color: var(--coral-dark); font-style: normal; font-size: 11px; font-weight: 800; }
+.receipt-guide-steps small { color: #68717e; font-size: 9px; line-height: 1.35; }
+@media (max-width: 700px) {
+  .receipt-form { padding: 18px 14px 16px !important; }
+  .receipt-form h3, .receipt-form > p { margin-left: 0 !important; margin-right: 40px !important; }
+  .receipt-guide-steps { gap: 5px; padding-inline: 7px; }
+  .receipt-guide-steps small { font-size: 8px; }
+}
