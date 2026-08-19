@@ -61,3 +61,6 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 .modal-backdrop{background:rgba(17,23,34,.42);backdrop-filter:blur(6px)}.action-modal{box-shadow:0 24px 70px rgba(17,23,34,.22);border-radius:16px}.modal-icon{background:#fff0ef;color:var(--coral);border-radius:10px}.popover{box-shadow:var(--shadow-md);border-radius:11px}.notification-popover button,.profile-popover button{border-radius:7px}.counterparty-help{border-radius:12px;box-shadow:var(--shadow-sm)}
 @media (max-width:760px){.topbar{min-height:66px}.main-content{padding-left:16px;padding-right:16px}.top-actions .select-wrap{display:none}.counterparties-header h2,.payments-header h2,.global-header h2,.reports-header h2,.settings-header h2{font-size:23px}.panel{border-radius:11px}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* User-provided Bitaxus logo: use the supplied white wordmark as the sole brand mark. */
+.brand{display:flex;align-items:center;gap:0;height:58px;padding:0 18px}.brand img{display:block;width:136px;height:auto;max-height:36px;object-fit:contain;object-position:left center}.brand span{display:none}
