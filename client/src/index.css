@@ -329,3 +329,12 @@ button:disabled{cursor:wait;opacity:.72;transform:none!important}
   .nav-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; }
   .main-content { margin-left: 0; width: 100%; }
 }
+
+/* Clean heading rhythm: titles without decorative icons use the full text block width and a deliberate title/subtitle gap. */
+.global-title, .reports-title, .settings-title { display: block !important; margin: 0 !important; }
+.global-title h2, .reports-title h2, .settings-title h2 { margin: 0 0 7px !important; }
+.global-header>div:first-child>p, .reports-header>div:first-child>p, .settings-header>div:first-child>p { margin: 0 !important; max-width: 620px; }
+@media (max-width: 760px) {
+  .global-title h2, .reports-title h2, .settings-title h2 { margin-bottom: 5px !important; }
+  .global-header>div:first-child>p, .reports-header>div:first-child>p, .settings-header>div:first-child>p { max-width: none; }
+}
