@@ -372,3 +372,14 @@ button:disabled{cursor:wait;opacity:.72;transform:none!important}
 @media (prefers-reduced-motion: reduce) {
   .settings-page .settings-content { animation: none !important; }
 }
+
+/* Filter refresh + Global balances: keep data changes perceptible without making the interface feel busy. */
+@media (prefers-reduced-motion: no-preference) {
+  .reports-page .reports-table { animation: reportsFilterRefresh 280ms cubic-bezier(.23,1,.32,1) both; }
+  .global-page .balance-grid .balance-card:nth-child(1) { animation: financePanelIn .34s cubic-bezier(.23,1,.32,1) both; animation-delay: 0ms; }
+  .global-page .balance-grid .balance-card:nth-child(2) { animation: financePanelIn .34s cubic-bezier(.23,1,.32,1) both; animation-delay: 55ms; }
+  @keyframes reportsFilterRefresh { from { opacity: .5; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reports-page .reports-table, .global-page .balance-grid .balance-card { animation: none !important; }
+}
