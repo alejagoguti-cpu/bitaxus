@@ -162,3 +162,21 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 .global-page .balance-actions button:hover{background:#fff3f2;color:var(--coral-dark);box-shadow:0 5px 12px rgba(232,62,73,.12)}
 .global-page .quick-global>button:hover{background:#fffaf9;box-shadow:0 7px 16px rgba(17,23,34,.08)}
 @media (prefers-reduced-motion:reduce){.counterparties-table tbody tr,.global-table tbody tr,.counterparties-card,.global-activity,.balance-card,.quick-global,.global-guide{animation:none!important}.counterparties-page button:hover,.global-page button:hover,.counterparties-table tbody tr:hover,.global-table tbody tr:hover{transform:none!important}}
+
+/* Interaction polish: Reportes and Configuración inherit the same restrained finance motion. */
+.reports-page button,.reports-page select,.reports-page input,.settings-page button,.settings-page select,.settings-page input{transition:transform .18s cubic-bezier(.23,1,.32,1),box-shadow .18s,border-color .18s,background-color .18s,color .18s}
+.reports-page button:hover,.settings-page button:hover{transform:translateY(-1px)}
+.reports-page button:active,.settings-page button:active{transform:scale(.97)}
+.reports-page button:focus-visible,.reports-page select:focus-visible,.reports-page input:focus-visible,.settings-page button:focus-visible,.settings-page select:focus-visible,.settings-page input:focus-visible{outline:3px solid rgba(232,62,73,.22);outline-offset:2px}
+.reports-page .report-kpi,.reports-page .reports-main-grid .panel,.reports-page .reports-table,.settings-page .settings-card,.settings-page .toggle-card,.settings-page .notification-preview,.settings-page .integration-row,.settings-page .settings-nav{animation:financePanelIn .34s cubic-bezier(.23,1,.32,1) both}
+.reports-page .report-kpi:nth-child(2),.settings-page .settings-card:nth-child(2),.settings-page .toggle-card:nth-child(2){animation-delay:55ms}.reports-page .report-kpi:nth-child(3),.settings-page .settings-card:nth-child(3),.settings-page .toggle-card:nth-child(3){animation-delay:110ms}.reports-page .report-kpi:nth-child(4),.settings-page .settings-card:nth-child(4),.settings-page .toggle-card:nth-child(4){animation-delay:165ms}
+.reports-table table tbody tr{animation:financeRowIn .28s cubic-bezier(.23,1,.32,1) both;transition:background-color .18s,transform .18s,box-shadow .18s}
+.reports-table table tbody tr:nth-child(2){animation-delay:35ms}.reports-table table tbody tr:nth-child(3){animation-delay:70ms}.reports-table table tbody tr:nth-child(4){animation-delay:105ms}.reports-table table tbody tr:nth-child(5){animation-delay:140ms}
+.reports-table table tbody tr:hover{background:#fff8f7;transform:translateX(3px);box-shadow:inset 3px 0 var(--coral)}
+.reports-table table tbody tr:active{transform:scale(.995)}
+.reports-page .report-kpi:hover,.reports-page .reports-main-grid .panel:hover,.settings-page .settings-card:hover,.settings-page .toggle-card:hover,.settings-page .integration-row:hover,.settings-page .notification-preview:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)!important;border-color:#e5b4b5}
+.reports-page .reports-filters label:hover,.settings-page .settings-nav button:hover{border-color:#e5b4b5;box-shadow:0 5px 14px rgba(17,23,34,.07)}
+.reports-page .reports-filters .clear-report-filters:hover{background:#fff0ef;border-color:#e5b4b5;color:var(--coral-dark)}
+.settings-page .settings-nav button:active{transform:translateX(2px) scale(.98)}
+.settings-page .toggle-card input:focus-visible + *{outline:3px solid rgba(232,62,73,.22);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.reports-page .report-kpi,.reports-page .reports-main-grid .panel,.reports-page .reports-table,.settings-page .settings-card,.settings-page .toggle-card,.settings-page .notification-preview,.settings-page .integration-row,.settings-page .settings-nav,.reports-table table tbody tr{animation:none!important}.reports-page button:hover,.settings-page button:hover,.reports-page .report-kpi:hover,.reports-page .reports-main-grid .panel:hover,.settings-page .settings-card:hover,.settings-page .toggle-card:hover,.settings-page .integration-row:hover,.settings-page .notification-preview:hover,.reports-table table tbody tr:hover{transform:none!important}}
