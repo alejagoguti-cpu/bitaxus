@@ -64,3 +64,7 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 
 /* User-provided Bitaxus logo: use the supplied white wordmark as the sole brand mark. */
 .brand{display:flex;align-items:center;gap:0;height:58px;padding:0 18px}.brand img{display:block;width:136px;height:auto;max-height:36px;object-fit:contain;object-position:left center}.brand span{display:none}
+
+/* Black logo variant: light sidebar is intentional so the requested black wordmark remains readable. */
+.sidebar{background:linear-gradient(180deg,#ffffff 0%,#f7f8fa 100%);border-right:1px solid #e5e8ed;box-shadow:10px 0 28px rgba(17,23,34,.05)}.brand{height:76px;padding:0 22px;border-bottom:1px solid #edf0f3}.brand img{width:168px;max-height:42px;filter:none}.nav-item{color:#66707d;margin:4px 10px}.nav-item:hover{background:#f1f3f6;color:var(--ink)}.nav-item.active{background:linear-gradient(90deg,#fff0ef,#fff8f7);color:var(--coral);box-shadow:inset 3px 0 var(--coral)}.agent-card{background:#fff;border:1px solid #e3e7ec;box-shadow:0 10px 24px rgba(17,23,34,.07);color:var(--ink)}.agent-card p{color:#7a8491}.agent-card button{color:var(--coral)}.mobile-close{color:var(--ink)}
+@media (max-width:760px){.brand{height:66px;padding:0 18px}.brand img{width:150px}}
