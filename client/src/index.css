@@ -589,3 +589,13 @@ button, input, select, textarea { max-width: 100%; }
   .activity-amount { grid-column: 2; }
   .activity-row > svg:last-child { grid-column: 3; grid-row: 1 / span 2; }
 }
+
+/* Virtual keyboard support: use the visual viewport height when mobile IME is open. */
+.modal-backdrop { min-height: var(--visual-vh, 100dvh); }
+@media (max-width: 800px) {
+  .action-modal { max-height: calc(var(--visual-vh, 100dvh) - 24px) !important; }
+  .payment-drawer { height: var(--visual-vh, 100dvh) !important; max-height: var(--visual-vh, 100dvh) !important; overscroll-behavior: contain; }
+  .receipt-form { max-height: calc(var(--visual-vh, 100dvh) - 24px); overscroll-behavior: contain; }
+  .action-modal input:focus, .action-modal textarea:focus, .action-modal select:focus,
+  .payment-drawer input:focus, .payment-drawer textarea:focus, .receipt-form input:focus, .receipt-form textarea:focus, .receipt-form select:focus { scroll-margin-block: 18px; }
+}
