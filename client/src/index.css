@@ -143,3 +143,22 @@ html{background:var(--canvas)}body{font-family:"DM Sans","Manrope",system-ui,san
 .global-table td{height:56px!important}.global-footer{padding:10px 14px!important}
 .global-aside{gap:12px!important}.quick-global>button{padding:12px 16px!important}.global-guide{padding:0 10px 10px!important}
 @media (max-width:760px){.counterparties-header,.global-header{padding:16px 0 11px!important;align-items:flex-start!important}.counterparties-header h2,.global-header h2{font-size:22px!important}.counterparties-header .primary-action,.global-header .primary-action{width:100%!important;margin-top:8px}.counterparties-tabs{padding:0 14px!important;overflow-x:auto}.counterparties-filterbar{padding:10px!important}.counterparties-card{padding:0 10px 10px!important}.global-layout>main{padding:12px!important}.balance-card{min-height:150px!important}.global-aside{gap:10px!important}}
+
+/* Interaction polish: restrained motion for finance operations, with keyboard and reduced-motion support. */
+.counterparties-page button,.global-page button,.counterparties-page select,.global-page select{transition:transform .18s cubic-bezier(.23,1,.32,1),box-shadow .18s,border-color .18s,background-color .18s,color .18s}
+.counterparties-page button:hover,.global-page button:hover{transform:translateY(-1px)}
+.counterparties-page button:active,.global-page button:active{transform:scale(.97)}
+.counterparties-page button:focus-visible,.global-page button:focus-visible,.counterparties-page select:focus-visible,.global-page select:focus-visible{outline:3px solid rgba(232,62,73,.22);outline-offset:2px}
+.counterparties-table tbody tr,.global-table tbody tr{animation:financeRowIn .28s cubic-bezier(.23,1,.32,1) both;transition:background-color .18s,transform .18s,box-shadow .18s}
+.counterparties-table tbody tr:nth-child(2),.global-table tbody tr:nth-child(2){animation-delay:35ms}.counterparties-table tbody tr:nth-child(3),.global-table tbody tr:nth-child(3){animation-delay:70ms}.counterparties-table tbody tr:nth-child(4),.global-table tbody tr:nth-child(4){animation-delay:105ms}.counterparties-table tbody tr:nth-child(5),.global-table tbody tr:nth-child(5){animation-delay:140ms}.counterparties-table tbody tr:nth-child(6),.global-table tbody tr:nth-child(6){animation-delay:175ms}.counterparties-table tbody tr:nth-child(7),.global-table tbody tr:nth-child(7){animation-delay:210ms}
+.counterparties-table tbody tr:hover,.global-table tbody tr:hover{background:#fff8f7;transform:translateX(3px);box-shadow:inset 3px 0 var(--coral)}
+.counterparties-table tbody tr:active,.global-table tbody tr:active{transform:scale(.995)}
+.counterparties-card,.global-activity,.balance-card,.quick-global,.global-guide{animation:financePanelIn .34s cubic-bezier(.23,1,.32,1) both}
+.balance-card:nth-child(2){animation-delay:70ms}.quick-global{animation-delay:100ms}.global-guide{animation-delay:150ms}
+@keyframes financeRowIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes financePanelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes financePulse{0%,100%{opacity:.52}50%{opacity:1}}
+.counterparties-page .pagination button:hover,.global-page .global-footer button:hover{background:#fff0ef;border-color:#e9a2a4;color:var(--coral-dark)}
+.global-page .balance-actions button:hover{background:#fff3f2;color:var(--coral-dark);box-shadow:0 5px 12px rgba(232,62,73,.12)}
+.global-page .quick-global>button:hover{background:#fffaf9;box-shadow:0 7px 16px rgba(17,23,34,.08)}
+@media (prefers-reduced-motion:reduce){.counterparties-table tbody tr,.global-table tbody tr,.counterparties-card,.global-activity,.balance-card,.quick-global,.global-guide{animation:none!important}.counterparties-page button:hover,.global-page button:hover,.counterparties-table tbody tr:hover,.global-table tbody tr:hover{transform:none!important}}
