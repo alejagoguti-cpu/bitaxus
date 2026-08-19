@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <div className="app-shell">
       <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-        <div className="brand"><img src="/manus-storage/bitaxus-mark_0d22e2c2.png" alt="" /><span>BITAXUS</span></div>
+        <div className="brand"><img src="/assets/bitaxus-mark.webp" alt="" /><span>BITAXUS</span></div>
         <button className="mobile-close" onClick={() => setSidebarOpen(false)} aria-label="Cerrar menú"><X size={18} /></button>
         <nav className="nav-list" aria-label="Navegación principal">
           {nav.map(([IconComp, label]) => <button key={label} className={`nav-item ${active === label ? "active" : ""}`} onClick={() => { setActive(label); setSidebarOpen(false); }}>{<IconComp size={15} />}{label}</button>)}
