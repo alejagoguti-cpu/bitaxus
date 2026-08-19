@@ -599,3 +599,22 @@ button, input, select, textarea { max-width: 100%; }
   .action-modal input:focus, .action-modal textarea:focus, .action-modal select:focus,
   .payment-drawer input:focus, .payment-drawer textarea:focus, .receipt-form input:focus, .receipt-form textarea:focus, .receipt-form select:focus { scroll-margin-block: 18px; }
 }
+
+/* Accessibility contrast fixes from Lighthouse audit. */
+.activity-main span, .activity-ref span, .review-list button span { color: #68717e !important; }
+.view-all, .view-all-reports { color: #b43f3d !important; }
+
+/* Lighthouse contrast and focus pass. */
+.activity-amount .money-green { color: #147653 !important; }
+.activity-row .status.confirmado { color: #176c4d !important; background: #e6f4ed !important; }
+.activity-row .status.en-proceso { color: #855a1d !important; background: #fff0d1 !important; }
+.activity-row .status.procesada { color: #4f555c !important; background: #e5e8eb !important; }
+:where(button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid #d94845 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgba(217,72,69,.18) !important;
+}
+:where(button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])):focus:not(:focus-visible) { outline: none; }
+@media (prefers-reduced-motion: reduce) {
+  :where(button, a, input, select, textarea, [tabindex]:not([tabindex="-1"])):focus-visible { transition: none !important; }
+}
