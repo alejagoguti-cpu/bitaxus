@@ -759,3 +759,15 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 @media (max-width: 760px) {
   .top-actions .top-dropdown:first-child, .top-actions .top-dropdown:nth-child(2) { min-width: 0; }
 }
+
+/* Recaudos modal: centered overlay replaces the former side panel and preserves table width. */
+.receipt-form-backdrop { z-index: 125 !important; align-items: center !important; justify-content: center !important; padding: 24px !important; background: rgba(21, 25, 34, .66) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.receipt-form-backdrop .receipt-form { position: relative !important; inset: auto !important; width: min(720px, calc(100vw - 48px)) !important; max-width: 720px !important; max-height: min(820px, calc(var(--visual-vh, 100dvh) - 48px)) !important; height: auto !important; overflow-y: auto !important; border: 0 !important; border-radius: 18px !important; padding: 30px !important; box-shadow: 0 28px 80px rgba(16, 20, 28, .24) !important; animation: modalIn .22s cubic-bezier(.23,1,.32,1) both; }
+.receipt-form-backdrop .receipt-form .form-close { position: absolute; top: 18px !important; right: 18px !important; }
+.receipt-form-backdrop .receipt-form h3 { margin-right: 42px !important; }
+.receipt-form-backdrop .receipt-form > p { max-width: 420px; }
+@media (max-width: 760px) {
+  .receipt-form-backdrop { padding: 12px !important; align-items: flex-start !important; }
+  .receipt-form-backdrop .receipt-form { width: 100% !important; max-height: calc(var(--visual-vh, 100dvh) - 24px) !important; padding: 24px 18px !important; border-radius: 16px !important; }
+}
+@media (prefers-reduced-motion: reduce) { .receipt-form-backdrop .receipt-form { animation: none; } }
