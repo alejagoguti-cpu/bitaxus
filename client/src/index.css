@@ -695,3 +695,9 @@ button, input, select, textarea { max-width: 100%; }
   .payment-form-backdrop .payment-drawer { width: 100% !important; max-height: calc(var(--visual-vh, 100dvh) - 24px) !important; padding: 24px 18px !important; border-radius: 16px !important; }
 }
 @media (prefers-reduced-motion: reduce) { .payment-form-backdrop .payment-drawer { animation: none; } }
+
+/* Bitaxus select states: replace the browser-default blue option highlight with coral brand feedback. */
+select { accent-color: var(--coral); color-scheme: light; }
+select option, select optgroup { background: #fff; color: var(--ink); }
+select option:checked, select option:focus, select option:hover { background: var(--coral) !important; color: #fff !important; }
+.full-select:focus, .modal-input:focus, select:focus { border-color: var(--coral) !important; box-shadow: 0 0 0 3px rgba(232, 62, 73, .12) !important; outline: none; }
