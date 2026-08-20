@@ -879,3 +879,23 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 .payment-form-backdrop .payment-drawer.shared-operation-modal .form-actions { margin-top: 4px !important; padding-top: 18px !important; border-top: 1px solid var(--line) !important; }
 @media (max-width: 760px) { .payment-form-backdrop .payment-drawer.shared-operation-modal { width: 100% !important; max-height: calc(var(--visual-vh, 100dvh) - 24px) !important; padding: 24px 18px !important; border-radius: 16px !important; } }
 @media (prefers-reduced-motion: reduce) { .payment-form-backdrop .payment-drawer.shared-operation-modal { animation: none; } }
+
+/* Final operation-family parity: Recaudos, Contrapartes, Pago and Dispersión share the same surface. */
+.receipt-form-backdrop .receipt-form.shared-operation-modal,
+.modal-backdrop .counterparty-modal.shared-operation-modal { width: min(720px, calc(100vw - 48px)) !important; max-width: 720px !important; max-height: min(820px, calc(var(--visual-vh, 100dvh) - 48px)) !important; border-radius: 18px !important; padding: 30px !important; box-shadow: 0 28px 80px rgba(16, 20, 28, .24) !important; }
+.receipt-form-backdrop .receipt-form.shared-operation-modal > h3,
+.modal-backdrop .counterparty-modal.shared-operation-modal > h2,
+.payment-form-backdrop .payment-drawer.shared-operation-modal > h3 { margin: 0 42px 8px 0 !important; font-size: 25px !important; line-height: 1.15 !important; font-weight: 700 !important; color: var(--ink) !important; }
+.receipt-form-backdrop .receipt-form.shared-operation-modal > p,
+.modal-backdrop .counterparty-modal.shared-operation-modal > p,
+.payment-form-backdrop .payment-drawer.shared-operation-modal > p { margin: 0 0 24px !important; max-width: 520px !important; font-size: 13px !important; line-height: 1.45 !important; color: var(--muted) !important; }
+.receipt-form-backdrop .receipt-form.shared-operation-modal > label,
+.modal-backdrop .counterparty-modal.shared-operation-modal > label,
+.payment-form-backdrop .payment-drawer.shared-operation-modal > label { display: block !important; margin: 0 0 18px !important; }
+.receipt-form-backdrop .receipt-form.shared-operation-modal .modal-icon,
+.modal-backdrop .counterparty-modal.shared-operation-modal .modal-icon,
+.payment-form-backdrop .payment-drawer.shared-operation-modal .modal-icon { margin-bottom: 12px !important; }
+@media (max-width: 760px) {
+  .receipt-form-backdrop .receipt-form.shared-operation-modal,
+  .modal-backdrop .counterparty-modal.shared-operation-modal { width: 100% !important; max-height: calc(var(--visual-vh, 100dvh) - 24px) !important; padding: 24px 18px !important; border-radius: 16px !important; }
+}
