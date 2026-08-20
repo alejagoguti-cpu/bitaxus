@@ -663,3 +663,8 @@ button, input, select, textarea { max-width: 100%; }
 /* Subtle tab content transition. */
 @keyframes tab-panel-enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: no-preference) { .receipts-table-card, .payments-card, .counterparties-card { animation: tab-panel-enter 220ms cubic-bezier(.23,1,.32,1); } }
+
+/* Recaudos: four equal tab slots, no oversized active underline. */
+.receipts-tabs > div { display: grid !important; grid-template-columns: repeat(4, 145px); gap: 0 !important; }
+.receipts-tabs button { width: 145px !important; min-width: 145px !important; padding-left: 0 !important; padding-right: 0 !important; }
+@media (max-width: 760px) { .receipts-tabs > div { grid-template-columns: repeat(4, 112px); } .receipts-tabs button { width: 112px !important; min-width: 112px !important; } }
