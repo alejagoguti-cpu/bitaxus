@@ -673,3 +673,8 @@ button, input, select, textarea { max-width: 100%; }
 .counterparties-page .counterparties-card { position: relative; }
 .counterparties-page .counterparties-card .table-export-toolbar { position: absolute; top: -48px; right: 20px; z-index: 3; display: flex; justify-content: flex-end; }
 @media (max-width: 760px) { .counterparties-page .counterparties-card .table-export-toolbar { position: static; padding: 10px 0 0; justify-content: flex-end; } }
+
+/* Recaudos y Pagos: export actions align with the filter bar like Contrapartes. */
+.receipts-page .receipts-table-card, .payments-page .payments-card { position: relative; }
+.receipts-page .receipts-table-card .table-export-toolbar, .payments-page .payments-card .table-export-toolbar { position: absolute; top: -48px; right: 20px; z-index: 3; display: flex; justify-content: flex-end; }
+@media (max-width: 760px) { .receipts-page .receipts-table-card .table-export-toolbar, .payments-page .payments-card .table-export-toolbar { position: static; padding: 10px 0 0; justify-content: flex-end; } }
