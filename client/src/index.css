@@ -668,3 +668,8 @@ button, input, select, textarea { max-width: 100%; }
 .receipts-tabs > div { display: grid !important; grid-template-columns: repeat(4, 145px); gap: 0 !important; }
 .receipts-tabs button { width: 145px !important; min-width: 145px !important; padding-left: 0 !important; padding-right: 0 !important; }
 @media (max-width: 760px) { .receipts-tabs > div { grid-template-columns: repeat(4, 112px); } .receipts-tabs button { width: 112px !important; min-width: 112px !important; } }
+
+/* Contrapartes: export actions sit beside the filter bar, above the table. */
+.counterparties-page .counterparties-card { position: relative; }
+.counterparties-page .counterparties-card .table-export-toolbar { position: absolute; top: -48px; right: 20px; z-index: 3; display: flex; justify-content: flex-end; }
+@media (max-width: 760px) { .counterparties-page .counterparties-card .table-export-toolbar { position: static; padding: 10px 0 0; justify-content: flex-end; } }
