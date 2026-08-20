@@ -723,3 +723,28 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 /* Filter typography: selected values use color and a check, not heavy bold weight. */
 .compact-menu .compact-select b { font-weight: 500 !important; }
 .compact-menu-options button.selected, .receipt-filter-options button.selected, .reports-filter-options button.selected { font-weight: 500 !important; }
+
+/* Dispersion modal: use the available desktop width instead of a narrow drawer column. */
+.payment-form-backdrop .dispersion-form { width: min(820px, calc(100vw - 48px)) !important; max-width: 820px !important; }
+.payment-form-backdrop .dispersion-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 20px; row-gap: 15px; align-content: start; }
+.payment-form-backdrop .dispersion-form > h3,
+.payment-form-backdrop .dispersion-form > p,
+.payment-form-backdrop .dispersion-form > label:nth-of-type(4),
+.payment-form-backdrop .dispersion-form > .monthly-toggle,
+.payment-form-backdrop .dispersion-form > .form-actions { grid-column: 1 / -1; }
+.payment-form-backdrop .dispersion-form > h3 { margin: 0; padding-right: 34px; }
+.payment-form-backdrop .dispersion-form > p { margin: -7px 0 4px; }
+.payment-form-backdrop .dispersion-form > label { min-width: 0; margin: 0; }
+.payment-form-backdrop .dispersion-form > label:nth-of-type(4) textarea { min-height: 104px; }
+.payment-form-backdrop .dispersion-form .monthly-toggle { margin-top: 2px; padding: 13px 0 0; border-top: 1px solid var(--line); }
+.payment-form-backdrop .dispersion-form .form-actions { margin-top: 1px; padding-top: 17px; border-top: 1px solid var(--line); justify-content: flex-end; }
+@media (max-width: 680px) {
+  .payment-form-backdrop .dispersion-form { width: 100% !important; grid-template-columns: 1fr; row-gap: 13px; }
+  .payment-form-backdrop .dispersion-form > h3,
+  .payment-form-backdrop .dispersion-form > p,
+  .payment-form-backdrop .dispersion-form > label:nth-of-type(4),
+  .payment-form-backdrop .dispersion-form > .monthly-toggle,
+  .payment-form-backdrop .dispersion-form > .form-actions { grid-column: auto; }
+  .payment-form-backdrop .dispersion-form .form-actions { justify-content: stretch; }
+  .payment-form-backdrop .dispersion-form .form-actions button { flex: 1; }
+}
