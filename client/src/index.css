@@ -862,3 +862,9 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
   .shared-operation-modal > h3, .shared-operation-modal > h2 { font-size: 21px !important; }
 }
 @media (prefers-reduced-motion: reduce) { .shared-operation-modal { animation: none; } }
+
+/* Required-field validation: clear inline feedback without disruptive toasts. */
+.field-error, .shared-operation-modal .field-error, .payment-form-backdrop .payment-drawer .field-error { border-color: #d94b54 !important; background: #fff8f8 !important; box-shadow: 0 0 0 3px rgba(217, 75, 84, .12) !important; }
+.field-error-message { display: block !important; margin-top: 6px !important; color: #c23f49 !important; font-size: 11px !important; font-weight: 600 !important; line-height: 1.35 !important; }
+.receipt-form .field-error-message { margin-bottom: 0 !important; }
+.shared-operation-modal input:focus.field-error, .shared-operation-modal textarea:focus.field-error, .shared-operation-modal select:focus.field-error, .payment-form-backdrop .payment-drawer input:focus.field-error, .payment-form-backdrop .payment-drawer textarea:focus.field-error, .payment-form-backdrop .payment-drawer select:focus.field-error { border-color: #d94b54 !important; box-shadow: 0 0 0 3px rgba(217, 75, 84, .14) !important; }
