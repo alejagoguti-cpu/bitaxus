@@ -719,3 +719,7 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 .payments-page .payments-filters .receipt-filter-menu.open { z-index: 80 !important; }
 .payments-page .payments-filters .receipt-filter-options { z-index: 90 !important; display: block; visibility: visible; opacity: 1; pointer-events: auto; }
 .payments-page .payments-card, .payments-page .payments-guide { z-index: 1 !important; }
+
+/* Filter typography: selected values use color and a check, not heavy bold weight. */
+.compact-menu .compact-select b { font-weight: 500 !important; }
+.compact-menu-options button.selected, .receipt-filter-options button.selected, .reports-filter-options button.selected { font-weight: 500 !important; }
