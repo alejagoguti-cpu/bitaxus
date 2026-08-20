@@ -913,24 +913,3 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 .unsaved-changes-actions .discard-action { background: #d94b54; box-shadow: none; }
 @media (max-width: 520px) { .unsaved-changes-dialog { padding: 24px 18px; } .unsaved-changes-actions { flex-direction: column-reverse; } }
 @media (prefers-reduced-motion: reduce) { .unsaved-changes-dialog { animation: none; } }
-
-/* Home right-edge alignment: keep every row action on one vertical guide. */
-.lower-grid { align-items: start !important; }
-.activity-card, .review-card { min-width: 0; }
-.activity-row { grid-template-columns: 28px minmax(0, 1fr) minmax(138px, 170px) 18px !important; align-items: center !important; }
-.activity-row > svg:last-child { justify-self: end !important; margin-right: 0 !important; }
-.activity-amount { justify-self: end !important; min-width: 118px; text-align: right; }
-.review-list button { grid-template-columns: 28px minmax(0, 1fr) 20px 18px !important; align-items: center !important; }
-.review-list button > svg:last-child { justify-self: end !important; }
-.review-list button > strong { justify-self: end !important; text-align: right; }
-.quick-actions button { display: grid !important; grid-template-columns: 30px minmax(0, 1fr) 18px !important; align-items: center !important; }
-.quick-actions button > svg:last-child { justify-self: end !important; }
-@media (max-width: 800px) {
-  .activity-row { grid-template-columns: 28px minmax(0, 1fr) auto 15px !important; }
-  .activity-amount { min-width: 78px; }
-  .review-list button { grid-template-columns: 28px minmax(0, 1fr) 18px 15px !important; }
-}
-@media (max-width: 560px) {
-  .activity-row { grid-template-columns: 28px minmax(0, 1fr) auto 14px !important; }
-  .review-list button { grid-template-columns: 28px minmax(0, 1fr) 18px 14px !important; }
-}
