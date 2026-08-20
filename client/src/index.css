@@ -913,3 +913,37 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 .unsaved-changes-actions .discard-action { background: #d94b54; box-shadow: none; }
 @media (max-width: 520px) { .unsaved-changes-dialog { padding: 24px 18px; } .unsaved-changes-actions { flex-direction: column-reverse; } }
 @media (prefers-reduced-motion: reduce) { .unsaved-changes-dialog { animation: none; } }
+
+/* Counterparty enrollment form: compact mobile-first layout from the provided reference. */
+.counterparty-modal { width: min(620px, calc(100vw - 32px)); max-height: min(820px, calc(100dvh - 32px)); padding: 24px 26px 18px !important; overflow-y: auto; }
+.counterparty-modal-heading { display: flex; align-items: flex-start; gap: 12px; padding-right: 28px; margin-bottom: 18px; }
+.counterparty-modal-heading .modal-icon { flex: 0 0 38px; width: 38px; height: 38px; margin: 0; }
+.counterparty-modal-heading h2 { margin: 0; font-size: 20px; line-height: 1.18; }
+.counterparty-modal-heading p { margin: 5px 0 0; font-size: 11px; line-height: 1.4; color: #767c86; }
+.counterparty-question { display: block; margin: 0 0 8px; font-size: 11px; font-weight: 700; color: var(--ink); }
+.counterparty-relation-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 17px; }
+.counterparty-relation-toggle button { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 42px; padding: 8px 10px; border: 1px solid #e7e8eb; border-radius: 7px; background: #fff; color: #4f5660; font-size: 10px; font-weight: 700; cursor: pointer; }
+.counterparty-relation-toggle button.selected { border-color: #de7377; background: #fff8f7; color: #be4448; box-shadow: 0 0 0 2px rgba(222,115,119,.08); }
+.counterparty-fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px 12px; }
+.counterparty-fields-grid label { min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 10px; font-weight: 700; color: #303641; }
+.counterparty-fields-grid label > span { color: #dc4f57; }
+.counterparty-fields-grid .full-span { grid-column: 1 / -1; }
+.counterparty-fields-grid input, .counterparty-fields-grid select { width: 100%; min-height: 40px; box-sizing: border-box; }
+.counterparty-payment-section { margin: 19px -26px 0; padding: 14px 26px 0; border-top: 1px solid #f0f1f3; }
+.counterparty-payment-section h3 { margin: 0 0 13px; font-size: 11px; line-height: 1.2; color: #303641; }
+.counterparty-modal .modal-actions { margin-top: 19px; padding-top: 14px; border-top: 1px solid #f0f1f3; }
+@media (max-width: 560px) {
+  .counterparty-modal { width: min(100vw - 20px, 420px); max-height: calc(var(--visual-vh, 100dvh) - 20px); padding: 18px 12px 12px !important; border-radius: 16px !important; }
+  .counterparty-modal-heading { margin-bottom: 14px; }
+  .counterparty-modal-heading h2 { font-size: 18px; }
+  .counterparty-relation-toggle { gap: 6px; }
+  .counterparty-relation-toggle button { min-height: 38px; padding-inline: 6px; font-size: 9px; }
+  .counterparty-fields-grid { gap: 11px 8px; }
+  .counterparty-payment-section { margin-inline: -12px; padding-inline: 12px; }
+  .counterparty-modal .modal-actions { gap: 8px; }
+  .counterparty-modal .modal-actions button { min-height: 42px; font-size: 10px; }
+}
+@media (max-width: 360px) {
+  .counterparty-fields-grid { grid-template-columns: 1fr; }
+  .counterparty-fields-grid .full-span { grid-column: auto; }
+}
