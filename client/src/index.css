@@ -782,3 +782,23 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 .action-modal::-webkit-scrollbar-track, .receipt-form::-webkit-scrollbar-track, .payment-drawer::-webkit-scrollbar-track, .receipt-form-backdrop .receipt-form::-webkit-scrollbar-track, .payment-form-backdrop .payment-drawer::-webkit-scrollbar-track { background: transparent; }
 .action-modal::-webkit-scrollbar-thumb, .receipt-form::-webkit-scrollbar-thumb, .payment-drawer::-webkit-scrollbar-thumb, .receipt-form-backdrop .receipt-form::-webkit-scrollbar-thumb, .payment-form-backdrop .payment-drawer::-webkit-scrollbar-thumb { background: #d7d9de; border: 1px solid transparent; border-radius: 999px; background-clip: padding-box; }
 .action-modal::-webkit-scrollbar-thumb:hover, .receipt-form::-webkit-scrollbar-thumb:hover, .payment-drawer::-webkit-scrollbar-thumb:hover { background: #b9bdc5; }
+
+/* Explicit modal scroll control: compact rail with accessible up/down actions. */
+.modal-scroll-shell { position: relative; display: flex; flex-direction: column; min-height: 0; height: 100%; }
+.modal-scroll-content { min-height: 0; max-height: 100%; overflow-y: auto; padding-right: 18px; scrollbar-width: none; -ms-overflow-style: none; }
+.modal-scroll-content::-webkit-scrollbar { display: none; }
+.modal-scroll-arrow { position: absolute; right: 0; z-index: 4; display: grid; place-items: center; width: 24px; height: 24px; padding: 0; border: 1px solid #e4e6ea; border-radius: 999px; background: #fff; color: #6f747d; box-shadow: 0 4px 12px rgba(17, 23, 34, .10); cursor: pointer; transition: color .18s, border-color .18s, background .18s, opacity .18s, transform .18s; }
+.modal-scroll-arrow:hover:not(:disabled), .modal-scroll-arrow:focus-visible:not(:disabled) { border-color: var(--coral); background: #fff7f6; color: var(--coral-dark); transform: scale(1.05); outline: none; }
+.modal-scroll-arrow:disabled { opacity: .32; cursor: default; box-shadow: none; }
+.modal-scroll-arrow-up { top: 0; }
+.modal-scroll-arrow-down { bottom: 0; }
+.modal-scroll-shell::before { content: ""; position: absolute; top: 26px; right: 10px; bottom: 26px; width: 4px; border-radius: 999px; background: #eef0f3; pointer-events: none; }
+.modal-scroll-shell::after { content: ""; position: absolute; top: 28px; right: 10px; width: 4px; height: 34%; border-radius: 999px; background: #c7cbd2; pointer-events: none; }
+.receipt-form-backdrop .receipt-form { overflow: hidden !important; }
+.receipt-form-backdrop .receipt-form .modal-scroll-shell { min-height: 0; }
+@media (max-width: 760px) {
+  .modal-scroll-content { padding-right: 16px; }
+  .modal-scroll-arrow { width: 22px; height: 22px; }
+  .modal-scroll-shell::before { right: 9px; }
+  .modal-scroll-shell::after { right: 9px; }
+}
