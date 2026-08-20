@@ -841,3 +841,24 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 .receipt-form .form-input, .receipt-form .payer-trigger, .receipt-form .amount-input, .receipt-form textarea, .receipt-form select { transition: border-color .18s, background .18s, box-shadow .18s; }
 @media (prefers-reduced-motion: reduce) { .receipt-success-message { animation: none; } }
 @media (max-width: 560px) { .receipt-success-message { align-items: flex-start; } .receipt-success-message small { max-width: 230px; } }
+
+/* Shared operation modal: Pagos, Dispersión and Contrapartes inherit the Recaudos visual system. */
+.shared-operation-modal { width: min(720px, calc(100vw - 48px)) !important; max-width: 720px !important; max-height: min(820px, calc(var(--visual-vh, 100dvh) - 48px)) !important; overflow-y: auto !important; border-radius: 18px !important; padding: 30px !important; box-shadow: 0 28px 80px rgba(16, 20, 28, .24) !important; animation: modalIn .22s cubic-bezier(.23,1,.32,1) both; }
+.payment-form-backdrop { z-index: 125 !important; align-items: center !important; justify-content: center !important; padding: 24px !important; }
+.payment-form-backdrop .shared-operation-modal { position: relative !important; inset: auto !important; }
+.shared-operation-modal > h3, .shared-operation-modal > h2 { margin: 0 42px 6px 0 !important; color: #202630 !important; font-size: 24px !important; line-height: 1.15 !important; font-weight: 700 !important; letter-spacing: -.02em !important; }
+.shared-operation-modal > p { margin: 0 0 24px !important; color: #717984 !important; font-size: 13px !important; line-height: 1.45 !important; }
+.shared-operation-modal > label, .payment-form-backdrop .payment-drawer > label { display: block !important; width: 100% !important; margin: 0 0 17px !important; color: #252b34 !important; font-size: 12px !important; font-weight: 650 !important; line-height: 1.35 !important; }
+.shared-operation-modal > label > em, .payment-form-backdrop .payment-drawer > label > em { display: inline !important; margin-left: 3px !important; color: var(--coral) !important; font-style: normal !important; }
+.shared-operation-modal > label > input, .shared-operation-modal > label > textarea, .shared-operation-modal > label > select, .shared-operation-modal > label > .form-input, .shared-operation-modal > label > .amount-input, .payment-form-backdrop .payment-drawer > label > input, .payment-form-backdrop .payment-drawer > label > textarea, .payment-form-backdrop .payment-drawer > label > select, .payment-form-backdrop .payment-drawer > label > .form-input, .payment-form-backdrop .payment-drawer > label > .amount-input { margin-top: 8px !important; }
+.shared-operation-modal > label > textarea, .payment-form-backdrop .payment-drawer > label > textarea { display: block !important; width: 100% !important; min-height: 96px !important; height: 96px !important; resize: vertical !important; }
+.shared-operation-modal input:focus, .shared-operation-modal textarea:focus, .shared-operation-modal select:focus, .shared-operation-modal .form-input:focus-within, .shared-operation-modal .amount-input:focus-within, .payment-form-backdrop .payment-drawer input:focus, .payment-form-backdrop .payment-drawer textarea:focus, .payment-form-backdrop .payment-drawer select:focus, .payment-form-backdrop .payment-drawer .form-input:focus-within, .payment-form-backdrop .payment-drawer .amount-input:focus-within { border-color: var(--coral) !important; background: #fffafa !important; box-shadow: 0 0 0 3px rgba(232, 62, 73, .14), 0 5px 14px rgba(232, 62, 73, .06) !important; outline: none !important; }
+.shared-operation-modal .form-actions, .payment-form-backdrop .payment-drawer .form-actions { display: flex; gap: 12px; margin-top: 6px !important; padding-top: 17px; border-top: 1px solid var(--line); }
+.shared-operation-modal .form-actions > button, .payment-form-backdrop .payment-drawer .form-actions > button { flex: 1; min-height: 46px; }
+.counterparty-modal { max-width: 520px !important; }
+@media (max-width: 760px) {
+  .payment-form-backdrop { padding: 12px !important; align-items: flex-start !important; }
+  .shared-operation-modal { width: 100% !important; max-height: calc(var(--visual-vh, 100dvh) - 24px) !important; padding: 24px 18px !important; border-radius: 16px !important; }
+  .shared-operation-modal > h3, .shared-operation-modal > h2 { font-size: 21px !important; }
+}
+@media (prefers-reduced-motion: reduce) { .shared-operation-modal { animation: none; } }
