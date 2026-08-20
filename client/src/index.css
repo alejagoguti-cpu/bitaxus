@@ -712,3 +712,10 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 .modal-backdrop::-webkit-scrollbar, .action-modal::-webkit-scrollbar, .receipt-form::-webkit-scrollbar, .payment-drawer::-webkit-scrollbar { width: 7px; }
 .modal-backdrop::-webkit-scrollbar-track, .action-modal::-webkit-scrollbar-track, .receipt-form::-webkit-scrollbar-track, .payment-drawer::-webkit-scrollbar-track { background: transparent; }
 .modal-backdrop::-webkit-scrollbar-thumb, .action-modal::-webkit-scrollbar-thumb, .receipt-form::-webkit-scrollbar-thumb, .payment-drawer::-webkit-scrollbar-thumb { background: #c7c9ce; border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+
+/* Payment filters must own the top stacking layer so their option panels cannot hide behind the table. */
+.payments-page .payments-filters { position: relative; z-index: 35 !important; overflow: visible !important; }
+.payments-page .payments-filters .receipt-filter-menu { position: relative; z-index: 36 !important; }
+.payments-page .payments-filters .receipt-filter-menu.open { z-index: 80 !important; }
+.payments-page .payments-filters .receipt-filter-options { z-index: 90 !important; display: block; visibility: visible; opacity: 1; pointer-events: auto; }
+.payments-page .payments-card, .payments-page .payments-guide { z-index: 1 !important; }
