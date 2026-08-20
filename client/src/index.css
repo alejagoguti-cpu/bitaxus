@@ -808,3 +808,21 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 .receipt-form .form-title-row h3 { margin: 0 !important; }
 .receipt-form .form-title-icon { display: grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px; border-radius: 10px; background: #eefaf5; color: #35a879; }
 @media (max-width: 760px) { .receipt-form .form-title-row { margin-right: 40px; } }
+
+/* Recaudos form rhythm: every field label shares one compact type scale and one vertical flow. */
+.receipt-form .modal-scroll-content > label { display: block !important; width: 100% !important; margin: 0 0 17px !important; color: #252b34 !important; font-size: 12px !important; font-weight: 650 !important; line-height: 1.35 !important; letter-spacing: 0 !important; }
+.receipt-form .modal-scroll-content > label > em { display: inline !important; margin-left: 3px !important; color: var(--coral) !important; font-size: 12px !important; font-style: normal !important; }
+.receipt-form .modal-scroll-content > label > .form-input,
+.receipt-form .modal-scroll-content > label > .payer-trigger,
+.receipt-form .modal-scroll-content > label > .amount-input,
+.receipt-form .modal-scroll-content > label > .full-select,
+.receipt-form .modal-scroll-content > label > textarea { margin-top: 8px !important; }
+.receipt-form .modal-scroll-content > label > textarea { display: block !important; width: 100% !important; min-height: 96px !important; height: 96px !important; resize: vertical !important; }
+.receipt-form .modal-scroll-content > label > .form-input,
+.receipt-form .modal-scroll-content > label > .payer-trigger,
+.receipt-form .modal-scroll-content > label > .amount-input,
+.receipt-form .modal-scroll-content > label > .full-select { width: 100% !important; min-height: 48px !important; }
+.receipt-form .modal-scroll-content > label:nth-of-type(4) { margin-bottom: 20px !important; }
+.receipt-form .modal-scroll-content > .form-actions { margin-top: 2px !important; }
+.receipt-form .modal-scroll-content > p { margin: 2px 0 24px !important; font-size: 13px !important; line-height: 1.45 !important; color: #717984 !important; }
+.receipt-form .modal-scroll-content > .import-link { margin-top: 0 !important; }
