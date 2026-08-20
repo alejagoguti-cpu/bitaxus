@@ -771,3 +771,7 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
   .receipt-form-backdrop .receipt-form { width: 100% !important; max-height: calc(var(--visual-vh, 100dvh) - 24px) !important; padding: 24px 18px !important; border-radius: 16px !important; }
 }
 @media (prefers-reduced-motion: reduce) { .receipt-form-backdrop .receipt-form { animation: none; } }
+
+/* Modal focus mode: remove global company/period controls from the visible layer while an operation dialog is open. */
+.main-content:has(.modal-backdrop) > .topbar .top-actions { visibility: hidden !important; pointer-events: none !important; }
+.main-content:has(.modal-backdrop) > .topbar { position: relative; z-index: 0; }
