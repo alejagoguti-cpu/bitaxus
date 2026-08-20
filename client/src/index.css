@@ -775,3 +775,10 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 /* Modal focus mode: remove global company/period controls from the visible layer while an operation dialog is open. */
 .main-content:has(.modal-backdrop) > .topbar .top-actions { visibility: hidden !important; pointer-events: none !important; }
 .main-content:has(.modal-backdrop) > .topbar { position: relative; z-index: 0; }
+
+/* Modal scroll refinement: the scrollbar should be a quiet affordance, not a visible rail. */
+.action-modal, .receipt-form, .payment-drawer, .receipt-form-backdrop .receipt-form, .payment-form-backdrop .payment-drawer { scrollbar-width: thin; scrollbar-color: #d7d9de transparent; scrollbar-gutter: stable; }
+.action-modal::-webkit-scrollbar, .receipt-form::-webkit-scrollbar, .payment-drawer::-webkit-scrollbar, .receipt-form-backdrop .receipt-form::-webkit-scrollbar, .payment-form-backdrop .payment-drawer::-webkit-scrollbar { width: 4px; }
+.action-modal::-webkit-scrollbar-track, .receipt-form::-webkit-scrollbar-track, .payment-drawer::-webkit-scrollbar-track, .receipt-form-backdrop .receipt-form::-webkit-scrollbar-track, .payment-form-backdrop .payment-drawer::-webkit-scrollbar-track { background: transparent; }
+.action-modal::-webkit-scrollbar-thumb, .receipt-form::-webkit-scrollbar-thumb, .payment-drawer::-webkit-scrollbar-thumb, .receipt-form-backdrop .receipt-form::-webkit-scrollbar-thumb, .payment-form-backdrop .payment-drawer::-webkit-scrollbar-thumb { background: #d7d9de; border: 1px solid transparent; border-radius: 999px; background-clip: padding-box; }
+.action-modal::-webkit-scrollbar-thumb:hover, .receipt-form::-webkit-scrollbar-thumb:hover, .payment-drawer::-webkit-scrollbar-thumb:hover { background: #b9bdc5; }
