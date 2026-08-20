@@ -701,3 +701,14 @@ select { accent-color: var(--coral); color-scheme: light; }
 select option, select optgroup { background: #fff; color: var(--ink); }
 select option:checked, select option:focus, select option:hover { background: var(--coral) !important; color: #fff !important; }
 .full-select:focus, .modal-input:focus, select:focus { border-color: var(--coral) !important; box-shadow: 0 0 0 3px rgba(232, 62, 73, .12) !important; outline: none; }
+
+/* Bitaxus scrollbar: slim, quiet, and visually subordinate to the workspace. */
+html { scrollbar-width: thin; scrollbar-color: #c7c9ce transparent; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { width: 8px; height: 8px; }
+html::-webkit-scrollbar-track, body::-webkit-scrollbar-track { background: transparent; }
+html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb { background: #c7c9ce; border: 2px solid transparent; border-radius: 999px; background-clip: padding-box; }
+html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { background: var(--coral); border-width: 1px; }
+.modal-backdrop, .action-modal, .receipt-form, .payment-drawer { scrollbar-width: thin; scrollbar-color: #c7c9ce transparent; }
+.modal-backdrop::-webkit-scrollbar, .action-modal::-webkit-scrollbar, .receipt-form::-webkit-scrollbar, .payment-drawer::-webkit-scrollbar { width: 7px; }
+.modal-backdrop::-webkit-scrollbar-track, .action-modal::-webkit-scrollbar-track, .receipt-form::-webkit-scrollbar-track, .payment-drawer::-webkit-scrollbar-track { background: transparent; }
+.modal-backdrop::-webkit-scrollbar-thumb, .action-modal::-webkit-scrollbar-thumb, .receipt-form::-webkit-scrollbar-thumb, .payment-drawer::-webkit-scrollbar-thumb { background: #c7c9ce; border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
