@@ -826,3 +826,18 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 .receipt-form .modal-scroll-content > .form-actions { margin-top: 2px !important; }
 .receipt-form .modal-scroll-content > p { margin: 2px 0 24px !important; font-size: 13px !important; line-height: 1.45 !important; color: #717984 !important; }
 .receipt-form .modal-scroll-content > .import-link { margin-top: 0 !important; }
+
+/* Recaudos success feedback: inline, calm, and non-blocking after a valid submission. */
+.receipt-success-message { display: flex; align-items: center; gap: 11px; margin: 0 0 14px; padding: 12px 14px; border: 1px solid #cfeee0; border-radius: 12px; background: #f2fbf7; color: #23694f; animation: receiptSuccessIn .24s cubic-bezier(.23,1,.32,1) both; }
+.receipt-success-icon { display: grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; border-radius: 50%; background: #d9f5e8; color: #23956a; }
+.receipt-success-message > span:nth-child(2) { display: grid; gap: 2px; min-width: 0; }
+.receipt-success-message b { font-size: 12px; line-height: 1.35; font-weight: 700; }
+.receipt-success-message small { color: #5a7d6d; font-size: 11px; line-height: 1.35; }
+.receipt-success-message > button { display: grid; place-items: center; margin-left: auto; width: 26px; height: 26px; border: 0; border-radius: 7px; background: transparent; color: #5a7d6d; cursor: pointer; }
+.receipt-success-message > button:hover, .receipt-success-message > button:focus-visible { background: #def5e9; color: #23694f; outline: none; }
+@keyframes receiptSuccessIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+/* Recaudos focus treatment: coral border, soft halo, and subtle surface tint. */
+.receipt-form .form-input:focus-within, .receipt-form .payer-trigger:focus-within, .receipt-form .amount-input:focus-within, .receipt-form textarea:focus, .receipt-form select:focus, .receipt-form input:focus { border-color: var(--coral) !important; background: #fffafa !important; box-shadow: 0 0 0 3px rgba(232, 62, 73, .14), 0 5px 14px rgba(232, 62, 73, .06) !important; outline: none !important; transition: border-color .18s, background .18s, box-shadow .18s; }
+.receipt-form .form-input, .receipt-form .payer-trigger, .receipt-form .amount-input, .receipt-form textarea, .receipt-form select { transition: border-color .18s, background .18s, box-shadow .18s; }
+@media (prefers-reduced-motion: reduce) { .receipt-success-message { animation: none; } }
+@media (max-width: 560px) { .receipt-success-message { align-items: flex-start; } .receipt-success-message small { max-width: 230px; } }
