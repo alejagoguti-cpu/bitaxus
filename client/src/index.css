@@ -948,12 +948,8 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
   .counterparty-fields-grid .full-span { grid-column: auto; }
 }
 
-/* Global Dispersar feedback: explanatory tooltip plus inline success state. */
-.global-disperse-action { position: relative; }
-.global-disperse-action::after { content: attr(title); position: absolute; left: 8px; bottom: calc(100% + 9px); z-index: 40; width: 230px; padding: 8px 10px; border-radius: 8px; background: #272b35; color: #fff; font-size: 10px; font-weight: 600; line-height: 1.35; text-align: left; box-shadow: 0 10px 24px rgba(20,25,35,.18); opacity: 0; pointer-events: none; transform: translateY(4px); transition: opacity .16s ease, transform .16s ease; }
-.global-disperse-action:hover::after, .global-disperse-action:focus-visible::after { opacity: 1; transform: translateY(0); }
+/* Global Dispersar feedback: inline success state. */
 .global-success-message { margin: 0 0 14px; animation: operationSuccessIn .24s cubic-bezier(.23,1,.32,1); }
 .global-modal .primary-action:disabled { opacity: .72; cursor: wait; }
 @keyframes operationSuccessIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 800px) { .global-disperse-action::after { display: none; } }
 @media (prefers-reduced-motion: reduce) { .global-success-message { animation: none; } }
