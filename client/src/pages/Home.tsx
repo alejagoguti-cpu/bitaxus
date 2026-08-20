@@ -38,7 +38,7 @@ export default function Home() {
 
   const closePopovers = () => { setNotificationOpen(false); setProfileOpen(false); };
   const chooseNav = (label: string) => { setActive(label); setSidebarOpen(false); closePopovers(); if (label !== "Inicio") void 0; };
-  const quickAction = (title: string, text = "Completa los datos de la operación para continuar.", detail?: string) => { closePopovers(); setModal({ title, text, detail }); };
+  const quickAction = (title: string, text = "Completa los datos de la operación para continuar.", detail?: string) => { closePopovers(); if (title === "Programar recaudo") { setActive("Recaudos"); setModal(null); return; } if (title === "Programar pago") { setActive("Pagos y dispersiones"); setModal(null); return; } if (title === "Consultar en Global") { setActive("Bitaxus Global"); setModal(null); return; } setModal({ title, text, detail }); };
   const handlePeriod = (value: string) => { setPeriod(value); void 0; };
 
   return <div className="app-shell" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}assets/bitaxus-texture.webp)` }}>
