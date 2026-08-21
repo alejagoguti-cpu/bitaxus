@@ -1027,3 +1027,16 @@ button, input, select, textarea { font-size: 13px; }
   .modal-backdrop > .action-modal > h2, .payment-form-backdrop .payment-drawer > h3 { font-size: 20px !important; }
   .modal-backdrop > .action-modal .modal-close, .payment-form-backdrop .payment-drawer .modal-close { top: 18px; right: 18px; }
 }
+
+/* Fluid modal motion: subtle entrance, graceful closing state, and reduced-motion support. */
+.modal-backdrop { animation: modalOverlayIn .2s ease-out both; }
+.modal-backdrop > .action-modal, .payment-form-backdrop .payment-drawer, .unsaved-changes-dialog { animation: modalContentIn .24s cubic-bezier(.23,1,.32,1) both; will-change: transform, opacity; }
+.modal-backdrop.is-closing { animation: modalOverlayOut .16s ease-in both; pointer-events: none; }
+.modal-backdrop.is-closing > .action-modal, .modal-backdrop.is-closing > .payment-drawer, .payment-form-backdrop.is-closing .payment-drawer, .modal-backdrop.is-closing .unsaved-changes-dialog { animation: modalContentOut .16s ease-in both; }
+@keyframes modalOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modalContentIn { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes modalOverlayOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes modalContentOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(5px) scale(.985); } }
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop, .modal-backdrop > .action-modal, .payment-form-backdrop .payment-drawer, .unsaved-changes-dialog { animation: none !important; transition: none !important; }
+}
