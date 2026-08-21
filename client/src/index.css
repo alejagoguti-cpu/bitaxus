@@ -988,3 +988,12 @@ button, input, select, textarea { font-size: 13px; }
   .receipts-page h2, .payments-page h2, .counterparties-page h2, .global-page h2, .reports-page h2, .settings-page h2 { font-size: 20px !important; }
   .receipts-page h3, .payments-page h3, .counterparties-page h3, .global-page h3, .reports-page h3, .settings-page h3 { font-size: 15px !important; }
 }
+
+/* Recaudos payer picker: keep results in flow so they never cover later fields. */
+.receipt-form .payer-results { position: static !important; width: 100% !important; max-height: 214px !important; margin: 8px 0 18px !important; overflow-y: auto !important; overflow-x: hidden !important; border: 1px solid #e5e7eb !important; border-radius: 9px !important; box-shadow: 0 8px 20px rgba(28,35,45,.08) !important; }
+.receipt-form .payer-results-head { position: sticky; top: 0; z-index: 2; background: #fff; }
+.receipt-form input[type="date"] { color: #4f5662; color-scheme: light; }
+.receipt-form input[type="date"]::-webkit-datetime-edit-day-field:focus,
+.receipt-form input[type="date"]::-webkit-datetime-edit-month-field:focus,
+.receipt-form input[type="date"]::-webkit-datetime-edit-year-field:focus { background: transparent; color: inherit; }
+.receipt-form input[type="date"]::selection { background: transparent; color: inherit; }
