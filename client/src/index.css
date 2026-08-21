@@ -997,3 +997,12 @@ button, input, select, textarea { font-size: 13px; }
 .receipt-form input[type="date"]::-webkit-datetime-edit-month-field:focus,
 .receipt-form input[type="date"]::-webkit-datetime-edit-year-field:focus { background: transparent; color: inherit; }
 .receipt-form input[type="date"]::selection { background: transparent; color: inherit; }
+
+/* Report modal: centered, fully visible, with scroll confined to the dialog. */
+.modal-backdrop:has(.report-modal) { align-items: center !important; justify-content: center !important; padding: 16px !important; background: rgba(20, 25, 35, .48) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.report-modal { width: min(520px, calc(100vw - 32px)) !important; max-height: min(700px, calc(100dvh - 32px)) !important; overflow-y: auto !important; overflow-x: hidden !important; margin: 0 auto !important; transform: none !important; }
+.report-modal .modal-actions { position: sticky; bottom: 0; z-index: 2; padding-top: 12px; background: #fff; }
+@media (max-width: 700px) {
+  .modal-backdrop:has(.report-modal) { padding: 10px !important; }
+  .report-modal { width: min(100%, 520px) !important; max-height: calc(100dvh - 20px) !important; }
+}
