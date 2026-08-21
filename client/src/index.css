@@ -953,3 +953,25 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { backg
 .global-modal .primary-action:disabled { opacity: .72; cursor: wait; }
 @keyframes operationSuccessIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { .global-success-message { animation: none; } }
+
+/* Legibility pass: increase the small UI scale while preserving hierarchy. */
+body { font-size: 14px; }
+button, input, select, textarea { font-size: 13px; }
+.page-title, .section-title, .global-section-title { font-size: 17px; }
+.page-subtitle, .global-page p, .global-header p { font-size: 13px; line-height: 1.45; }
+.receipts-tabs button, .payments-tabs button, .counterparties-tabs button { font-size: 12px !important; }
+.global-table th, .global-table td, .receipt-table th, .receipt-table td, .payments-table th, .payments-table td, .counterparties-table th, .counterparties-table td { font-size: 13px; }
+.activity-row, .review-item, .quick-global button, .balance-actions button { font-size: 13px; }
+.activity-row small, .review-item small, .quick-global small, .balance-card small { font-size: 12px; }
+.receipt-form .modal-scroll-content > label, .shared-operation-modal > label, .payment-form-backdrop .payment-drawer > label { font-size: 14px !important; }
+.receipt-form .modal-scroll-content > p, .shared-operation-modal > p, .payment-form-backdrop .payment-drawer.shared-operation-modal > p { font-size: 14px !important; }
+.field-error-message { font-size: 12px !important; }
+.counterparty-modal-heading h2 { font-size: 23px; }
+.counterparty-modal-heading p, .counterparty-question, .counterparty-payment-section h3 { font-size: 13px; }
+.counterparty-relation-toggle button, .counterparty-fields-grid label { font-size: 12px; }
+@media (max-width: 700px) {
+  body { font-size: 13px; }
+  button, input, select, textarea { font-size: 13px; }
+  .global-table th, .global-table td, .receipt-table th, .receipt-table td, .payments-table th, .payments-table td, .counterparties-table th, .counterparties-table td { font-size: 12px; }
+  .activity-row small, .review-item small, .quick-global small, .balance-card small { font-size: 11px; }
+}
