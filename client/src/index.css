@@ -1006,3 +1006,24 @@ button, input, select, textarea { font-size: 13px; }
   .modal-backdrop:has(.report-modal) { padding: 10px !important; }
   .report-modal { width: min(100%, 520px) !important; max-height: calc(100dvh - 20px) !important; }
 }
+
+/* Premium modal system: one calm, consistent language across every operation. */
+.modal-backdrop { align-items: center !important; justify-content: center !important; padding: 16px !important; background: rgba(25, 30, 38, .48) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.modal-backdrop > .action-modal, .payment-form-backdrop .payment-drawer { box-sizing: border-box; width: min(620px, calc(100vw - 32px)) !important; max-height: min(780px, calc(100dvh - 32px)) !important; margin: 0 auto !important; padding: 28px !important; border-radius: 18px !important; overflow-y: auto !important; overflow-x: hidden !important; transform: none !important; }
+.modal-backdrop > .action-modal > h2, .payment-form-backdrop .payment-drawer > h3 { margin: 0 42px 8px 0 !important; font-size: 22px !important; line-height: 1.2 !important; font-weight: 700 !important; letter-spacing: -.015em !important; color: #202630 !important; }
+.modal-backdrop > .action-modal > p, .payment-form-backdrop .payment-drawer > p { max-width: 540px; margin: 0 0 22px !important; font-size: 13px !important; line-height: 1.5 !important; color: #727984 !important; }
+.modal-backdrop > .action-modal > label, .payment-form-backdrop .payment-drawer > label { display: grid !important; gap: 7px !important; width: 100% !important; margin: 0 0 16px !important; color: #303641 !important; font-size: 13px !important; line-height: 1.35 !important; font-weight: 650 !important; }
+.modal-backdrop > .action-modal input, .modal-backdrop > .action-modal select, .modal-backdrop > .action-modal textarea, .payment-form-backdrop .payment-drawer input, .payment-form-backdrop .payment-drawer select, .payment-form-backdrop .payment-drawer textarea { box-sizing: border-box; width: 100%; min-height: 44px; border: 1px solid #e1e4e8; border-radius: 9px; background: #fff; color: #454c57; font-size: 13px; line-height: 1.4; }
+.modal-backdrop > .action-modal textarea, .payment-form-backdrop .payment-drawer textarea { min-height: 104px; padding: 12px; resize: vertical; }
+.modal-backdrop > .action-modal select, .payment-form-backdrop .payment-drawer select { appearance: none; -webkit-appearance: none; padding: 0 38px 0 12px; background-color: #fff; background-image: linear-gradient(45deg, transparent 50%, #737b86 50%), linear-gradient(135deg, #737b86 50%, transparent 50%); background-position: calc(100% - 17px) 19px, calc(100% - 12px) 19px; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+.modal-backdrop > .action-modal input:focus, .modal-backdrop > .action-modal select:focus, .modal-backdrop > .action-modal textarea:focus, .payment-form-backdrop .payment-drawer input:focus, .payment-form-backdrop .payment-drawer select:focus, .payment-form-backdrop .payment-drawer textarea:focus { outline: none; border-color: #df6667; box-shadow: 0 0 0 3px rgba(223,102,103,.12); }
+.modal-backdrop > .action-modal .modal-actions, .payment-form-backdrop .payment-drawer .modal-actions { display: flex; gap: 12px; width: 100%; margin-top: 8px; padding-top: 16px; border-top: 1px solid #f0f1f3; background: #fff; }
+.modal-backdrop > .action-modal .modal-actions button, .payment-form-backdrop .payment-drawer .modal-actions button { flex: 1; min-height: 44px; border-radius: 9px; font-size: 13px; font-weight: 700; }
+.modal-backdrop > .action-modal .modal-close, .payment-form-backdrop .payment-drawer .modal-close { top: 24px; right: 24px; color: #727984; }
+.modal-backdrop > .action-modal .modal-icon, .payment-form-backdrop .payment-drawer .modal-icon { width: 40px; height: 40px; margin: 0 0 14px; border-radius: 11px; background: #fff0ef; color: #df6667; }
+@media (max-width: 700px) {
+  .modal-backdrop { padding: 10px !important; }
+  .modal-backdrop > .action-modal, .payment-form-backdrop .payment-drawer { width: min(100%, 520px) !important; max-height: calc(100dvh - 20px) !important; padding: 22px 18px !important; border-radius: 16px !important; }
+  .modal-backdrop > .action-modal > h2, .payment-form-backdrop .payment-drawer > h3 { font-size: 20px !important; }
+  .modal-backdrop > .action-modal .modal-close, .payment-form-backdrop .payment-drawer .modal-close { top: 18px; right: 18px; }
+}
