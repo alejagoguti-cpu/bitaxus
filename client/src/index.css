@@ -975,3 +975,16 @@ button, input, select, textarea { font-size: 13px; }
   .global-table th, .global-table td, .receipt-table th, .receipt-table td, .payments-table th, .payments-table td, .counterparties-table th, .counterparties-table td { font-size: 12px; }
   .activity-row small, .review-item small, .quick-global small, .balance-card small { font-size: 11px; }
 }
+
+/* Unified module type scale: readable without oversized local overrides. */
+.receipts-page h2, .payments-page h2, .counterparties-page h2, .global-page h2, .reports-page h2, .settings-page h2 { font-size: 22px !important; line-height: 1.2 !important; }
+.receipts-page h3, .payments-page h3, .counterparties-page h3, .global-page h3, .reports-page h3, .settings-page h3 { font-size: 16px !important; line-height: 1.25 !important; }
+.receipts-page p, .payments-page p, .counterparties-page p, .global-page p, .reports-page p, .settings-page p { font-size: 13px; line-height: 1.45; }
+.receipt-form .modal-scroll-content > label, .shared-operation-modal > label, .payment-form-backdrop .payment-drawer > label { font-size: 13px !important; }
+.shared-operation-modal > h3, .shared-operation-modal > h2, .payment-form-backdrop .payment-drawer.shared-operation-modal > h3 { font-size: 22px !important; }
+.counterparty-modal-heading h2 { font-size: 20px !important; }
+.counterparty-modal-heading p, .counterparty-question, .counterparty-payment-section h3 { font-size: 12px !important; }
+@media (max-width: 700px) {
+  .receipts-page h2, .payments-page h2, .counterparties-page h2, .global-page h2, .reports-page h2, .settings-page h2 { font-size: 20px !important; }
+  .receipts-page h3, .payments-page h3, .counterparties-page h3, .global-page h3, .reports-page h3, .settings-page h3 { font-size: 15px !important; }
+}
