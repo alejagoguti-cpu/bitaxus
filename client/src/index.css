@@ -1040,3 +1040,19 @@ button, input, select, textarea { font-size: 13px; }
 @media (prefers-reduced-motion: reduce) {
   .modal-backdrop, .modal-backdrop > .action-modal, .payment-form-backdrop .payment-drawer, .unsaved-changes-dialog { animation: none !important; transition: none !important; }
 }
+
+/* Modal copy/layout pass: prevent clipped text and keep every control readable. */
+.modal-backdrop > .action-modal, .payment-form-backdrop .payment-drawer, .unsaved-changes-dialog { min-width: 0; overflow-wrap: anywhere; }
+.modal-backdrop > .action-modal h1, .modal-backdrop > .action-modal h2, .modal-backdrop > .action-modal h3, .modal-backdrop > .action-modal p, .modal-backdrop > .action-modal label, .payment-form-backdrop .payment-drawer h1, .payment-form-backdrop .payment-drawer h2, .payment-form-backdrop .payment-drawer h3, .payment-form-backdrop .payment-drawer p, .payment-form-backdrop .payment-drawer label { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.modal-backdrop > .action-modal .modal-actions button, .payment-form-backdrop .payment-drawer .modal-actions button { min-width: 0; white-space: normal; overflow-wrap: anywhere; line-height: 1.25; }
+.modal-backdrop > .action-modal input, .modal-backdrop > .action-modal select, .modal-backdrop > .action-modal textarea, .payment-form-backdrop .payment-drawer input, .payment-form-backdrop .payment-drawer select, .payment-form-backdrop .payment-drawer textarea { min-width: 0; text-overflow: ellipsis; }
+.modal-backdrop > .action-modal input::placeholder, .modal-backdrop > .action-modal textarea::placeholder, .payment-form-backdrop .payment-drawer input::placeholder, .payment-form-backdrop .payment-drawer textarea::placeholder { opacity: .78; white-space: normal; }
+.modal-backdrop > .action-modal .modal-close, .payment-form-backdrop .payment-drawer .modal-close { flex: 0 0 auto; }
+.counterparty-modal-heading { min-width: 0; }
+.counterparty-modal-heading > div:last-child { min-width: 0; }
+.counterparty-modal-heading h2, .counterparty-modal-heading p { overflow-wrap: anywhere; }
+@media (max-width: 700px) {
+  .modal-backdrop > .action-modal, .payment-form-backdrop .payment-drawer { padding-inline: 16px !important; }
+  .modal-backdrop > .action-modal .modal-actions, .payment-form-backdrop .payment-drawer .modal-actions { gap: 8px; }
+  .modal-backdrop > .action-modal .modal-actions button, .payment-form-backdrop .payment-drawer .modal-actions button { font-size: 12px; padding-inline: 8px; }
+}
