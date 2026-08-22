@@ -3,13 +3,17 @@
  * App routes with role-based access control
  */
 
-import { RootRouter, Route } from "wouter";
+import { RootRouter, Route, Redirect } from "wouter";
 import { UserRole } from "@/shared/types";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { AppLayout } from "@/components/layouts/AppLayout";
+import { LoginPage } from "@/pages/LoginPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { PaymentsPage } from "@/pages/PaymentsPage";
 import { DispersionsPage } from "@/pages/DispersionsPage";
 import { CounterpartiesPage } from "@/pages/CounterpartiesPage";
 import { ReportsPage } from "@/pages/ReportsPage";
+import { SettingsPage } from "@/pages/SettingsPage";
 
 // Protected route wrapper
 interface ProtectedRouteProps {
@@ -23,18 +27,29 @@ export function ProtectedRoute({
   requiredRoles = [],
   ...rest
 }: ProtectedRouteProps) {
-  // Get user from context/auth
-  // const { user } = useAuth();
+  const { isAuthenticated, user, tenant, isLoading } = useAuth();
 
-  // if (!user) {
-  //   return <Navigate to="/login" />;
-  // }
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
-  // if (requiredRoles.length > 0 && !requiredRoles.includes(user.role)) {
-  //   return <Navigate to="/unauthorized" />;
-  // }
+  if (!isAuthenticated) {
+    return <Redirect to="/login" />;
+  }
 
-  return <Component {...rest} />;
+  if (requiredRoles.length > 0 && user && !requiredRoles.includes(user.role)) {
+    return <Redirect to="/unauthorized" />;
+  }
+
+  return (
+    <AppLayout>
+      <Component tenantId={tenant?.id} {...rest} />
+    </AppLayout>
+  );
 }
 
 // Routes configuration
@@ -43,6 +58,7 @@ export const routes = [
   {
     path: "/login",
     title: "Login",
+    component: LoginPage,
     isPublic: true,
   },
   {
@@ -126,6 +142,7 @@ export const routes = [
   {
     path: "/settings",
     title: "Configuración",
+    component: SettingsPage,
     requiredRoles: [UserRole.ADMIN],
   },
 
@@ -146,22 +163,52 @@ export const routes = [
 /**
  * Router Component
  */
-export function Router() {
+function RouterContent() {
   return (
     <RootRouter>
       {routes.map((route) => (
         <Route key={route.path} path={route.path}>
           {route.component ? (
-            <ProtectedRoute
-              component={route.component}
-              requiredRoles={route.requiredRoles}
-            />
+            route.isPublic ? (
+              <route.component />
+            ) : (
+              <ProtectedRoute
+                component={route.component}
+                requiredRoles={route.requiredRoles}
+              />
+            )
+          ) : route.path === "/unauthorized" ? (
+            <div className="min-h-screen flex items-center justify-center bg-red-50">
+              <div className="text-center">
+                <h1 className="text-4xl font-bold text-red-900 mb-2">403</h1>
+                <p className="text-red-700 mb-4">Acceso denegado</p>
+                <a href="/" className="text-blue-600 hover:text-blue-700">
+                  Volver al inicio
+                </a>
+              </div>
+            </div>
           ) : (
-            <div>En construcción: {route.title}</div>
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+              <div className="text-center">
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">404</h1>
+                <p className="text-gray-600 mb-4">Página no encontrada</p>
+                <a href="/" className="text-blue-600 hover:text-blue-700">
+                  Volver al inicio
+                </a>
+              </div>
+            </div>
           )}
         </Route>
       ))}
     </RootRouter>
+  );
+}
+
+export function Router() {
+  return (
+    <AuthProvider>
+      <RouterContent />
+    </AuthProvider>
   );
 }
 
