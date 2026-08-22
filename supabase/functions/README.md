@@ -12,7 +12,8 @@ functions/
 ├── payments/process/        # Procesar pago (cambiar estado)
 ├── dispersions/create/      # Crear dispersión con items
 ├── dispersions/process/     # Procesar dispersión
-└── dashboard/metrics/       # Calcular métricas por período
+├── dashboard/metrics/       # Calcular métricas por período
+└── seed/                    # Seed test data (bypass RLS)
 ```
 
 ## Endpoints
@@ -137,6 +138,26 @@ Calcular métricas por período.
 }
 ```
 
+### POST /seed
+Seed test data (counterparties and bank accounts). Uses service role key to bypass RLS.
+
+**Body:**
+```json
+{
+  "tenant_id": "uuid"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Seed data inserted successfully",
+  "counterparties_count": 4,
+  "bank_accounts_count": 2
+}
+```
+
 ## Deployment
 
 ### Local Development
@@ -154,6 +175,7 @@ supabase functions deploy payments/process
 supabase functions deploy dispersions/create
 supabase functions deploy dispersions/process
 supabase functions deploy dashboard/metrics
+supabase functions deploy seed
 ```
 
 ## Environment Variables

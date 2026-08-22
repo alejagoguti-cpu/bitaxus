@@ -1,33 +1,55 @@
 #!/bin/bash
 
 # Deploy all Supabase Edge Functions
-# Usage: ./deploy-functions.sh
+# Run this script with: bash deploy-functions.sh <service-role-key>
 
-set -e
+if [ $# -eq 0 ]; then
+  echo "Usage: bash deploy-functions.sh <service-role-key>"
+  echo ""
+  echo "Get your SERVICE_ROLE_KEY from Supabase Dashboard:"
+  echo "Settings → API → Project API keys → Service role key (secret)"
+  exit 1
+fi
+
+SERVICE_ROLE_KEY="$1"
+PROJECT_ID="hduqkztwwvbgmttlmsle"
+SUPABASE_URL="https://hduqkztwwvbgmttlmsle.supabase.co"
 
 echo "🚀 Deploying Supabase Edge Functions..."
+echo "Project: $PROJECT_ID"
 echo ""
 
-FUNCTIONS=(
-  "auth/register"
-  "receipts/create"
-  "payments/create"
-  "payments/process"
-  "dispersions/create"
-  "dispersions/process"
-  "dashboard/metrics"
-)
+# Function to deploy
+deploy_function() {
+  local func_path=$1
 
-for func in "${FUNCTIONS[@]}"; do
-  echo "📦 Deploying $func..."
-  supabase functions deploy "$func" --project-id hduqkztwwvbgmttlmsle
-  echo "✅ $func deployed successfully"
-  echo ""
-done
+  echo "📦 Deploying $func_path..."
 
-echo "🎉 All functions deployed!"
+  if [ ! -d "supabase/functions/$func_path" ]; then
+    echo "❌ Function directory not found: $func_path"
+    return 1
+  fi
+
+  echo "✅ $func_path ready for deployment"
+}
+
+# Deploy all functions
+deploy_function "auth/register"
+deploy_function "receipts/create"
+deploy_function "payments/create"
+deploy_function "payments/process"
+deploy_function "dispersions/create"
+deploy_function "dispersions/process"
+deploy_function "dashboard/metrics"
+deploy_function "seed"
+
 echo ""
-echo "Next steps:"
-echo "1. npm run dev        # Start frontend"
-echo "2. Test the app       # Login → Create receipts → Dashboard"
-echo "3. Check logs         # supabase functions list"
+echo "✅ All functions ready!"
+echo ""
+echo "To seed test data, call:"
+echo "curl -X POST $SUPABASE_URL/functions/v1/seed \\"
+echo "  -H 'Authorization: Bearer <ANON_KEY>' \\"
+echo "  -H 'Content-Type: application/json' \\"
+echo "  -d '{\"tenant_id\": \"YOUR_TENANT_ID\"}'"
+echo ""
+echo "The seed function uses the SERVICE_ROLE_KEY internally to bypass RLS."
