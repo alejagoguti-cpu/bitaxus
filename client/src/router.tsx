@@ -6,6 +6,10 @@
 import { RootRouter, Route } from "wouter";
 import { UserRole } from "@/shared/types";
 import { DashboardPage } from "@/pages/DashboardPage";
+import { PaymentsPage } from "@/pages/PaymentsPage";
+import { DispersionsPage } from "@/pages/DispersionsPage";
+import { CounterpartiesPage } from "@/pages/CounterpartiesPage";
+import { ReportsPage } from "@/pages/ReportsPage";
 
 // Protected route wrapper
 interface ProtectedRouteProps {
@@ -70,6 +74,7 @@ export const routes = [
   {
     path: "/payments",
     title: "Pagos",
+    component: PaymentsPage,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR],
   },
 
@@ -82,6 +87,7 @@ export const routes = [
   {
     path: "/dispersions",
     title: "Dispersiones",
+    component: DispersionsPage,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR],
   },
 
@@ -94,6 +100,7 @@ export const routes = [
   {
     path: "/counterparties",
     title: "Contrapartes",
+    component: CounterpartiesPage,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR],
   },
 
@@ -112,6 +119,7 @@ export const routes = [
   {
     path: "/reports",
     title: "Reportes",
+    component: ReportsPage,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR, UserRole.VIEWER],
   },
 

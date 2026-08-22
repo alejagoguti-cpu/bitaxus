@@ -1,6 +1,8 @@
-# Guía de Componentes - Fase 3
+# Guía de Componentes - Fase 3 & Fase 4
 
 ## 🎨 Componentes Entregados
+
+### Fase 3 - Componentes Base
 
 ### 1. **FormReceipt** (`components/forms/FormReceipt.tsx`)
 Formulario para crear y editar recaudos con:
@@ -171,6 +173,133 @@ export default function App() {
 
 ---
 
+### Fase 4 - Componentes de Operaciones
+
+### 7. **FormPayment** (`components/forms/FormPayment.tsx`)
+Formulario para crear pagos individuales:
+- ✅ Selección de cuenta origen y beneficiario
+- ✅ Concepto, monto, moneda y fecha programada
+- ✅ Soporte para pagos recurrentes (mensual, trimestral, anual)
+- ✅ Validación con Zod
+- ✅ Estados de loading y mensajes de éxito/error
+
+**Uso:**
+```typescript
+import { FormPayment } from "@/components";
+
+function PaymentCreatePage() {
+  const { data: bankAccounts } = useBankAccounts({...});
+  const { data: beneficiaries } = useCounterparties({...});
+  
+  return (
+    <FormPayment
+      tenantId="tenant-id"
+      bankAccounts={bankAccounts?.data || []}
+      beneficiaries={beneficiaries?.data || []}
+      onSuccess={() => console.log("Pago creado!")}
+    />
+  );
+}
+```
+
+### 8. **FormCounterparty** (`components/forms/FormCounterparty.tsx`)
+Formulario para crear/editar contrapartes:
+- ✅ Información personal/empresarial
+- ✅ Tipos de ID (CC, NIT, CE, PP)
+- ✅ Relación (Cliente/Proveedor)
+- ✅ Datos de contacto (email, teléfono)
+- ✅ Validación de campos requeridos
+
+### 9. **FormBankAccount** (`components/forms/FormBankAccount.tsx`)
+Formulario para crear cuentas bancarias:
+- ✅ Selección de banco y tipo de cuenta
+- ✅ Número de cuenta con validación
+- ✅ Titular de la cuenta
+- ✅ Número de ruta (opcional)
+- ✅ Marcar cuenta como principal
+
+### 10. **FormDispersion** (`components/forms/FormDispersion.tsx`)
+Formulario avanzado para dispersiones:
+- ✅ Agregar múltiples beneficiarios dinámicamente
+- ✅ Tabla en vivo con montos y acciones
+- ✅ Cálculo automático de monto total
+- ✅ Validación de items no vacío
+- ✅ Soporte para diferentes monedas
+
+**Uso:**
+```typescript
+import { FormDispersion } from "@/components";
+
+function DispersionCreatePage() {
+  return (
+    <FormDispersion
+      tenantId="tenant-id"
+      bankAccounts={accounts}
+      beneficiaries={counterparties}
+      onSuccess={() => console.log("Dispersión creada!")}
+    />
+  );
+}
+```
+
+### 11. **PaymentsTable** (`components/tables/PaymentsTable.tsx`)
+Tabla inteligente de pagos:
+- ✅ Paginación automática (10 items por página)
+- ✅ Filtro por estado (Programado, Procesado, En proceso, Cancelado, Fallido)
+- ✅ Columnas: #Pago, Beneficiario, Concepto, Monto, Fecha, Estado
+- ✅ Acciones contextuales (Ver, Editar, Procesar)
+- ✅ Badges con colores por estado
+
+### 12. **DispersionsTable** (`components/tables/DispersionsTable.tsx`)
+Tabla de dispersiones:
+- ✅ Listado con paginación
+- ✅ Filtro por estado
+- ✅ Muestra cantidad de beneficiarios
+- ✅ Acciones (Ver, Editar, Procesar)
+- ✅ Colorización de estados
+
+### 13. **CounterpartiesTable** (`components/tables/CounterpartiesTable.tsx`)
+Tabla de contrapartes:
+- ✅ Búsqueda por nombre o ID
+- ✅ Filtro por tipo (Cliente/Proveedor)
+- ✅ Columnas: Nombre, ID, Tipo, Relación, Email, Teléfono, Estado
+- ✅ Acciones (Ver, Editar, Eliminar)
+- ✅ Paginación adaptativa
+
+### 14. **PaymentsPage** (`pages/PaymentsPage.tsx`)
+Página de gestión de pagos:
+- ✅ Header con botón de crear
+- ✅ Formulario modal para crear pagos
+- ✅ Panel de detalle del pago seleccionado
+- ✅ Tabla con filtros y paginación
+- ✅ Diálogo de confirmación para procesar
+
+### 15. **DispersionsPage** (`pages/DispersionsPage.tsx`)
+Página de gestión de dispersiones:
+- ✅ Crear dispersión con múltiples beneficiarios
+- ✅ Ver detalle con breakdown de items
+- ✅ Tabla de dispersiones
+- ✅ Acciones de edición y procesamiento
+- ✅ Confirmación antes de procesar
+
+### 16. **CounterpartiesPage** (`pages/CounterpartiesPage.tsx`)
+Página de gestión de contrapartes:
+- ✅ Crear nueva contraparte
+- ✅ Ver detalle completo con cuentas bancarias
+- ✅ Editar información
+- ✅ Eliminar con confirmación
+- ✅ Búsqueda y filtros avanzados
+
+### 17. **ReportsPage** (`pages/ReportsPage.tsx`)
+Página de reportes y exportación:
+- ✅ 6 tipos de reportes (Recaudos, Pagos, Dispersiones, Resumen, Conciliación, Auditoría)
+- ✅ Selección de período de fechas
+- ✅ Formatos de exportación (PDF, Excel, CSV)
+- ✅ Generación en tiempo real
+- ✅ Información de cumplimiento normativo
+
+---
+
 ## 🎯 Flujos de Desarrollo
 
 ### Crear Nueva Página
@@ -334,35 +463,49 @@ lg:grid-cols-3      /* 3 columnas en large screens */
 
 ---
 
-## 🔗 Próximos Pasos - Fase 4
+## ✅ Fase 4 Completada
 
-### Componentes Pendientes:
-- [ ] `FormPayment.tsx` - Crear pagos
-- [ ] `FormDispersion.tsx` - Crear dispersiones
-- [ ] `FormCounterparty.tsx` - Crear contrapartes
-- [ ] `FormBankAccount.tsx` - Crear cuentas
-- [ ] `PaymentsTable.tsx` - Tabla de pagos
-- [ ] `DispersionsTable.tsx` - Tabla de dispersiones
-- [ ] `CounterpartiesTable.tsx` - Tabla de contrapartes
+### Componentes Entregados:
+- ✅ `FormPayment.tsx` - Crear pagos con recurrencia
+- ✅ `FormDispersion.tsx` - Crear dispersiones con múltiples beneficiarios
+- ✅ `FormCounterparty.tsx` - Crear contrapartes
+- ✅ `FormBankAccount.tsx` - Crear cuentas bancarias
+- ✅ `PaymentsTable.tsx` - Tabla de pagos con filtros
+- ✅ `DispersionsTable.tsx` - Tabla de dispersiones
+- ✅ `CounterpartiesTable.tsx` - Tabla de contrapartes con búsqueda
+- ✅ `PaymentsPage.tsx` - Gestión completa de pagos
+- ✅ `DispersionsPage.tsx` - Gestión completa de dispersiones
+- ✅ `CounterpartiesPage.tsx` - Gestión completa de contrapartes
+- ✅ `ReportsPage.tsx` - Reportes y exportación
 
-### Páginas Pendientes:
-- [ ] `PaymentsPage.tsx` - Gestión de pagos
-- [ ] `DispersionsPage.tsx` - Gestión de dispersiones
-- [ ] `CounterpartiesPage.tsx` - Gestión de contrapartes
-- [ ] `ReportsPage.tsx` - Reportes y exports
+## 🔗 Próximos Pasos - Fase 5
 
-### Mejoras:
-- [ ] Autenticación y sesiones
-- [ ] Notificaciones en tiempo real
-- [ ] Gráficos con Recharts
-- [ ] Exportar a PDF/Excel
-- [ ] Búsqueda y filtros avanzados
+### Características Avanzadas:
+- [ ] Autenticación y sesiones de usuario
+- [ ] Notificaciones en tiempo real (Socket.io)
+- [ ] Gráficos y visualización (Recharts)
+- [ ] Exportación PDF mejorada (Puppeteer)
+- [ ] Importación masiva de contrapartes (Excel)
+- [ ] Búsqueda global full-text
+- [ ] Filtros guardados y favoritos
+
+### Integraciones:
+- [ ] Integración bancaria real (API Bancarias)
+- [ ] Webhooks de confirmación
+- [ ] Sincronización de estados
+- [ ] Alertas y escalamientos
+
+### Optimizaciones:
+- [ ] Caché offline-first
+- [ ] Sincronización de datos en background
+- [ ] Compresión de reportes
+- [ ] Análisis y predicción con ML
 
 ---
 
 ## ✅ Verificación
 
-Todos los componentes incluyen:
+### Componentes Fase 3:
 - ✅ TypeScript types
 - ✅ Error handling
 - ✅ Loading states
@@ -370,6 +513,16 @@ Todos los componentes incluyen:
 - ✅ Responsive design
 - ✅ Accesibilidad básica
 
+### Componentes Fase 4:
+- ✅ Validación con Zod y React Hook Form
+- ✅ Manejo de formularios dinámicos
+- ✅ Paginación y filtros adaptables
+- ✅ Estilos consistentes con color-coding
+- ✅ Soporte para operaciones CRUD
+- ✅ Diálogos de confirmación para acciones críticas
+- ✅ Integración con hooks personalizados
+- ✅ Exportable en componentes/index.ts
+
 ---
 
-*Fase 3 completada. Componentes y páginas listas para desarrollar.*
+*Fase 3 & 4 completadas. Stack de componentes listo para integración con API.*
