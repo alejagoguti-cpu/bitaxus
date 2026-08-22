@@ -1,10 +1,11 @@
 /**
  * AuthContext
- * Manages authentication state and user session
+ * Manages authentication state and user session with Supabase Auth
  */
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { User, Tenant } from "@/shared/types";
+import { supabase, callEdgeFunction } from "@/lib/supabase";
 
 interface AuthContextType {
   user: User | null;
@@ -28,25 +29,80 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const storedUser = localStorage.getItem("bitaxus_user");
-        const storedTenant = localStorage.getItem("bitaxus_tenant");
-        const token = localStorage.getItem("bitaxus_token");
+        // Get current session from Supabase Auth
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
 
-        if (storedUser && storedTenant && token) {
-          setUser(JSON.parse(storedUser));
-          setTenant(JSON.parse(storedTenant));
+        if (sessionError) throw sessionError;
+
+        if (session?.user) {
+          // Get user profile and tenant from database
+          const { data: userData, error: userError } = await supabase
+            .from("users")
+            .select("*")
+            .eq("id", session.user.id)
+            .single();
+
+          if (userError) throw userError;
+
+          const { data: tenantData, error: tenantError } = await supabase
+            .from("tenants")
+            .select("*")
+            .eq("id", userData.tenant_id)
+            .single();
+
+          if (tenantError) throw tenantError;
+
+          setUser(userData);
+          setTenant(tenantData);
         }
       } catch (err) {
         console.error("Auth initialization error:", err);
-        localStorage.removeItem("bitaxus_user");
-        localStorage.removeItem("bitaxus_tenant");
-        localStorage.removeItem("bitaxus_token");
+        // Clear invalid session
+        await supabase.auth.signOut();
       } finally {
         setIsLoading(false);
       }
     };
 
     initAuth();
+
+    // Subscribe to auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_OUT") {
+        setUser(null);
+        setTenant(null);
+      } else if (session?.user) {
+        try {
+          const { data: userData } = await supabase
+            .from("users")
+            .select("*")
+            .eq("id", session.user.id)
+            .single();
+
+          if (userData) {
+            const { data: tenantData } = await supabase
+              .from("tenants")
+              .select("*")
+              .eq("id", userData.tenant_id)
+              .single();
+
+            setUser(userData);
+            setTenant(tenantData);
+          }
+        } catch (err) {
+          console.error("Error fetching user data:", err);
+        }
+      }
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -54,44 +110,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      // TODO: Replace with real Supabase Auth
-      // const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-      // Mock login for now
-      const mockUser: User = {
-        id: "user_123",
-        tenant_id: "tenant_123",
+      // Sign in with Supabase Auth
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        name: email.split("@")[0],
-        role: "admin",
-        two_factor_enabled: false,
-        status: "active",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+        password,
+      });
 
-      const mockTenant: Tenant = {
-        id: "tenant_123",
-        slug: "bitaxus-demo",
-        name: "Bitaxus Demo",
-        nit: "123456789",
-        email: "info@bitaxus.com",
-        city: "Bogotá",
-        country: "Colombia",
-        plan: "business",
-        status: "active",
-        settings: {},
-        metadata: {},
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+      if (error) throw error;
 
-      setUser(mockUser);
-      setTenant(mockTenant);
+      if (data.user) {
+        // Fetch user profile
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", data.user.id)
+          .single();
 
-      localStorage.setItem("bitaxus_user", JSON.stringify(mockUser));
-      localStorage.setItem("bitaxus_tenant", JSON.stringify(mockTenant));
-      localStorage.setItem("bitaxus_token", "mock_token_" + Date.now());
+        if (userError) throw userError;
+
+        // Fetch tenant
+        const { data: tenantData, error: tenantError } = await supabase
+          .from("tenants")
+          .select("*")
+          .eq("id", userData.tenant_id)
+          .single();
+
+        if (tenantError) throw tenantError;
+
+        setUser(userData);
+        setTenant(tenantData);
+      }
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Login failed");
       setError(error);
@@ -105,15 +153,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
 
     try {
-      // TODO: Replace with real Supabase Auth
-      // await supabase.auth.signOut();
+      // Sign out from Supabase Auth
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
 
       setUser(null);
       setTenant(null);
-
-      localStorage.removeItem("bitaxus_user");
-      localStorage.removeItem("bitaxus_tenant");
-      localStorage.removeItem("bitaxus_token");
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Logout failed");
       setError(error);
@@ -133,45 +178,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      // TODO: Replace with real Supabase Auth + Edge Function
-      // const { data, error } = await supabase.auth.signUp({ email, password });
-      // Then call createTenant and createUser Edge Functions
-
-      // Mock registration for now
-      const mockUser: User = {
-        id: "user_" + Date.now(),
-        tenant_id: "tenant_" + Date.now(),
+      // Sign up with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
-        name,
-        role: "admin",
-        two_factor_enabled: false,
-        status: "active",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+        password,
+        options: {
+          data: {
+            name,
+            tenant_name: tenantName,
+          },
+        },
+      });
 
-      const mockTenant: Tenant = {
-        id: "tenant_" + Date.now(),
-        slug: tenantName.toLowerCase().replace(/\s+/g, "-"),
-        name: tenantName,
-        nit: "000000000",
-        email,
-        city: "Bogotá",
-        country: "Colombia",
-        plan: "free",
-        status: "active",
-        settings: {},
-        metadata: {},
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+      if (authError) throw authError;
 
-      setUser(mockUser);
-      setTenant(mockTenant);
+      if (authData.user) {
+        // Call Edge Function to create tenant and user records
+        const { userData, tenantData } = await callEdgeFunction<{
+          userData: User;
+          tenantData: Tenant;
+        }>("auth/register", {
+          user_id: authData.user.id,
+          email,
+          name,
+          tenant_name: tenantName,
+        });
 
-      localStorage.setItem("bitaxus_user", JSON.stringify(mockUser));
-      localStorage.setItem("bitaxus_tenant", JSON.stringify(mockTenant));
-      localStorage.setItem("bitaxus_token", "mock_token_" + Date.now());
+        setUser(userData);
+        setTenant(tenantData);
+      }
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Registration failed");
       setError(error);
