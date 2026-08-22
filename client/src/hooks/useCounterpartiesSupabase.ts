@@ -99,6 +99,7 @@ export function useCreateCounterpartySupabase(tenantId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["counterparties", tenantId],
+        exact: false,
       });
     },
     onError: (error) => {

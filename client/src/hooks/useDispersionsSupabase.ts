@@ -110,6 +110,7 @@ export function useCreateDispersionSupabase(tenantId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["dispersions", tenantId],
+        exact: false,
       });
     },
     onError: (error) => {

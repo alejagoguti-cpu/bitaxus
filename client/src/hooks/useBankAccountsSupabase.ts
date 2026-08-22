@@ -87,6 +87,7 @@ export function useCreateBankAccountSupabase(tenantId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["bank_accounts", tenantId],
+        exact: false,
       });
     },
     onError: (error) => {

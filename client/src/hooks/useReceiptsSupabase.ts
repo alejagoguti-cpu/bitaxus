@@ -131,9 +131,9 @@ export function useCreateReceiptSupabase(tenantId: string) {
       });
     },
     onSuccess: () => {
-      // Invalidate receipts query to refetch
       queryClient.invalidateQueries({
         queryKey: ["receipts", tenantId],
+        exact: false,
       });
     },
     onError: (error) => {

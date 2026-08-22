@@ -111,6 +111,7 @@ export function useCreatePaymentSupabase(tenantId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["payments", tenantId],
+        exact: false,
       });
     },
     onError: (error) => {
