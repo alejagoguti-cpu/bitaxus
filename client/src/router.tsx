@@ -14,6 +14,9 @@ import { DispersionsPage } from "@/pages/DispersionsPage";
 import { CounterpartiesPage } from "@/pages/CounterpartiesPage";
 import { ReportsPage } from "@/pages/ReportsPage";
 import { SettingsPage } from "@/pages/SettingsPage";
+import Recaudos from "@/pages/Recaudos";
+import Global from "@/pages/Global";
+import { useLocation } from "wouter";
 
 // Protected route wrapper
 interface ProtectedRouteProps {
@@ -52,6 +55,65 @@ export function ProtectedRoute({
   );
 }
 
+function LegacyRecaudosPage() {
+  const [, navigate] = useLocation();
+  return (
+    <Recaudos
+      onNavigate={section =>
+        section === "Pagos y dispersiones"
+          ? navigate("/payments")
+          : navigate("/")
+      }
+    />
+  );
+}
+
+function LegacyGlobalPage() {
+  const [, navigate] = useLocation();
+  return (
+    <Global
+      onNavigate={section =>
+        section === "Pagos y dispersiones"
+          ? navigate("/payments")
+          : navigate("/")
+      }
+    />
+  );
+}
+
+function ReconciliationPage() {
+  const [, navigate] = useLocation();
+  return (
+    <section className="min-h-[60vh] rounded-2xl border border-black/[0.06] bg-white p-6 shadow-sm sm:p-8">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d95f61]">
+        Control financiero
+      </p>
+      <h1 className="mt-3 text-3xl font-semibold tracking-[-0.035em] text-[#141719]">
+        Conciliación
+      </h1>
+      <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
+        Revisa y cruza tus movimientos registrados antes de marcar una operación
+        como conciliada.
+      </p>
+      <div className="mt-10 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-8 text-center">
+        <p className="text-sm font-medium text-slate-700">
+          No hay movimientos pendientes de conciliación.
+        </p>
+        <p className="mt-1 text-xs text-slate-500">
+          Cuando existan recaudos o pagos, aparecerán aquí para su revisión.
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={() => navigate("/")}
+        className="mt-6 rounded-xl bg-[#e06465] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#cc595b] focus:outline-none focus:ring-2 focus:ring-[#e06465]"
+      >
+        Volver al dashboard
+      </button>
+    </section>
+  );
+}
+
 // Routes configuration
 export const routes = [
   // Public routes
@@ -78,7 +140,22 @@ export const routes = [
   {
     path: "/receipts",
     title: "Recaudos",
+    component: LegacyRecaudosPage,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR],
+  },
+
+  {
+    path: "/global",
+    title: "Bitaxus Global",
+    component: LegacyGlobalPage,
+    requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR, UserRole.VIEWER],
+  },
+
+  {
+    path: "/reconciliation",
+    title: "Conciliación",
+    component: ReconciliationPage,
+    requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR, UserRole.VIEWER],
   },
 
   {
@@ -166,7 +243,7 @@ export const routes = [
 function RouterContent() {
   return (
     <RootRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-      {routes.map((route) => (
+      {routes.map(route => (
         <Route key={route.path} path={route.path}>
           {route.component ? (
             route.isPublic ? (
