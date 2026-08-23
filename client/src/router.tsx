@@ -3,7 +3,7 @@
  * App routes with role-based access control
  */
 
-import { Router as RootRouter, Route, Redirect } from "wouter";
+import { Router as RootRouter, Route, Redirect, Switch } from "wouter";
 import { UserRole } from "@shared/types";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/layouts/AppLayout";
@@ -243,40 +243,42 @@ export const routes = [
 function RouterContent() {
   return (
     <RootRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-      {routes.map(route => (
-        <Route key={route.path} path={route.path}>
-          {route.component ? (
-            route.isPublic ? (
-              <route.component />
+      <Switch>
+        {routes.map(route => (
+          <Route key={route.path} path={route.path}>
+            {route.component ? (
+              route.isPublic ? (
+                <route.component />
+              ) : (
+                <ProtectedRoute
+                  component={route.component}
+                  requiredRoles={route.requiredRoles}
+                />
+              )
+            ) : route.path === "/unauthorized" ? (
+              <div className="min-h-screen flex items-center justify-center bg-red-50">
+                <div className="text-center">
+                  <h1 className="text-4xl font-bold text-red-900 mb-2">403</h1>
+                  <p className="text-red-700 mb-4">Acceso denegado</p>
+                  <a href="/" className="text-blue-600 hover:text-blue-700">
+                    Volver al inicio
+                  </a>
+                </div>
+              </div>
             ) : (
-              <ProtectedRoute
-                component={route.component}
-                requiredRoles={route.requiredRoles}
-              />
-            )
-          ) : route.path === "/unauthorized" ? (
-            <div className="min-h-screen flex items-center justify-center bg-red-50">
-              <div className="text-center">
-                <h1 className="text-4xl font-bold text-red-900 mb-2">403</h1>
-                <p className="text-red-700 mb-4">Acceso denegado</p>
-                <a href="/" className="text-blue-600 hover:text-blue-700">
-                  Volver al inicio
-                </a>
+              <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                  <h1 className="text-4xl font-bold text-gray-900 mb-2">404</h1>
+                  <p className="text-gray-600 mb-4">Página no encontrada</p>
+                  <a href="/" className="text-blue-600 hover:text-blue-700">
+                    Volver al inicio
+                  </a>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-              <div className="text-center">
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">404</h1>
-                <p className="text-gray-600 mb-4">Página no encontrada</p>
-                <a href="/" className="text-blue-600 hover:text-blue-700">
-                  Volver al inicio
-                </a>
-              </div>
-            </div>
-          )}
-        </Route>
-      ))}
+            )}
+          </Route>
+        ))}
+      </Switch>
     </RootRouter>
   );
 }
