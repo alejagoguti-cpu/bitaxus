@@ -4,12 +4,14 @@
  */
 
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "wouter";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showRegister, setShowRegister] = useState(false);
@@ -19,6 +21,7 @@ export function LoginPage() {
     name: "",
     tenantName: "",
   });
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
 
   const { login, register } = useAuth();
   const [, navigate] = useLocation();
@@ -32,9 +35,7 @@ export function LoginPage() {
       await login(email, password);
       navigate("/");
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Error al iniciar sesión"
-      );
+      setError(err instanceof Error ? err.message : "Error al iniciar sesión");
     } finally {
       setIsLoading(false);
     }
@@ -54,9 +55,7 @@ export function LoginPage() {
       );
       navigate("/");
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Error al registrarse"
-      );
+      setError(err instanceof Error ? err.message : "Error al registrarse");
     } finally {
       setIsLoading(false);
     }
@@ -97,8 +96,8 @@ export function LoginPage() {
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="tu@email.com"
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="admin@bitaxus.test"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
@@ -109,14 +108,38 @@ export function LoginPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Contraseña
                   </label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(visible => !visible)}
+                      className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-gray-500 transition-colors hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                      aria-label={
+                        showPassword
+                          ? "Ocultar contraseña"
+                          : "Mostrar contraseña"
+                      }
+                      aria-pressed={showPassword}
+                      title={
+                        showPassword
+                          ? "Ocultar contraseña"
+                          : "Mostrar contraseña"
+                      }
+                    >
+                      {showPassword ? (
+                        <EyeOff size={18} aria-hidden="true" />
+                      ) : (
+                        <Eye size={18} aria-hidden="true" />
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Submit */}
@@ -181,8 +204,11 @@ export function LoginPage() {
                   <input
                     type="email"
                     value={registerData.email}
-                    onChange={(e) =>
-                      setRegisterData({ ...registerData, email: e.target.value })
+                    onChange={e =>
+                      setRegisterData({
+                        ...registerData,
+                        email: e.target.value,
+                      })
                     }
                     placeholder="tu@email.com"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -198,7 +224,7 @@ export function LoginPage() {
                   <input
                     type="text"
                     value={registerData.name}
-                    onChange={(e) =>
+                    onChange={e =>
                       setRegisterData({ ...registerData, name: e.target.value })
                     }
                     placeholder="Juan Pérez"
@@ -215,7 +241,7 @@ export function LoginPage() {
                   <input
                     type="text"
                     value={registerData.tenantName}
-                    onChange={(e) =>
+                    onChange={e =>
                       setRegisterData({
                         ...registerData,
                         tenantName: e.target.value,
@@ -232,19 +258,45 @@ export function LoginPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Contraseña
                   </label>
-                  <input
-                    type="password"
-                    value={registerData.password}
-                    onChange={(e) =>
-                      setRegisterData({
-                        ...registerData,
-                        password: e.target.value,
-                      })
-                    }
-                    placeholder="••••••••"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type={showRegisterPassword ? "text" : "password"}
+                      value={registerData.password}
+                      onChange={e =>
+                        setRegisterData({
+                          ...registerData,
+                          password: e.target.value,
+                        })
+                      }
+                      placeholder="••••••••"
+                      className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowRegisterPassword(visible => !visible)
+                      }
+                      className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-gray-500 transition-colors hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                      aria-label={
+                        showRegisterPassword
+                          ? "Ocultar contraseña"
+                          : "Mostrar contraseña"
+                      }
+                      aria-pressed={showRegisterPassword}
+                      title={
+                        showRegisterPassword
+                          ? "Ocultar contraseña"
+                          : "Mostrar contraseña"
+                      }
+                    >
+                      {showRegisterPassword ? (
+                        <EyeOff size={18} aria-hidden="true" />
+                      ) : (
+                        <Eye size={18} aria-hidden="true" />
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Submit */}
