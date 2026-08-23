@@ -42,7 +42,7 @@ export function SettingsPage() {
 
         <div className="space-y-6">
           <div className="flex items-start gap-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#ff8a86] to-[#d95f61] rounded-full flex items-center justify-center text-white text-2xl font-bold">
               {user?.name.charAt(0).toUpperCase()}
             </div>
 
@@ -63,7 +63,7 @@ export function SettingsPage() {
                 <div>
                   <p className="text-xs font-medium text-gray-600">Rol</p>
                   <div className="mt-1">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#fde8e7] text-[#a64246]">
                       {user?.role === "admin"
                         ? "Administrador"
                         : user?.role === "operator"
@@ -112,7 +112,7 @@ export function SettingsPage() {
           <div>
             <p className="text-xs font-medium text-gray-600">Plan</p>
             <div className="mt-1">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#f3f3f1] text-[#141719]">
                 {tenant?.plan === "free"
                   ? "Gratuito"
                   : tenant?.plan === "business"
@@ -162,7 +162,7 @@ export function SettingsPage() {
                   : "Desactivada - Recomendado"}
               </p>
             </div>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium">
+            <button className="px-4 py-2 bg-[#d95f61] text-white rounded-md hover:bg-[#b84b50] text-sm font-medium">
               {user?.two_factor_enabled ? "Desactivar" : "Activar"}
             </button>
           </div>
@@ -170,21 +170,21 @@ export function SettingsPage() {
       </div>
 
       {/* Danger Zone */}
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-        <h2 className="text-lg font-semibold mb-4 text-red-900">Zona de Peligro</h2>
+      <div className="bg-[#fff3f2] border border-[#efb7b7] rounded-lg p-6">
+        <h2 className="text-lg font-semibold mb-4 text-[#8f3c40]">Zona de Peligro</h2>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-red-900">Cerrar Sesión</p>
-              <p className="text-sm text-red-800">
+              <p className="font-medium text-[#8f3c40]">Cerrar Sesión</p>
+              <p className="text-sm text-[#a64246]">
                 Cierra tu sesión en todos los dispositivos
               </p>
             </div>
             <button
               onClick={handleLogout}
               disabled={isLoading}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+              className="px-4 py-2 bg-[#b84b50] text-white rounded-md hover:bg-[#8f3c40] disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
             >
               {isLoading ? "Cerrando..." : "Cerrar Sesión"}
             </button>
