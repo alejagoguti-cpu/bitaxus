@@ -57,7 +57,7 @@ export default function HorizontalScrollHint({
         {children}
       </div>
       {canScroll && (
-        <div className={`scroll-hint-overlay ${atEnd ? "is-end" : ""}`} aria-live="polite">
+        <div className={`scroll-hint-bar ${atEnd ? "is-end" : ""}`} aria-live="polite">
           <button type="button" className="scroll-hint-arrow" onClick={() => move("left")} disabled={atStart} aria-label="Desplazar tabla a la izquierda">
             <ChevronLeft size={14} />
           </button>
