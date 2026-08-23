@@ -41,7 +41,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               ☰
             </button>
             <img
-              src={`${import.meta.env.BASE_URL}assets/bitaxus-logo-black.png`}
+              src={`${import.meta.env.BASE_URL}bitaxus-logo-black.png`}
               alt="Bitaxus"
               className="h-7 w-auto object-contain"
             />

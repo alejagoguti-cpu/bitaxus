@@ -10,7 +10,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "wouter";
 
-const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name}`;
+const asset = (name: string) => `${import.meta.env.BASE_URL}${name}`;
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
