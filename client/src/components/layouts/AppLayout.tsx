@@ -1,116 +1,234 @@
-/**
- * AppLayout Component
- * Main application layout with header and sidebar
- */
-
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Bell,
+  Building2,
+  ChartNoAxesCombined,
+  ChevronRight,
+  CircleHelp,
+  Grid2X2,
+  Home,
+  Landmark,
+  Menu,
+  MessageCircle,
+  Receipt,
+  Settings,
+  Shuffle,
+  UsersRound,
+  X,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "wouter";
-import { routes } from "@/router";
 
 interface AppLayoutProps {
   children: React.ReactNode;
 }
 
+type NavigationItem = {
+  label: string;
+  path: string;
+  icon: typeof Home;
+};
+
+const navigation: NavigationItem[] = [
+  { label: "Inicio", path: "/", icon: Home },
+  { label: "Recaudos", path: "/receipts", icon: Receipt },
+  { label: "Pagos y dispersiones", path: "/payments", icon: Shuffle },
+  { label: "Contrapartes", path: "/counterparties", icon: UsersRound },
+  { label: "Bitaxus Global", path: "/global", icon: Landmark },
+  { label: "Reportes", path: "/reports", icon: Grid2X2 },
+  { label: "Conciliación", path: "/reconciliation", icon: ChartNoAxesCombined },
+  { label: "Configuración", path: "/settings", icon: Settings },
+];
+
+const basePath = () => import.meta.env.BASE_URL.replace(/\/$/, "");
+const publicPath = (path: string) =>
+  `${basePath()}${path === "/" ? "/" : path}`;
+
 export function AppLayout({ children }: AppLayoutProps) {
   const { user, tenant, logout } = useAuth();
-  const [, navigate] = useLocation();
+  const [location, navigate] = useLocation();
   const [showMenu, setShowMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const activePath = useMemo(() => {
+    const normalized = location.replace(basePath(), "") || "/";
+    return normalized === "/"
+      ? "/"
+      : `/${normalized.replace(/^\//, "").split("/")[0]}`;
+  }, [location]);
+
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
+  const goTo = (path: string) => {
+    setIsMobileMenuOpen(false);
+    setShowMenu(false);
+    navigate(path);
+  };
 
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
 
-  const protectedRoutes = routes.filter(
-    r => !r.isPublic && r.component && r.path !== "/:path*"
-  );
-
   return (
-    <div className="min-h-screen bg-[#f5f5f3] text-[#141719]">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 hover:bg-gray-100 rounded-md"
-            >
-              ☰
-            </button>
-            <img
-              src={`${import.meta.env.BASE_URL}bitaxus-logo-black.png`}
-              alt="Bitaxus"
-              className="h-7 w-auto object-contain"
-            />
-          </div>
-
-          {/* Right Actions */}
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex flex-col items-end">
-              <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-              <p className="text-xs text-gray-500">{tenant?.name}</p>
-            </div>
-
-            {/* User Menu */}
-            <div className="relative">
-              <button
-                onClick={() => setShowMenu(!showMenu)}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e06465] font-semibold text-white transition-shadow hover:shadow-md"
-              >
-                {user?.name.charAt(0).toUpperCase()}
-              </button>
-
-              {showMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200">
-                  <a
-                    href="/settings"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg"
-                    onClick={() => setShowMenu(false)}
-                  >
-                    ⚙️ Configuración
-                  </a>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-b-lg"
-                  >
-                    🚪 Cerrar Sesión
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+    <div className="min-h-screen overflow-x-hidden bg-[#f5f5f3] text-[#141719]">
+      <header className="sticky top-0 z-40 border-b border-black/[0.06] bg-white/95 backdrop-blur lg:hidden">
+        <div className="flex h-16 items-center justify-between px-4">
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#e06465]"
+            aria-label="Abrir menú principal"
+          >
+            <Menu size={22} />
+          </button>
+          <img
+            src={`${basePath()}/bitaxus-logo-black.png`}
+            alt="Bitaxus"
+            className="h-6 w-auto object-contain"
+          />
+          <button
+            type="button"
+            onClick={() => setShowMenu(visible => !visible)}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e06465] text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-[#e06465]"
+            aria-label="Abrir menú de usuario"
+          >
+            {user?.name?.charAt(0).toUpperCase() || "A"}
+          </button>
         </div>
       </header>
 
-      <div className="flex">
-        {/* Sidebar */}
-        <aside
-          className={`fixed lg:relative w-64 bg-gray-900 text-gray-100 transition-transform duration-300 z-30 ${
-            isMobileMenuOpen
-              ? "translate-x-0"
-              : "-translate-x-full lg:translate-x-0"
-          } min-h-screen`}
-        >
-          <nav className="p-6 space-y-2">
-            {protectedRoutes.map(route => (
-              <a
-                key={route.path}
-                href={route.path}
-                className="block rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {route.title}
-              </a>
-            ))}
-          </nav>
-        </aside>
+      {isMobileMenuOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-label="Cerrar menú principal"
+        />
+      )}
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-auto bg-[#f5f5f3]">
-          <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">{children}</div>
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex w-[min(82vw,480px)] flex-col border-r border-white/[0.08] bg-[#050606] text-white shadow-2xl transition-transform duration-200 lg:sticky lg:top-0 lg:z-30 lg:h-screen lg:w-[280px] lg:translate-x-0 lg:shadow-none ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        <div className="flex h-24 shrink-0 items-center justify-between border-b border-white/[0.08] px-8 lg:h-24 lg:px-7">
+          <button
+            type="button"
+            onClick={() => goTo("/")}
+            className="focus:outline-none focus:ring-2 focus:ring-[#e06465]"
+            aria-label="Ir al inicio"
+          >
+            <img
+              src={`${basePath()}/bitaxus-logo.png`}
+              alt="Bitaxus"
+              className="h-8 w-auto object-contain"
+            />
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-white/45 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#e06465] lg:hidden"
+            aria-label="Cerrar menú principal"
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        <nav
+          className="flex-1 space-y-2 overflow-y-auto px-5 py-8 lg:px-4"
+          aria-label="Navegación principal"
+        >
+          {navigation.map(({ label, path, icon: Icon }) => {
+            const isActive =
+              activePath === path ||
+              (path !== "/" && activePath.startsWith(path));
+            return (
+              <button
+                type="button"
+                key={path}
+                onClick={() => goTo(path)}
+                className={`flex min-h-14 w-full items-center gap-5 rounded-2xl px-6 text-left text-base transition-colors focus:outline-none focus:ring-2 focus:ring-[#e06465] ${isActive ? "bg-gradient-to-r from-[#e06465]/25 to-[#e06465]/5 text-[#ff7a7b] shadow-[inset_4px_0_0_#e06465]" : "text-white/70 hover:bg-white/[0.07] hover:text-white"}`}
+                aria-current={isActive ? "page" : undefined}
+              >
+                <Icon size={23} strokeWidth={1.8} />
+                <span>{label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className="shrink-0 p-5 lg:p-4">
+          <button
+            type="button"
+            onClick={() => void 0}
+            className="w-full rounded-2xl border border-white/[0.12] bg-[#151719] p-5 text-left transition hover:border-[#e06465]/50 focus:outline-none focus:ring-2 focus:ring-[#e06465]"
+          >
+            <div className="flex items-center gap-3 text-sm font-semibold">
+              <MessageCircle size={18} className="text-[#ff7a7b]" /> Agente
+              Bitaxus
+            </div>
+            <p className="mt-3 text-xs leading-5 text-white/50">
+              ¿Necesitas ayuda con una operación?
+            </p>
+            <span className="mt-4 inline-flex items-center gap-2 text-base font-semibold text-[#ff7a7b]">
+              Abrir chat <ChevronRight size={16} />
+            </span>
+          </button>
+        </div>
+      </aside>
+
+      <div className="lg:ml-[280px]">
+        <header className="sticky top-0 z-30 hidden border-b border-black/[0.06] bg-white/95 backdrop-blur lg:block">
+          <div className="flex h-16 items-center justify-between px-8">
+            <div className="flex items-center gap-3 text-sm text-slate-500">
+              <Building2 size={16} /> {tenant?.name || "Bitaxus"}
+            </div>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#e06465]"
+                aria-label="Notificaciones"
+              >
+                <Bell size={18} />
+                <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-[#e06465]" />
+              </button>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowMenu(visible => !visible)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e06465] font-semibold text-white focus:outline-none focus:ring-2 focus:ring-[#e06465]"
+                  aria-label="Abrir menú de usuario"
+                >
+                  {user?.name?.charAt(0).toUpperCase() || "A"}
+                </button>
+                {showMenu && (
+                  <div className="absolute right-0 top-12 z-50 w-48 rounded-xl border border-black/[0.08] bg-white p-1.5 shadow-xl">
+                    <button
+                      type="button"
+                      onClick={() => goTo("/settings")}
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                    >
+                      <Settings size={15} /> Configuración
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-[#b64b4d] hover:bg-[#fff3f2]"
+                    >
+                      <CircleHelp size={15} /> Cerrar sesión
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </header>
+        <main className="min-h-[calc(100vh-4rem)] bg-[#f5f5f3]">
+          <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">{children}</div>
         </main>
       </div>
     </div>
