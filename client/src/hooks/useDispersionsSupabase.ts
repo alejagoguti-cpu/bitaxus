@@ -5,7 +5,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase, callEdgeFunction } from "@/lib/supabase";
-import { Dispersion } from "@/shared/types";
+import { Dispersion } from "@shared/types";
 
 interface UseDispersionsOptions {
   tenantId: string;

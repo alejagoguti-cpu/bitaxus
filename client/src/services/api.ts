@@ -14,7 +14,7 @@ import {
   Receipt,
   Payment,
   Dispersion,
-} from "@/shared/types";
+} from "@shared/types";
 
 interface ApiConfig {
   supabaseUrl: string;

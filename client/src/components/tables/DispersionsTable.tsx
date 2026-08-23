@@ -4,7 +4,7 @@
  */
 
 import { useState } from "react";
-import { Dispersion, DispersionStatus } from "@/shared/types";
+import { Dispersion, DispersionStatus } from "@shared/types";
 import { formatCurrency, formatDate } from "@/lib/formatting";
 
 interface DispersionsTableProps {

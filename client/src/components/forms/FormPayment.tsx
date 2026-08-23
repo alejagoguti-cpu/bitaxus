@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { createPaymentSchema, CreatePaymentInput } from "@/schemas/forms";
-import { BankAccount, Counterparty } from "@/shared/types";
+import { BankAccount, Counterparty } from "@shared/types";
 import { usePaymentOperations } from "@/hooks";
 
 interface FormPaymentProps {

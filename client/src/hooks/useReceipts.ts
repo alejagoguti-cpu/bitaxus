@@ -10,7 +10,7 @@ import {
   Receipt,
   CreateReceiptRequest,
   ReceiptStatus,
-} from "@/shared/types";
+} from "@shared/types";
 
 interface UseReceiptsOptions {
   tenantId: string;

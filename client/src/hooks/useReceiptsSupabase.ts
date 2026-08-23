@@ -8,7 +8,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase, callEdgeFunction } from "@/lib/supabase";
-import { Receipt, ReceiptStatus } from "@/shared/types";
+import { Receipt, ReceiptStatus } from "@shared/types";
 
 interface UseReceiptsOptions {
   tenantId: string;

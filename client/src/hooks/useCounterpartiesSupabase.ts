@@ -5,7 +5,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase, callEdgeFunction } from "@/lib/supabase";
-import { Counterparty } from "@/shared/types";
+import { Counterparty } from "@shared/types";
 
 interface UseCounterpartiesOptions {
   tenantId: string;

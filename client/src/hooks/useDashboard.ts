@@ -5,7 +5,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getAPI } from "@/services/api";
-import { DashboardMetrics } from "@/shared/types";
+import { DashboardMetrics } from "@shared/types";
 
 interface UseDashboardOptions {
   tenantId: string;

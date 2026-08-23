@@ -3,8 +3,8 @@
  * App routes with role-based access control
  */
 
-import { RootRouter, Route, Redirect } from "wouter";
-import { UserRole } from "@/shared/types";
+import { Router as RootRouter, Route, Redirect } from "wouter";
+import { UserRole } from "@shared/types";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/layouts/AppLayout";
 import { LoginPage } from "@/pages/LoginPage";

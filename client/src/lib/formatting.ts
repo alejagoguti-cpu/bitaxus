@@ -8,7 +8,7 @@ import {
   PaymentStatus,
   DispersionStatus,
   UserRole,
-} from "@/shared/types";
+} from "@shared/types";
 
 /**
  * Format currency value

@@ -6,7 +6,7 @@
 import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAPI } from "@/services/api";
-import { Payment, CreatePaymentRequest, PaymentStatus } from "@/shared/types";
+import { Payment, CreatePaymentRequest, PaymentStatus } from "@shared/types";
 
 interface UsePaymentsOptions {
   tenantId: string;

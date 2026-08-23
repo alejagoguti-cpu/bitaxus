@@ -11,7 +11,7 @@ import {
   getReceiptStatusColor,
   getReceiptStatusLabel,
 } from "@/lib/formatting";
-import { Receipt, ReceiptStatus } from "@/shared/types";
+import { Receipt, ReceiptStatus } from "@shared/types";
 
 interface ReceiptsTableProps {
   tenantId: string;

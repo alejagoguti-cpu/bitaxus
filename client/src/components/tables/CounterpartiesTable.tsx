@@ -4,7 +4,7 @@
  */
 
 import { useState } from "react";
-import { Counterparty } from "@/shared/types";
+import { Counterparty } from "@shared/types";
 
 interface CounterpartiesTableProps {
   tenantId: string;

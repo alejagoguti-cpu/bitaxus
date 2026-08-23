@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { createDispersionSchema, CreateDispersionInput, DispersionItemInput } from "@/schemas/forms";
-import { BankAccount, Counterparty } from "@/shared/types";
+import { BankAccount, Counterparty } from "@shared/types";
 
 interface FormDispersionProps {
   tenantId: string;

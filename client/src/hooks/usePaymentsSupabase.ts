@@ -5,7 +5,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase, callEdgeFunction } from "@/lib/supabase";
-import { Payment, PaymentStatus } from "@/shared/types";
+import { Payment, PaymentStatus } from "@shared/types";
 
 interface UsePaymentsOptions {
   tenantId: string;

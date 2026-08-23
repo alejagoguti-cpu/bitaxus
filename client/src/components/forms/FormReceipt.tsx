@@ -11,7 +11,7 @@ import {
   type CreateReceiptInput,
 } from "@/schemas/forms";
 import { useReceiptOperations } from "@/hooks";
-import { Counterparty, ReceiptStatus } from "@/shared/types";
+import { Counterparty, ReceiptStatus } from "@shared/types";
 
 interface FormReceiptProps {
   tenantId: string;

@@ -5,7 +5,7 @@
 
 import { useState } from "react";
 import { usePayments } from "@/hooks";
-import { Payment, PaymentStatus } from "@/shared/types";
+import { Payment, PaymentStatus } from "@shared/types";
 import { formatCurrency, getPaymentStatusColor, getPaymentStatusLabel, formatDate } from "@/lib/formatting";
 
 interface PaymentsTableProps {

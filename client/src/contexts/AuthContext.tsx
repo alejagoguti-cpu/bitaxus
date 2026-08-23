@@ -4,7 +4,7 @@
  */
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { User, Tenant } from "@/shared/types";
+import { User, Tenant } from "@shared/types";
 import { supabase, callEdgeFunction } from "@/lib/supabase";
 
 interface AuthContextType {

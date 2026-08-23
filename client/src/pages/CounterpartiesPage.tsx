@@ -4,7 +4,7 @@
  */
 
 import { useState } from "react";
-import { Counterparty } from "@/shared/types";
+import { Counterparty } from "@shared/types";
 import { CounterpartiesTable } from "@/components/tables/CounterpartiesTable";
 import { FormCounterparty } from "@/components/forms/FormCounterparty";
 import { ConfirmDialog } from "@/components/modals/ConfirmDialog";

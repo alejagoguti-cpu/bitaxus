@@ -5,7 +5,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { BankAccount } from "@/shared/types";
+import { BankAccount } from "@shared/types";
 
 interface UseBankAccountsOptions {
   tenantId: string;

@@ -9,7 +9,7 @@ import {
   PaymentStatus,
   PaymentRecurrence,
   CounterpartyRelation,
-} from "@/shared/types";
+} from "@shared/types";
 
 // ============================================================================
 // COUNTERPARTIES

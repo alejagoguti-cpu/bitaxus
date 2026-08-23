@@ -8,7 +8,7 @@ import { useDashboardWidgets, usePaymentOperations, useReceiptOperations } from 
 import { MetricCard, DashboardGrid } from "@/components/dashboard/MetricCard";
 import { ReceiptsTable } from "@/components/tables/ReceiptsTable";
 import { formatMonthYear } from "@/lib/formatting";
-import { Receipt, Payment } from "@/shared/types";
+import { Receipt, Payment } from "@shared/types";
 
 interface DashboardPageProps {
   tenantId: string;

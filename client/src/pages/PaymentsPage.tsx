@@ -4,7 +4,7 @@
  */
 
 import { useState } from "react";
-import { Payment } from "@/shared/types";
+import { Payment } from "@shared/types";
 import { PaymentsTable } from "@/components/tables/PaymentsTable";
 import { FormPayment } from "@/components/forms/FormPayment";
 import { ConfirmDialog } from "@/components/modals/ConfirmDialog";

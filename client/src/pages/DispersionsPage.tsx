@@ -4,7 +4,7 @@
  */
 
 import { useState } from "react";
-import { Dispersion } from "@/shared/types";
+import { Dispersion } from "@shared/types";
 import { DispersionsTable } from "@/components/tables/DispersionsTable";
 import { FormDispersion } from "@/components/forms/FormDispersion";
 import { ConfirmDialog } from "@/components/modals/ConfirmDialog";

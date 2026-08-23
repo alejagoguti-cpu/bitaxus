@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { createBankAccountSchema, CreateBankAccountInput } from "@/schemas/forms";
-import { Counterparty } from "@/shared/types";
+import { Counterparty } from "@shared/types";
 
 interface FormBankAccountProps {
   tenantId: string;
