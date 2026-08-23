@@ -140,6 +140,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         <nav
           className="mobile-sidebar-nav shrink-0 space-y-1 overflow-hidden px-4 py-4 lg:flex-none lg:space-y-1 lg:overflow-hidden lg:px-4 lg:py-5"
+          style={{ overflowY: "hidden", overflowX: "hidden" }}
           aria-label="Navegación principal"
         >
           {navigation.map(({ label, path, icon: Icon }) => {
