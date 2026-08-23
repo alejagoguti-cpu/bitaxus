@@ -35,7 +35,7 @@ export function ProtectedRoute({
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-b-[#e06465]"></div>
       </div>
     );
   }
@@ -256,21 +256,21 @@ function RouterContent() {
                 />
               )
             ) : route.path === "/unauthorized" ? (
-              <div className="min-h-screen flex items-center justify-center bg-red-50">
+              <div className="min-h-screen flex items-center justify-center bg-[#faf8f7]">
                 <div className="text-center">
-                  <h1 className="text-4xl font-bold text-red-900 mb-2">403</h1>
-                  <p className="text-red-700 mb-4">Acceso denegado</p>
-                  <a href="/" className="text-blue-600 hover:text-blue-700">
+                  <h1 className="text-4xl font-bold text-[#141719] mb-2">403</h1>
+                  <p className="text-[#d95f61] mb-4">Acceso denegado</p>
+                  <a href="/" className="text-[#d95f61] hover:text-[#b94f51]">
                     Volver al inicio
                   </a>
                 </div>
               </div>
             ) : (
-              <div className="min-h-screen flex items-center justify-center bg-gray-50">
+              <div className="min-h-screen flex items-center justify-center bg-[#faf8f7]">
                 <div className="text-center">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2">404</h1>
-                  <p className="text-gray-600 mb-4">Página no encontrada</p>
-                  <a href="/" className="text-blue-600 hover:text-blue-700">
+                  <h1 className="text-4xl font-bold text-[#141719] mb-2">404</h1>
+                  <p className="text-[#66706f] mb-4">Página no encontrada</p>
+                  <a href="/" className="text-[#d95f61] hover:text-[#b94f51]">
                     Volver al inicio
                   </a>
                 </div>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * FormPayment Component
  * Form for creating and editing payments

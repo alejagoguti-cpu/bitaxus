@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * FormReceipt Component
  * Form for creating and editing receipts

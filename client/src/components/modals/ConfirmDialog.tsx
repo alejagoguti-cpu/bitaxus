@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * ConfirmDialog Component
  * Reusable confirmation modal

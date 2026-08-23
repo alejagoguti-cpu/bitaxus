@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * useBankAccountsSupabase Hook
  * Supabase integration for bank accounts

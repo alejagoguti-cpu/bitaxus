@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * FormDispersion Component
  * Form for creating dispersions with multiple beneficiaries

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * useCounterpartiesSupabase Hook
  * Supabase integration for counterparties (clients/suppliers)

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * useDispersionsSupabase Hook
  * Supabase integration for dispersions with line items

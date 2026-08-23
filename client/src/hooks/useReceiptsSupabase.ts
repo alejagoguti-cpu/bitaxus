@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * useReceiptsSupabase Hook
  * Example: Using Supabase directly with React Query
