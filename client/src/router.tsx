@@ -165,7 +165,7 @@ export const routes = [
  */
 function RouterContent() {
   return (
-    <RootRouter>
+    <RootRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
       {routes.map((route) => (
         <Route key={route.path} path={route.path}>
           {route.component ? (
