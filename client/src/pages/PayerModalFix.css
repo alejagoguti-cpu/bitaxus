@@ -1,0 +1,4 @@
+.payer-modal-layer { z-index: 180 !important; }
+.payer-modal-layer .payer-modal { position: relative; z-index: 181; }
+.receipt-form .new-payer-link { position: relative; z-index: 3; cursor: pointer; }
+.receipt-form .new-payer-link:focus-visible { outline: 2px solid #d95f61; outline-offset: 2px; }
