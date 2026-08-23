@@ -162,22 +162,21 @@ export function AppLayout({ children }: AppLayoutProps) {
         </nav>
 
         <div className="shrink-0 p-5 lg:p-4">
-          <button
-            type="button"
-            onClick={() => void 0}
-            className="w-full rounded-2xl border border-white/[0.12] bg-[#151719] p-5 text-left transition hover:border-[#e06465]/50 focus:outline-none focus:ring-2 focus:ring-[#e06465]"
+          <div
+            className="w-full rounded-2xl border border-white/[0.12] bg-[#151719] p-5 text-left"
+            role="note"
           >
             <div className="flex items-center gap-3 text-sm font-semibold">
               <MessageCircle size={18} className="text-[#ff7a7b]" /> Agente
               Bitaxus
             </div>
             <p className="mt-3 text-xs leading-5 text-white/50">
-              ¿Necesitas ayuda con una operación?
+              El centro de ayuda estará disponible cuando se conecte el canal de soporte.
             </p>
-            <span className="mt-4 inline-flex items-center gap-2 text-base font-semibold text-[#ff7a7b]">
-              Abrir chat <ChevronRight size={16} />
+            <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/45">
+              Próximamente
             </span>
-          </button>
+          </div>
         </div>
       </aside>
 
