@@ -1,203 +1,92 @@
-// @ts-nocheck
-/**
- * useCounterpartiesSupabase Hook
- * Supabase integration for counterparties (clients/suppliers)
- */
+import { useMutation, useQuery, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase, callEdgeFunction } from "@/lib/supabase";
-import { Counterparty } from "@shared/types";
-
-interface UseCounterpartiesOptions {
-  tenantId: string;
-  type?: "client" | "supplier";
-  search?: string;
-  page?: number;
-  limit?: number;
+export interface PublicCounterparty {
+  id: string;
+  name: string;
+  id_type: string;
+  identification_number: string;
+  relation: "Cliente" | "Proveedor";
+  phone: string | null;
+  email: string | null;
+  bank: string | null;
+  account_type: string | null;
+  account_number: string | null;
+  status: "Activa" | "Inactiva";
+  created_at: string;
+  updated_at: string;
 }
 
-export function useCounterpartiesSupabase(options: UseCounterpartiesOptions) {
-  return useQuery({
-    queryKey: [
-      "counterparties",
-      options.tenantId,
-      options.type,
-      options.search,
-      options.page,
-      options.limit,
-    ],
+export interface CounterpartyInput {
+  name: string;
+  id_type: string;
+  identification_number: string;
+  relation: "Cliente" | "Proveedor";
+  phone: string;
+  email: string;
+  bank: string;
+  account_type: string;
+  account_number: string;
+}
+
+const selectColumns = "id,name,id_type,identification_number,relation,phone,email,bank,account_type,account_number,status,created_at,updated_at";
+
+type CounterpartyFilters = { relation?: "Cliente" | "Proveedor"; status?: "Activa" | "Inactiva"; search?: string };
+type CounterpartyOptions = { tenantId: string; type?: "client" | "supplier"; search?: string; page?: number; limit?: number };
+
+type CounterpartyListResponse = { data: PublicCounterparty[]; total: number; page: number; limit: number };
+export function useCounterpartiesSupabase(tenantId?: string, filters?: CounterpartyFilters): UseQueryResult<PublicCounterparty[]>;
+export function useCounterpartiesSupabase(options: CounterpartyOptions): UseQueryResult<CounterpartyListResponse>;
+export function useCounterpartiesSupabase(tenantOrOptions?: string | CounterpartyOptions, filters?: CounterpartyFilters): UseQueryResult<PublicCounterparty[]> | UseQueryResult<CounterpartyListResponse> {
+  const options = typeof tenantOrOptions === "object" ? tenantOrOptions : undefined;
+  const tenantId = typeof tenantOrOptions === "string" ? tenantOrOptions : options?.tenantId;
+  const effectiveFilters: CounterpartyFilters = options?.type ? { ...filters, relation: options.type === "client" ? "Cliente" : "Proveedor", search: options.search } : { ...filters, search: filters?.search };
+  const query = useQuery<PublicCounterparty[]>({
+    queryKey: ["public-counterparties", tenantId ?? "anonymous", effectiveFilters],
     queryFn: async () => {
-      let query = supabase
-        .from("counterparties")
-        .select("id,name,id_type,id_number,type,relation,phone,email,status,metadata,created_at,updated_at", { count: "exact" })
-        .order("name", { ascending: true });
-
-      if (options.type) query = query.eq("relation", options.type === "client" ? "Cliente" : "Proveedor");
-
-      if (options.search) {
-        query = query.or(
-          `name.ilike.%${options.search}%,email.ilike.%${options.search}%`
-        );
-      }
-
-      const offset = ((options.page || 1) - 1) * (options.limit || 10);
-      query = query.range(offset, offset + (options.limit || 10) - 1);
-
-      const { data, error, count } = await query;
-
+      let query = supabase.from("counterparties").select(selectColumns).order("name", { ascending: true }).limit(200);
+      if (effectiveFilters.relation) query = query.eq("relation", effectiveFilters.relation);
+      if (effectiveFilters.status) query = query.eq("status", effectiveFilters.status);
+      if (effectiveFilters.search) query = query.or(`name.ilike.%${effectiveFilters.search}%,identification_number.ilike.%${effectiveFilters.search}%,email.ilike.%${effectiveFilters.search}%,phone.ilike.%${effectiveFilters.search}%`);
+      const { data, error } = await query;
       if (error) throw error;
-
-      return {
-        data: (data ?? []).map(row => ({ ...row, tenant_id: options.tenantId })) as Counterparty[],
-        total: count || 0,
-        page: options.page || 1,
-        limit: options.limit || 10,
-      };
+      return (data ?? []) as PublicCounterparty[];
     },
+    enabled: Boolean(tenantId),
+    retry: false,
     staleTime: 30000,
-    retry: 2,
   });
+  if (options) return { ...query, data: query.data ? { data: query.data, total: query.data.length, page: options.page || 1, limit: options.limit || 10 } : undefined } as UseQueryResult<CounterpartyListResponse>;
+  return query as UseQueryResult<PublicCounterparty[]>;
 }
 
 export function useCounterpartySupabase(counterpartyId: string) {
-  return useQuery({
-    queryKey: ["counterparty", counterpartyId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("counterparties")
-        .select("*")
-        .eq("id", counterpartyId)
-        .single();
-
-      if (error) throw error;
-      return data as Counterparty;
-    },
-    staleTime: 30000,
-    retry: 2,
-  });
+  return useQuery<PublicCounterparty>({ queryKey: ["public-counterparty", counterpartyId], queryFn: async () => { const { data, error } = await supabase.from("counterparties").select(selectColumns).eq("id", counterpartyId).single(); if (error) throw error; return data as PublicCounterparty; }, enabled: Boolean(counterpartyId), retry: false });
 }
 
-export function useCreateCounterpartySupabase(tenantId: string) {
-  const queryClient = useQueryClient();
+export function useUpdateCounterpartySupabase(counterpartyId: string, tenantId?: string) {
+  const client = useQueryClient();
+  return useMutation({ mutationFn: async (input: Partial<CounterpartyInput>) => { const { data, error } = await supabase.from("counterparties").update({ ...input, updated_at: new Date().toISOString() }).eq("id", counterpartyId).select(selectColumns).single(); if (error) throw error; return data as PublicCounterparty; }, onSuccess: () => { client.invalidateQueries({ queryKey: ["public-counterparty", counterpartyId] }); client.invalidateQueries({ queryKey: ["public-counterparties", tenantId ?? "anonymous"] }); } });
+}
 
+export function useDeleteCounterpartySupabase(counterpartyId: string, tenantId?: string) {
+  const client = useQueryClient();
+  return useMutation({ mutationFn: async () => { const { error } = await supabase.from("counterparties").delete().eq("id", counterpartyId); if (error) throw error; }, onSuccess: () => client.invalidateQueries({ queryKey: ["public-counterparties", tenantId ?? "anonymous"] }) });
+}
+
+export function useCounterpartySubscription(_tenantId?: string) { return null; }
+
+export function useCreateCounterpartySupabase(tenantId?: string) {
+  const client = useQueryClient();
   return useMutation({
-    mutationFn: async (data: Omit<Counterparty, "id" | "tenant_id" | "created_at" | "updated_at">) => {
-      const { data: result, error } = await supabase
-        .from("counterparties")
-        .insert({
-          tenant_id: tenantId,
-          ...data,
-        })
-        .select()
-        .single();
-
+    mutationFn: async (input: CounterpartyInput) => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData.session?.user;
+      if (!user) throw new Error("Tu sesión expiró. Inicia sesión de nuevo.");
+      const { data, error } = await supabase.from("counterparties").insert({ ...input, created_by_open_id: user.id, created_by_name: user.user_metadata?.name || user.email || null }).select(selectColumns).single();
       if (error) throw error;
-      return result as Counterparty;
+      return data as PublicCounterparty;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["counterparties", tenantId],
-      });
-    },
-    onError: (error) => {
-      console.error("Error creating counterparty:", error);
-      throw error;
-    },
-  });
-}
-
-export function useUpdateCounterpartySupabase(
-  counterpartyId: string,
-  tenantId: string
-) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (data: Partial<Counterparty>) => {
-      const { data: result, error } = await supabase
-        .from("counterparties")
-        .update({
-          ...data,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", counterpartyId)
-        .eq("tenant_id", tenantId)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return result as Counterparty;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["counterparty", counterpartyId] });
-      queryClient.invalidateQueries({ queryKey: ["counterparties", tenantId] });
-    },
-    onError: (error) => {
-      console.error("Error updating counterparty:", error);
-      throw error;
-    },
-  });
-}
-
-export function useDeleteCounterpartySupabase(
-  counterpartyId: string,
-  tenantId: string
-) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase
-        .from("counterparties")
-        .delete()
-        .eq("id", counterpartyId)
-        .eq("tenant_id", tenantId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["counterparty", counterpartyId] });
-      queryClient.invalidateQueries({ queryKey: ["counterparties", tenantId] });
-    },
-    onError: (error) => {
-      console.error("Error deleting counterparty:", error);
-      throw error;
-    },
-  });
-}
-
-export function useCounterpartySubscription(tenantId: string) {
-  const queryClient = useQueryClient();
-
-  useQuery({
-    queryKey: ["counterparties-subscription", tenantId],
-    queryFn: async () => {
-      const subscription = supabase
-        .channel(`counterparties:${tenantId}`)
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "counterparties",
-            filter: `tenant_id=eq.${tenantId}`,
-          },
-          (payload) => {
-            queryClient.invalidateQueries({
-              queryKey: ["counterparties", tenantId],
-            });
-            if (payload.new?.id) {
-              queryClient.invalidateQueries({
-                queryKey: ["counterparty", payload.new.id],
-              });
-            }
-          }
-        )
-        .subscribe();
-
-      return subscription;
-    },
-    enabled: !!tenantId,
-    staleTime: Infinity,
+    onSuccess: () => client.invalidateQueries({ queryKey: ["public-counterparties", tenantId ?? "anonymous"] }),
   });
 }

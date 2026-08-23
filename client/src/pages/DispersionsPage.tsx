@@ -4,7 +4,7 @@
  */
 
 import { useState } from "react";
-import { Dispersion } from "@shared/types";
+import { CounterpartyRelation, CounterpartyStatus, CounterpartyType, Dispersion } from "@shared/types";
 import { DispersionsTable } from "@/components/tables/DispersionsTable";
 import { FormDispersion } from "@/components/forms/FormDispersion";
 import { ConfirmDialog } from "@/components/modals/ConfirmDialog";
@@ -28,7 +28,7 @@ export function DispersionsPage({ tenantId }: DispersionsPageProps) {
   };
 
   const bankAccounts = accountsData?.data || [];
-  const beneficiaries = beneficiariesData?.data || [];
+  const beneficiaries = (beneficiariesData?.data || []).map(item => ({ ...item, tenant_id: tenantId, id_number: item.identification_number, type: CounterpartyType.LEGAL, relation: item.relation === "Cliente" ? CounterpartyRelation.CLIENT : CounterpartyRelation.SUPPLIER, phone: item.phone ?? "", email: item.email ?? "", status: item.status === "Activa" ? CounterpartyStatus.ACTIVE : CounterpartyStatus.INACTIVE, metadata: {}, created_at: item.created_at, updated_at: item.updated_at }));
 
   const handleViewDetail = (dispersion: Dispersion) => {
     setSelectedDispersion(dispersion);
