@@ -115,7 +115,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex w-[min(82vw,480px)] flex-col border-r border-white/[0.08] bg-[#050606] text-white shadow-2xl transition-transform duration-200 lg:fixed lg:top-0 lg:z-30 lg:h-screen lg:w-[280px] lg:translate-x-0 lg:shadow-none ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex h-24 shrink-0 items-center justify-between border-b border-white/[0.08] px-8 lg:h-24 lg:px-7">
+        <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-white/[0.08] px-5 lg:h-24 lg:px-7">
           <button
             type="button"
             onClick={() => goTo("/")}
@@ -125,7 +125,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <img
               src={`${basePath()}/bitaxus-logo.png`}
               alt="Bitaxus"
-              className="h-8 w-auto object-contain"
+              className="h-5 w-auto object-contain lg:h-8"
             />
           </button>
           <button
@@ -139,7 +139,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         <nav
-          className="flex-1 space-y-2 overflow-y-auto px-5 py-8 lg:px-4"
+          className="shrink-0 space-y-1 overflow-hidden px-4 py-4 lg:flex-1 lg:space-y-2 lg:overflow-y-auto lg:px-4 lg:py-8"
           aria-label="Navegación principal"
         >
           {navigation.map(({ label, path, icon: Icon }) => {
@@ -151,29 +151,29 @@ export function AppLayout({ children }: AppLayoutProps) {
                 type="button"
                 key={path}
                 onClick={() => goTo(path)}
-                className={`flex min-h-14 w-full items-center gap-5 rounded-2xl px-6 text-left text-base transition-colors focus:outline-none focus:ring-2 focus:ring-[#e06465] ${isActive ? "bg-gradient-to-r from-[#e06465]/25 to-[#e06465]/5 text-[#ff7a7b] shadow-[inset_4px_0_0_#e06465]" : "text-white/70 hover:bg-white/[0.07] hover:text-white"}`}
+                className={`flex min-h-11 w-full items-center gap-4 rounded-xl px-5 text-left text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-[#e06465] lg:min-h-14 lg:gap-5 lg:rounded-2xl lg:px-6 lg:text-base ${isActive ? "bg-gradient-to-r from-[#e06465]/25 to-[#e06465]/5 text-[#ff7a7b] shadow-[inset_4px_0_0_#e06465]" : "text-white/70 hover:bg-white/[0.07] hover:text-white"}`}
                 aria-current={isActive ? "page" : undefined}
               >
-                <Icon size={23} strokeWidth={1.8} />
+                <Icon size={20} strokeWidth={1.8} className="lg:h-[23px] lg:w-[23px]" />
                 <span>{label}</span>
               </button>
             );
           })}
         </nav>
 
-        <div className="shrink-0 p-5 lg:p-4">
+        <div className="mt-auto shrink-0 p-4 lg:p-4">
           <div
-            className="w-full rounded-2xl border border-white/[0.12] bg-[#151719] p-5 text-left"
+            className="w-full rounded-2xl border border-white/[0.12] bg-[#151719] p-4 text-left lg:p-5"
             role="note"
           >
             <div className="flex items-center gap-3 text-sm font-semibold">
-              <MessageCircle size={18} className="text-[#ff7a7b]" /> Agente
+              <MessageCircle size={17} className="text-[#ff7a7b]" /> Agente
               Bitaxus
             </div>
-            <p className="mt-3 text-xs leading-5 text-white/50">
+            <p className="mt-2 text-[11px] leading-4 text-white/50 lg:mt-3 lg:text-xs lg:leading-5">
               El centro de ayuda estará disponible cuando se conecte el canal de soporte.
             </p>
-            <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/45">
+            <span className="mt-3 inline-flex items-center gap-2 text-xs font-semibold text-white/45 lg:mt-4 lg:text-sm">
               Próximamente
             </span>
           </div>
