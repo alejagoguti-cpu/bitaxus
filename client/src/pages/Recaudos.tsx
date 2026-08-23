@@ -1,5 +1,7 @@
 /* Bitaxus Recaudos: flujo operativo de pagadores, validación y programación. */
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 import { ArrowDownLeft, CalendarDays, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Plus, Search, SlidersHorizontal, Tag, Upload, X, UserRound, Building2, AlertTriangle } from "lucide-react";
 import HorizontalScrollHint from "../components/HorizontalScrollHint";
 import ExportActions from "../components/ExportActions";
@@ -7,18 +9,8 @@ import ModalScrollControls from "../components/ModalScrollControls";
 import UnsavedChangesDialog from "../components/UnsavedChangesDialog";
 
 type Payer = { name: string; idType: string; id: string; email?: string; phone?: string; type: "Persona natural" | "Persona jurídica" };
-const initialPayers: Payer[] = [
-  { name: "Empresa Nova S.A.S.", idType: "NIT", id: "900.123.456-7", type: "Persona jurídica" },
-  { name: "Nova Soluciones S.A.S.", idType: "NIT", id: "901.234.567-1", type: "Persona jurídica" },
-  { name: "Juan Pérez", idType: "CC", id: "10.234.567", type: "Persona natural" },
-  { name: "María Gómez", idType: "CC", id: "43.678.901", type: "Persona natural" },
-];
-const initialReceipts = [
-  { id: "RC-12984", payer: "Juan Pérez", concept: "Honorarios", amount: "$ 1.250.000", date: "29 jul. 2026", status: "Recibido" },
-  { id: "RC-12985", payer: "OnTarget SAS", concept: "Prestación de servicios", amount: "$ 3.800.000", date: "31 jul. 2026", status: "Pendiente" },
-  { id: "RC-12986", payer: "María Gómez", concept: "Venta de productos", amount: "$ 950.000", date: "30 jul. 2026", status: "Cancelado" },
-  { id: "RC-12987", payer: "Grupo Nova", concept: "Pago de factura", amount: "$ 2.400.000", date: "01 ago. 2026", status: "Pendiente" },
-];
+type ReceiptRow = { id: string; payer: string; concept: string; amount: string; date: string; status: string };
+
 const tabs = ["Todos", "Pendientes", "Recibidos", "Cancelados"];
 function FilterMenu({ label, icon: IconComp, value, options, onChange }: { label: string; icon: any; value: string; options: string[]; onChange: (value: string) => void }) {
   const [open, setOpen] = useState(false); const ref = useRef<HTMLDivElement>(null);
@@ -36,8 +28,12 @@ export default function Recaudos({ onNavigate }: { onNavigate: (section: string)
   const [formOpen, setFormOpen] = useState(false);
   const [discardPrompt, setDiscardPrompt] = useState(false);
   const [receiptSuccess, setReceiptSuccess] = useState(false);
-  const [receipts, setReceipts] = useState(initialReceipts);
-  const [payers, setPayers] = useState(initialPayers);
+  const [receipts, setReceipts] = useState<ReceiptRow[]>([]);
+  const [payers, setPayers] = useState<Payer[]>([]);
+  const receiptsQuery = useQuery({ queryKey: ["public-receipts"], queryFn: async () => { const { data, error } = await supabase.from("receipts").select("id,payer_name,concept,amount,currency,receipt_date,status,created_at").order("created_at", { ascending: false }).limit(100); if (error) throw error; return data ?? []; }, staleTime: 30000, retry: false });
+  const payersQuery = useQuery({ queryKey: ["public-payers"], queryFn: async () => { const { data, error } = await supabase.from("payers").select("name,id_type,id_number,email,phone,type,created_at").order("created_at", { ascending: false }).limit(100); if (error) throw error; return data ?? []; }, staleTime: 30000, retry: false });
+  useEffect(() => { if (receiptsQuery.data) setReceipts(receiptsQuery.data.map(row => ({ id: row.id, payer: row.payer_name || "", concept: row.concept || "", amount: `$ ${Number(row.amount || 0).toLocaleString("es-CO")}`, date: new Date(row.receipt_date || row.created_at).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" }), status: row.status || "" }))); }, [receiptsQuery.data]);
+  useEffect(() => { if (payersQuery.data) setPayers(payersQuery.data.map(row => ({ name: row.name || "", idType: row.id_type || "", id: row.id_number || "", email: row.email || undefined, phone: row.phone || undefined, type: row.type === "Persona natural" ? "Persona natural" : "Persona jurídica" }))); }, [payersQuery.data]);
   const [selectedPayer, setSelectedPayer] = useState<Payer | null>(null);
   const [payerQuery, setPayerQuery] = useState("");
   const [payerPanelOpen, setPayerPanelOpen] = useState(false);
