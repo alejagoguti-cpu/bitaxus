@@ -26,4 +26,10 @@ describe("public dashboard data contract", () => {
     expect(pageSource).toContain("Aún no hay movimientos registrados.");
     expect(pageSource).toContain("No pudimos cargar los movimientos.");
   });
+
+  it("keeps the compact operational entry points and a user-aware greeting", () => {
+    expect(pageSource).toContain('Hola, {user?.name || "tu cuenta"}');
+    expect(pageSource).toContain("Programar recaudo");
+    expect(pageSource).toContain("Programar pago");
+  });
 });

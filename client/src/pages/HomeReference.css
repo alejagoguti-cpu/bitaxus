@@ -1,0 +1,36 @@
+.dashboard-reference { padding-top: 0; }
+.dashboard-reference .dashboard-heading { min-height: 46px; margin: 0 0 12px; align-items: center; }
+.dashboard-reference .dashboard-heading .eyebrow { display: none; }
+.dashboard-reference .dashboard-heading h1 { margin: 0 0 3px; font-size: 22px; line-height: 1.05; letter-spacing: -.045em; }
+.dashboard-reference .dashboard-heading p { margin: 0; color: #8a8e95; font-size: 11px; }
+.dashboard-reference .period-controls { gap: 5px; padding: 4px; border: 1px solid #eceae8; border-radius: 9px; background: #fff; box-shadow: 0 5px 16px rgba(20,24,30,.04); }
+.dashboard-reference .period-controls button { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; border-radius: 6px; }
+.dashboard-reference .period-controls span { min-width: 112px; font-size: 10px; font-weight: 800; text-align: center; }
+.dashboard-reference .home-summary-card { margin-bottom: 12px; padding: 15px 18px 13px; border-radius: 12px; box-shadow: 0 10px 28px rgba(20,24,30,.055); }
+.dashboard-reference .home-summary-card .summary-head { min-height: 35px; }
+.dashboard-reference .home-summary-card .eyebrow { margin: 0 0 3px; font-size: 9px; }
+.dashboard-reference .home-summary-card .total { font-size: 24px; line-height: 1; }
+.dashboard-reference .home-summary-card .total small { font-size: 9px; }
+.dashboard-reference .home-summary-card .positive { margin-top: 4px; font-size: 10px; }
+.dashboard-reference .home-summary-card .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 14px; }
+.dashboard-reference .home-summary-card .metric { min-height: 42px; padding: 0 16px; border-left: 1px solid #f0eeec; }
+.dashboard-reference .home-summary-card .metric:first-child { padding-left: 0; border-left: 0; }
+.dashboard-reference .home-summary-card .metric .icon-bubble { width: 28px; height: 28px; }
+.dashboard-reference .home-summary-card .metric span { font-size: 9px; }
+.dashboard-reference .home-summary-card .metric b { margin-top: 2px; font-size: 14px; }
+.dashboard-reference .home-summary-card .metric b small, .dashboard-reference .home-summary-card .metric em, .dashboard-reference .home-summary-card .metric p { font-size: 9px; }
+.dashboard-reference .home-quick-actions { margin-bottom: 12px !important; }
+.dashboard-reference .home-quick-actions a { height: 40px !important; min-height: 40px !important; padding: 0 12px !important; border-radius: 9px; }
+.dashboard-reference .home-quick-actions b { font-size: 11px; }
+.dashboard-reference .home-operations-grid { grid-template-columns: minmax(0, 1.95fr) minmax(260px, .82fr) !important; gap: 12px !important; }
+.dashboard-reference .home-activity-card, .dashboard-reference .home-review-card { min-height: 0 !important; padding: 14px 15px 12px !important; border-radius: 12px; }
+.dashboard-reference .home-operations-grid .card-heading { min-height: 27px; padding-bottom: 7px; }
+.dashboard-reference .home-operations-grid .card-heading h2 { font-size: 13px; }
+.dashboard-reference .home-operations-grid .card-heading p { margin: 2px 0 0; font-size: 9px; }
+.dashboard-reference .home-operations-grid .activity-row { min-height: 42px; padding: 6px 0 !important; }
+.dashboard-reference .home-operations-grid .activity-main b, .dashboard-reference .home-operations-grid .activity-amount b { font-size: 10px; }
+.dashboard-reference .home-operations-grid .activity-main span, .dashboard-reference .home-operations-grid .activity-ref span { font-size: 9px; }
+.dashboard-reference .home-operations-grid .review-list a { min-height: 44px; padding: 7px 0 !important; }
+.dashboard-reference .home-operations-grid .view-all { margin-top: 7px !important; font-size: 10px; }
+@media (max-width: 800px) { .dashboard-reference .dashboard-heading { align-items: flex-start; gap: 10px; } .dashboard-reference .home-summary-card .metrics, .dashboard-reference .home-operations-grid { grid-template-columns: 1fr !important; } .dashboard-reference .home-summary-card .metric { padding: 10px 0; border-left: 0; border-top: 1px solid #f0eeec; } .dashboard-reference .home-summary-card .metric:first-child { border-top: 0; } }
+@media (max-width: 560px) { .dashboard-reference .dashboard-heading { flex-direction: column; } .dashboard-reference .period-controls { width: 100%; justify-content: space-between; } .dashboard-reference .period-controls span { flex: 1; } .dashboard-reference .home-summary-card { padding: 14px; } }
