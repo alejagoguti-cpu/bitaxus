@@ -6,6 +6,7 @@ import { canReviewReceipt } from "./receiptFlow";
 import "./ReceiptSuccess.css";
 import "./ReceiptSubmit.css";
 import "./PayerModalFix.css";
+import { validateNewPayer } from "./payerValidation";
 import { ArrowDownLeft, CalendarDays, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Plus, Search, SlidersHorizontal, Tag, X, UserRound, Building2, AlertTriangle } from "lucide-react";
 import HorizontalScrollHint from "../components/HorizontalScrollHint";
 import ExportActions from "../components/ExportActions";
@@ -54,10 +55,18 @@ export default function Recaudos({ onNavigate }: { onNavigate: (section: string)
   const [newPayerPhone, setNewPayerPhone] = useState("");
   const [payerSubmitting, setPayerSubmitting] = useState(false);
   const [payerError, setPayerError] = useState("");
+  const newPayerValidation = useMemo(() => validateNewPayer({ name: newPayerName, identification: newPayerId, idType: newPayerIdType, email: newPayerEmail, phone: newPayerPhone }), [newPayerName, newPayerId, newPayerIdType, newPayerEmail, newPayerPhone]);
   const [amount, setAmount] = useState("");
   const [currency] = useState("COP");
   const [concept, setConcept] = useState("");
   const [date, setDate] = useState("");
+
+  useEffect(() => {
+    if (!newPayerOpen || payerSubmitting) return;
+    const started = Boolean(newPayerName || newPayerId || newPayerEmail || newPayerPhone);
+    if (!started || newPayerValidation.isValid) { setPayerError(""); return; }
+    setPayerError(newPayerValidation.name || newPayerValidation.identification || newPayerValidation.email || newPayerValidation.phone || "Revisa los campos del pagador.");
+  }, [newPayerOpen, newPayerValidation, newPayerName, newPayerId, newPayerEmail, newPayerPhone, payerSubmitting]);
 
   const filtered = useMemo(() => receipts.filter(item => {
     const matchTab = tab === "Todos" || (tab === "Pendientes" && item.status === "Pendiente") || (tab === "Recibidos" && item.status === "Recibido") || (tab === "Cancelados" && item.status === "Cancelado");
@@ -93,7 +102,7 @@ export default function Recaudos({ onNavigate }: { onNavigate: (section: string)
   const startNewPayer = () => { setPayerPanelOpen(false); setNewPayerOpen(true); setNewPayerName(payerQuery); setPayerError(""); };
   const savePayer = async () => {
     if (payerSubmitting) return;
-    if (!newPayerName.trim() || !newPayerId.trim()) { setPayerError("Completa el nombre y el número de identificación."); return; }
+    if (!newPayerValidation.isValid) { setPayerError(newPayerValidation.name || newPayerValidation.identification || newPayerValidation.email || newPayerValidation.phone || "Revisa los campos del pagador."); return; }
     const existing = payers.find(p => p.id.replace(/\D/g, "") === newPayerId.replace(/\D/g, ""));
     if (existing) { setDuplicate(existing); return; }
     const { data: authData } = await supabase.auth.getUser();
