@@ -139,7 +139,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         <nav
-          className="shrink-0 space-y-1 overflow-hidden px-4 py-4 lg:flex-1 lg:space-y-2 lg:overflow-y-auto lg:px-4 lg:py-8"
+          className="mobile-sidebar-nav shrink-0 space-y-1 overflow-hidden px-4 py-4 lg:flex-1 lg:space-y-2 lg:overflow-y-auto lg:px-4 lg:py-8"
           aria-label="Navegación principal"
         >
           {navigation.map(({ label, path, icon: Icon }) => {
