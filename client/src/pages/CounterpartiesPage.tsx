@@ -1,225 +1,57 @@
-// @ts-nocheck
-/**
- * CounterpartiesPage Component
- * Page for managing counterparties
- */
+import { useMemo, useState } from "react";
+import { Building2, CheckCircle2, ChevronLeft, ChevronRight, Ellipsis, Info, LoaderCircle, Plus, Search, UserRound, X } from "lucide-react";
+import HorizontalScrollHint from "@/components/HorizontalScrollHint";
+import ExportActions from "@/components/ExportActions";
+import { useCounterpartiesSupabase, useCreateCounterpartySupabase, type PublicCounterparty } from "@/hooks/useCounterpartiesSupabase";
+import "./ReportCounterpartyRefinement.css";
 
-import { useState } from "react";
-import { Counterparty } from "@shared/types";
-import { CounterpartiesTable } from "@/components/tables/CounterpartiesTable";
-import { FormCounterparty } from "@/components/forms/FormCounterparty";
-import { ConfirmDialog } from "@/components/modals/ConfirmDialog";
-import { useCounterparties } from "@/hooks";
+interface CounterpartiesPageProps { tenantId: string; }
+type Tab = "Todas" | "Clientes" | "Proveedores" | "Inactivas";
 
-interface CounterpartiesPageProps {
-  tenantId: string;
-}
+const tabs: Tab[] = ["Todas", "Clientes", "Proveedores", "Inactivas"];
+const initials = (name: string) => name.trim().split(/\s+/).map(part => part[0]).slice(0, 2).join("").toUpperCase() || "CP";
 
 export function CounterpartiesPage({ tenantId }: CounterpartiesPageProps) {
-  const [showForm, setShowForm] = useState(false);
-  const [selectedCounterparty, setSelectedCounterparty] = useState<Counterparty | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [tab, setTab] = useState<Tab>("Todas");
+  const [query, setQuery] = useState("");
+  const [relation, setRelation] = useState("Todas");
+  const [status, setStatus] = useState("Todos");
+  const [accountFilter, setAccountFilter] = useState("Todos");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selected, setSelected] = useState<PublicCounterparty | null>(null);
+  const [feedback, setFeedback] = useState("");
+  const [formError, setFormError] = useState("");
+  const [form, setForm] = useState({ name: "", id_type: "NIT", identification_number: "", relation: "Proveedor" as "Cliente" | "Proveedor", phone: "", email: "", bank: "", account_type: "", account_number: "" });
+  const counterpartiesQuery = useCounterpartiesSupabase(tenantId);
+  const createMutation = useCreateCounterpartySupabase(tenantId);
+  const rows = counterpartiesQuery.data ?? [];
+  const filtered = useMemo(() => rows.filter(row => {
+    const matchesTab = tab === "Todas" || (tab === "Clientes" && row.relation === "Cliente") || (tab === "Proveedores" && row.relation === "Proveedor") || (tab === "Inactivas" && row.status === "Inactiva");
+    const matchesRelation = relation === "Todas" || row.relation === relation;
+    const matchesStatus = status === "Todos" || row.status === status;
+    const hasAccount = Boolean(row.account_number);
+    const matchesAccount = accountFilter === "Todos" || (accountFilter === "Con cuenta" && hasAccount) || (accountFilter === "Sin cuenta" && !hasAccount);
+    const text = `${row.name} ${row.identification_number} ${row.email ?? ""} ${row.phone ?? ""}`.toLocaleLowerCase("es-CO");
+    return matchesTab && matchesRelation && matchesStatus && matchesAccount && text.includes(query.toLocaleLowerCase("es-CO"));
+  }), [rows, tab, relation, status, accountFilter, query]);
 
-  const { data: counterpartiesData, isLoading } = useCounterparties?.({
-    tenantId,
-  }) || {
-    data: undefined,
-    isLoading: false,
+  const resetForm = () => { setForm({ name: "", id_type: "NIT", identification_number: "", relation: "Proveedor", phone: "", email: "", bank: "", account_type: "", account_number: "" }); setFormError(""); };
+  const create = () => {
+    if (!form.name.trim() || !form.identification_number.trim()) { setFormError("Ingresa el nombre o razón social y la identificación para continuar."); return; }
+    if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) { setFormError("Revisa el formato del correo electrónico."); return; }
+    setFormError("");
+    createMutation.mutate(form, { onSuccess: () => { resetForm(); setModalOpen(false); setFeedback("Contraparte inscrita correctamente. Ya está disponible en el directorio."); window.setTimeout(() => setFeedback(""), 4_200); }, onError: error => setFormError(error.message || "No fue posible guardar la contraparte.") });
   };
+  const accountLabel = (row: PublicCounterparty) => row.account_number ? `${row.bank || "Banco"} · ••••${row.account_number.slice(-4)}` : "Sin cuenta registrada";
 
-  const counterparties = counterpartiesData?.data || [];
-
-  const handleViewDetail = (counterparty: Counterparty) => {
-    setSelectedCounterparty(counterparty);
-  };
-
-  const handleEdit = (counterparty: Counterparty) => {
-    setSelectedCounterparty(counterparty);
-    setShowForm(true);
-  };
-
-  const handleDelete = (counterparty: Counterparty) => {
-    setSelectedCounterparty(counterparty);
-    setDialogOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (selectedCounterparty) {
-      // TODO: Implement counterparty deletion via API
-      console.log("Eliminando contraparte:", selectedCounterparty.id);
-      setDialogOpen(false);
-    }
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Contrapartes</h1>
-          <p className="text-gray-600 mt-1">
-            Gestiona clientes, proveedores y otros contactos
-          </p>
-        </div>
-        <button
-          onClick={() => {
-            setSelectedCounterparty(null);
-            setShowForm(!showForm);
-          }}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
-        >
-          + Crear Contraparte
-        </button>
-      </div>
-
-      {/* Form Section */}
-      {showForm && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-          <FormCounterparty
-            tenantId={tenantId}
-            onSuccess={() => setShowForm(false)}
-          />
-        </div>
-      )}
-
-      {/* Detail Section */}
-      {selectedCounterparty && !showForm && (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                {selectedCounterparty.name}
-              </h2>
-              <p className="text-gray-600 mt-1">
-                {selectedCounterparty.type} • {selectedCounterparty.relation}
-              </p>
-            </div>
-            <button
-              onClick={() => setSelectedCounterparty(null)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              ✕
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Left Column */}
-            <div className="space-y-4">
-              <div>
-                <p className="text-xs font-medium text-gray-600">ID</p>
-                <p className="text-base font-semibold text-gray-900">
-                  {selectedCounterparty.id_type} {selectedCounterparty.id_number}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-gray-600">Email</p>
-                <p className="text-base font-semibold text-gray-900">
-                  {selectedCounterparty.email}
-                </p>
-              </div>
-            </div>
-
-            {/* Right Column */}
-            <div className="space-y-4">
-              <div>
-                <p className="text-xs font-medium text-gray-600">Teléfono</p>
-                <p className="text-base font-semibold text-gray-900">
-                  {selectedCounterparty.phone}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs font-medium text-gray-600">Estado</p>
-                <div className="mt-1">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      selectedCounterparty.status === "Activa"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    {selectedCounterparty.status}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bank Accounts Section */}
-          {selectedCounterparty.bank_accounts &&
-            selectedCounterparty.bank_accounts.length > 0 && (
-              <div className="border-t pt-6">
-                <h3 className="font-semibold text-gray-900 mb-4">
-                  Cuentas Bancarias
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {selectedCounterparty.bank_accounts.map((account) => (
-                    <div
-                      key={account.id}
-                      className="border border-gray-200 rounded-lg p-4"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900">
-                          {account.bank_name}
-                        </h4>
-                        {account.is_primary && (
-                          <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                            Principal
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-600 mb-2">
-                        {account.account_type}
-                      </p>
-                      <p className="text-sm font-mono text-gray-900">
-                        {account.account_number}
-                      </p>
-                      <p className="text-xs text-gray-600 mt-2">
-                        Titular: {account.account_holder}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          {/* Action Buttons */}
-          <div className="flex gap-2 mt-6 pt-6 border-t border-gray-200">
-            <button
-              onClick={() => handleEdit(selectedCounterparty)}
-              className="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 font-medium text-sm"
-            >
-              Editar
-            </button>
-            <button
-              onClick={() => handleDelete(selectedCounterparty)}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 font-medium text-sm"
-            >
-              Eliminar
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Table */}
-      <CounterpartiesTable
-        tenantId={tenantId}
-        counterparties={counterparties}
-        isLoading={isLoading}
-        onViewDetail={handleViewDetail}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
-
-      {/* Confirm Dialog */}
-      <ConfirmDialog
-        isOpen={dialogOpen}
-        title="Eliminar Contraparte"
-        message={`¿Estás seguro de que deseas eliminar a ${selectedCounterparty?.name}? Esta acción no se puede deshacer.`}
-        confirmText="Eliminar"
-        variant="danger"
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setDialogOpen(false)}
-      />
-    </div>
-  );
+  return <section className="counterparties-page">
+    <header className="counterparties-header"><div><div className="company-caption">Empresa actual</div><h2>Contrapartes</h2><p>Administra las personas y empresas relacionadas con tu operación.</p></div><button type="button" className="primary-action" onClick={() => { resetForm(); setModalOpen(true); }}><Plus size={16} /> Inscribir contraparte</button></header>
+    {feedback && <div className="report-feedback" role="status" aria-live="polite"><CheckCircle2 size={16} /><span>{feedback}</span><button type="button" onClick={() => setFeedback("")} aria-label="Cerrar mensaje"><X size={14} /></button></div>}
+    <nav className="counterparties-tabs" aria-label="Categorías de contrapartes"><div>{tabs.map(item => <button type="button" key={item} className={tab === item ? "selected" : ""} onClick={() => setTab(item)}>{item}</button>)}</div></nav>
+    <div className="counterparties-filterbar"><label className="search-box"><Search size={16} /><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Buscar por nombre, identificación, correo o teléfono" /></label><label className="compact-select"><span>Relación</span><select value={relation} onChange={event => setRelation(event.target.value)}><option>Todas</option><option>Cliente</option><option>Proveedor</option></select></label><label className="compact-select"><span>Estado</span><select value={status} onChange={event => setStatus(event.target.value)}><option>Todos</option><option>Activa</option><option>Inactiva</option></select></label><label className="compact-select"><span>Cuenta</span><select value={accountFilter} onChange={event => setAccountFilter(event.target.value)}><option>Todos</option><option>Con cuenta</option><option>Sin cuenta</option></select></label></div>
+    <div className="counterparties-card panel"><div className="table-export-toolbar"><ExportActions title="Contrapartes" rows={filtered.map(row => ({ id: row.id, name: row.name, identification: `${row.id_type} ${row.identification_number}`, relation: row.relation, account: accountLabel(row), status: row.status }))} columns={[{ key: "id", label: "ID" }, { key: "name", label: "Contraparte" }, { key: "identification", label: "Identificación" }, { key: "relation", label: "Relación" }, { key: "account", label: "Cuenta registrada" }, { key: "status", label: "Estado" }]} filters={{ Relación: relation, Estado: status, Cuenta: accountFilter, Pestaña: tab }} logoUrl="/bitaxus/assets/bitaxus-logo-black.png" /></div><HorizontalScrollHint className="counterparties-table-wrap"><table className="counterparties-table"><thead><tr><th>ID</th><th>Contraparte</th><th>Identificación</th><th>Relación</th><th>Cuenta registrada</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>{counterpartiesQuery.isLoading && <tr><td colSpan={7} className="empty-row">Cargando contrapartes…</td></tr>}{counterpartiesQuery.error && <tr><td colSpan={7} className="empty-row">No fue posible cargar las contrapartes.</td></tr>}{!counterpartiesQuery.isLoading && !counterpartiesQuery.error && !filtered.length && <tr><td colSpan={7} className="empty-row">No encontramos contrapartes con esos criterios.</td></tr>}{filtered.map(row => <tr key={row.id}><td>{row.id.slice(0, 8)}</td><td><span className="entity-avatar ink">{initials(row.name)}</span><b>{row.name}</b></td><td>{row.id_type} {row.identification_number}</td><td><span className={`relation-pill ${row.relation.toLocaleLowerCase("es-CO")}`}>{row.relation}</span></td><td><span className={`account-state ${row.account_number ? "ok" : "warning"}`}>{accountLabel(row)}</span></td><td><span className={`counterparty-status ${row.status.toLocaleLowerCase("es-CO")}`}>{row.status}</span></td><td><button type="button" className="row-menu" aria-label={`Ver detalle de ${row.name}`} onClick={() => setSelected(row)}><Ellipsis size={18} /></button></td></tr>)}</tbody></table></HorizontalScrollHint><div className="counterparties-footer"><span>{filtered.length ? `Mostrando ${filtered.length} contraparte(s)` : "No hay contrapartes registradas"}</span><div className="pagination-controls" aria-label="Paginación"><button type="button" disabled aria-label="Página anterior"><ChevronLeft size={16} /></button><b aria-current="page">1</b><button type="button" disabled aria-label="Página siguiente"><ChevronRight size={16} /></button></div></div></div>
+    <aside className="counterparty-help"><Info size={23} /><div><b>¿Qué es una contraparte?</b><p>Puede ser un cliente que te paga o un proveedor y beneficiario al que realizas pagos.</p></div></aside>
+    {selected && <div className="modal-backdrop" onClick={() => setSelected(null)}><div className="action-modal counterparty-detail-modal" role="dialog" aria-modal="true" aria-labelledby="counterparty-detail-title" onClick={event => event.stopPropagation()}><button type="button" className="modal-close" onClick={() => setSelected(null)} aria-label="Cerrar detalle"><X size={17} /></button><div className="modal-icon"><UserRound size={17} /></div><h2 id="counterparty-detail-title">{selected.name}</h2><p>{selected.relation} · {selected.status}</p><div className="operation-detail"><span>Identificación</span><strong>{selected.id_type} {selected.identification_number}</strong></div><div className="operation-detail"><span>Contacto</span><strong>{selected.email || selected.phone || "Sin contacto registrado"}</strong></div><div className="operation-detail"><span>Cuenta registrada</span><strong>{accountLabel(selected)}</strong></div><div className="modal-actions"><button type="button" className="secondary-action" onClick={() => setSelected(null)}>Cerrar</button><button type="button" className="primary-action" onClick={() => { setSelected(null); resetForm(); setModalOpen(true); }}><Plus size={14} /> Inscribir otra</button></div></div></div>}
+    {modalOpen && <div className="modal-backdrop" onClick={() => setModalOpen(false)}><div className="action-modal shared-operation-modal counterparty-modal" role="dialog" aria-modal="true" aria-labelledby="counterparty-modal-title" onClick={event => event.stopPropagation()}><button type="button" className="modal-close" onClick={() => setModalOpen(false)} aria-label="Cerrar"><X size={17} /></button><div className="counterparty-modal-heading"><div className="modal-icon"><Building2 size={17} /></div><div><h2 id="counterparty-modal-title">Inscribir contraparte</h2><p>Completa los datos disponibles para agregarla a tu directorio.</p></div></div>{formError && <p className="form-alert" role="alert">{formError}</p>}<div className="counterparty-fields-grid"><label className="full-span">Nombre completo o razón social <span>*</span><input className="modal-input" value={form.name} onChange={event => setForm(current => ({ ...current, name: event.target.value }))} placeholder="Ingresa el nombre o razón social" /></label><label>Tipo de identificación <span>*</span><select className="modal-input" value={form.id_type} onChange={event => setForm(current => ({ ...current, id_type: event.target.value }))}><option>CC</option><option>NIT</option><option>Pasaporte</option></select></label><label>Número de identificación <span>*</span><input className="modal-input" value={form.identification_number} onChange={event => setForm(current => ({ ...current, identification_number: event.target.value }))} placeholder="Ingresa el número" /></label><label>Relación <span>*</span><select className="modal-input" value={form.relation} onChange={event => setForm(current => ({ ...current, relation: event.target.value as "Cliente" | "Proveedor" }))}><option>Proveedor</option><option>Cliente</option></select></label><label>Teléfono<input className="modal-input" value={form.phone} onChange={event => setForm(current => ({ ...current, phone: event.target.value }))} placeholder="Opcional" /></label><label className="full-span">Correo<input type="email" className="modal-input" value={form.email} onChange={event => setForm(current => ({ ...current, email: event.target.value }))} placeholder="Opcional" /></label></div><div className="counterparty-payment-section"><h3>Datos para pagos <small>Opcionales</small></h3><div className="counterparty-fields-grid"><label>Entidad bancaria<input className="modal-input" value={form.bank} onChange={event => setForm(current => ({ ...current, bank: event.target.value }))} placeholder="Banco" /></label><label>Tipo de cuenta<select className="modal-input" value={form.account_type} onChange={event => setForm(current => ({ ...current, account_type: event.target.value }))}><option value="">Selecciona</option><option>Ahorros</option><option>Corriente</option></select></label><label className="full-span">Número de cuenta<input className="modal-input" value={form.account_number} onChange={event => setForm(current => ({ ...current, account_number: event.target.value }))} placeholder="Opcional" /></label></div></div><div className="modal-actions"><button type="button" className="secondary-action" onClick={() => setModalOpen(false)}>Cancelar</button><button type="button" className="primary-action" onClick={create} disabled={createMutation.isPending}>{createMutation.isPending ? <><LoaderCircle size={15} className="spin" /> Guardando…</> : "Inscribir contraparte"}</button></div></div></div>}
+  </section>;
 }
