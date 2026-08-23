@@ -4,6 +4,7 @@
  */
 
 import { useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 interface ReportsPageProps {
   tenantId: string;
@@ -68,18 +69,20 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
     setIsExporting(true);
 
     try {
-      // TODO: Implement API call for report generation and export
-      console.log("Generando reporte:", {
-        reportId: selectedReport,
-        startDate,
-        endDate,
-        format: "PDF", // or 'EXCEL'
-      });
-
-      // Simulate export delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      alert("¡Reporte generado exitosamente!");
+      const source = selectedReport === "receipts" ? { table: "receipts", dateColumn: "receipt_date" } : selectedReport === "payments" ? { table: "payments", dateColumn: "payment_date" } : null;
+      if (!source) throw new Error("Este reporte aún no tiene una fuente de datos disponible.");
+      const { data, error } = await supabase.from(source.table).select("*").gte(source.dateColumn, startDate).lte(source.dateColumn, endDate).order(source.dateColumn, { ascending: true });
+      if (error) throw error;
+      const rows = data ?? [];
+      const columns = Array.from(new Set(rows.flatMap(row => Object.keys(row))));
+      const csv = [columns.join(","), ...rows.map(row => columns.map(column => JSON.stringify(row[column] ?? "")).join(","))].join("\\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `bitaxus-${selectedReport}-${startDate}-${endDate}.csv`;
+      anchor.click();
+      URL.revokeObjectURL(url);
     } catch (error) {
       alert("Error generando reporte");
     } finally {
@@ -105,8 +108,8 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
             onClick={() => setSelectedReport(report.id)}
             className={`p-4 rounded-lg border-2 text-left transition-all ${
               selectedReport === report.id
-                ? "border-blue-600 bg-blue-50"
-                : "border-gray-200 bg-white hover:border-blue-400"
+                ? "border-[#e06465] bg-[#fff3f1]"
+                : "border-gray-200 bg-white hover:border-[#e06465]"
             }`}
           >
             <div className="text-3xl mb-2">{report.icon}</div>
@@ -158,7 +161,7 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
                 name="format"
                 value="pdf"
                 defaultChecked
-                className="w-4 h-4 rounded border-gray-300 text-blue-600"
+                className="w-4 h-4 rounded border-gray-300 text-[#e06465]"
               />
               <span className="ml-2 text-sm text-gray-700">PDF</span>
             </label>
@@ -167,7 +170,7 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
                 type="radio"
                 name="format"
                 value="excel"
-                className="w-4 h-4 rounded border-gray-300 text-blue-600"
+                className="w-4 h-4 rounded border-gray-300 text-[#e06465]"
               />
               <span className="ml-2 text-sm text-gray-700">Excel (.xlsx)</span>
             </label>
@@ -176,7 +179,7 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
                 type="radio"
                 name="format"
                 value="csv"
-                className="w-4 h-4 rounded border-gray-300 text-blue-600"
+                className="w-4 h-4 rounded border-gray-300 text-[#e06465]"
               />
               <span className="ml-2 text-sm text-gray-700">CSV</span>
             </label>
@@ -187,7 +190,7 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
         <button
           onClick={handleExport}
           disabled={!selectedReport || !startDate || !endDate || isExporting}
-          className="w-full px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          className="w-full px-6 py-3 bg-[#e06465] text-white rounded-md hover:bg-[#c95759] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
         >
           {isExporting ? "Generando..." : "📥 Descargar Reporte"}
         </button>
@@ -195,9 +198,9 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
 
       {/* Report Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
-          <h3 className="font-semibold text-blue-900 mb-2">💡 Consejo</h3>
-          <p className="text-sm text-blue-800">
+        <div className="bg-[#fff3f1] rounded-lg border border-[#f2c4c0] p-4">
+          <h3 className="font-semibold text-[#9b3f40] mb-2">💡 Consejo</h3>
+          <p className="text-sm text-[#9b3f40]">
             Los reportes se generan en tiempo real con datos actualizados hasta el
             momento de la exportación.
           </p>
