@@ -24,11 +24,11 @@ export function AppLayout({ children }: AppLayoutProps) {
   };
 
   const protectedRoutes = routes.filter(
-    (r) => !r.isPublic && r.component && r.path !== "/:path*"
+    r => !r.isPublic && r.component && r.path !== "/:path*"
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f5f5f3] text-[#141719]">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -40,7 +40,11 @@ export function AppLayout({ children }: AppLayoutProps) {
             >
               ☰
             </button>
-            <h1 className="text-2xl font-bold text-blue-600">💰 Bitaxus</h1>
+            <img
+              src={`${import.meta.env.BASE_URL}assets/bitaxus-logo-black.png`}
+              alt="Bitaxus"
+              className="h-7 w-auto object-contain"
+            />
           </div>
 
           {/* Right Actions */}
@@ -54,7 +58,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <div className="relative">
               <button
                 onClick={() => setShowMenu(!showMenu)}
-                className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-white font-bold flex items-center justify-center hover:shadow-md transition-shadow"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e06465] font-semibold text-white transition-shadow hover:shadow-md"
               >
                 {user?.name.charAt(0).toUpperCase()}
               </button>
@@ -85,15 +89,17 @@ export function AppLayout({ children }: AppLayoutProps) {
         {/* Sidebar */}
         <aside
           className={`fixed lg:relative w-64 bg-gray-900 text-gray-100 transition-transform duration-300 z-30 ${
-            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            isMobileMenuOpen
+              ? "translate-x-0"
+              : "-translate-x-full lg:translate-x-0"
           } min-h-screen`}
         >
           <nav className="p-6 space-y-2">
-            {protectedRoutes.map((route) => (
+            {protectedRoutes.map(route => (
               <a
                 key={route.path}
                 href={route.path}
-                className="block px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium"
+                className="block rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {route.title}
@@ -103,10 +109,8 @@ export function AppLayout({ children }: AppLayoutProps) {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-auto">
-          <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-            {children}
-          </div>
+        <main className="flex-1 overflow-auto bg-[#f5f5f3]">
+          <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
     </div>

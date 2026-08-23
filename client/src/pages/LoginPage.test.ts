@@ -9,7 +9,7 @@ const source = readFileSync(
 
 describe("LoginPage password visibility", () => {
   it("offers an accessible visibility toggle for login and registration", () => {
-    expect(source).toContain('import { Eye, EyeOff } from "lucide-react";');
+    expect(source).toMatch(/Eye,\s+EyeOff/);
     expect(source).toContain('type={showPassword ? "text" : "password"}');
     expect(source).toContain(
       'type={showRegisterPassword ? "text" : "password"}'
@@ -21,7 +21,7 @@ describe("LoginPage password visibility", () => {
       /aria-label=\{[\s\S]*?showRegisterPassword[\s\S]*?Mostrar contraseña[\s\S]*?\}/
     );
     expect(source).toContain(
-      "focus:ring-2 focus:ring-inset focus:ring-blue-500"
+      "focus:ring-2 focus:ring-[#d95f61]"
     );
   });
 

@@ -1,12 +1,16 @@
-/**
- * LoginPage Component
- * User authentication login
- */
-
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  ShieldCheck,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "wouter";
+
+const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name}`;
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,8 +30,8 @@ export function LoginPage() {
   const { login, register } = useAuth();
   const [, navigate] = useLocation();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
     setIsLoading(true);
     setError("");
 
@@ -41,8 +45,8 @@ export function LoginPage() {
     }
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRegister = async (event: React.FormEvent) => {
+    event.preventDefault();
     setIsLoading(true);
     setError("");
 
@@ -61,66 +65,123 @@ export function LoginPage() {
     }
   };
 
+  const updateRegister = (field: keyof typeof registerData, value: string) => {
+    setRegisterData(current => ({ ...current, [field]: value }));
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo/Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">💰 Bitaxus</h1>
-          <p className="text-blue-100">
-            Gestión de operaciones financieras B2B
+    <div className="min-h-screen bg-[#f5f5f3] text-[#141719] lg:grid lg:grid-cols-2">
+      <section className="relative hidden min-h-screen overflow-hidden bg-[#111315] p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
+        <div
+          className="absolute -bottom-40 -right-28 h-[28rem] w-[28rem] rounded-full bg-[#e56a6a]/20 blur-3xl"
+          aria-hidden="true"
+        />
+        <div className="relative z-10 flex items-center">
+          <img
+            src={asset("bitaxus-logo.png")}
+            alt="Bitaxus"
+            className="h-7 w-auto object-contain"
+          />
+        </div>
+        <div className="relative z-10 max-w-xl pb-10 xl:pb-24">
+          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-[#e56a6a]">
+            Operación financiera inteligente
+          </p>
+          <h1 className="max-w-lg text-5xl font-semibold leading-[1.02] tracking-[-0.045em] xl:text-6xl">
+            Controla tu operación con claridad.
+          </h1>
+          <p className="mt-7 max-w-md text-base leading-7 text-white/65">
+            Una vista segura para recaudos, pagos, contrapartes y conciliación.
           </p>
         </div>
+        <div className="relative z-10 flex items-center gap-2 text-xs text-white/50">
+          <ShieldCheck size={16} /> Tus datos se gestionan con acceso protegido.
+        </div>
+      </section>
 
-        {/* Form Card */}
-        <div className="bg-white rounded-lg shadow-xl p-8">
-          {!showRegister ? (
-            <>
-              {/* Login Form */}
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Iniciar Sesión
-              </h2>
+      <section className="flex min-h-screen items-center justify-center px-5 py-10 sm:px-10">
+        <div className="w-full max-w-[430px]">
+          <div className="mb-8 flex items-center lg:hidden">
+            <img
+              src={asset("bitaxus-logo-black.png")}
+              alt="Bitaxus"
+              className="h-7 w-auto object-contain"
+            />
+          </div>
+          <div className="mb-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d95f61]">
+              Bienvenida de nuevo
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] text-[#141719]">
+              {showRegister ? "Crea tu cuenta" : "Ingresa a tu cuenta"}
+            </h2>
+            <p className="mt-2 text-sm text-slate-500">
+              Accede al espacio operativo de tu organización.
+            </p>
+          </div>
 
-              {error && (
-                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800">{error}</p>
-                </div>
-              )}
+          <div className="rounded-2xl border border-black/[0.07] bg-[#fafaf8] p-6 shadow-[0_18px_50px_rgba(17,19,21,0.07)] sm:p-8">
+            {error && (
+              <div
+                role="alert"
+                className="mb-5 rounded-xl border border-[#efb7b7] bg-[#fff3f2] px-4 py-3 text-sm text-[#a64246]"
+              >
+                {error}
+              </div>
+            )}
 
-              <form onSubmit={handleLogin} className="space-y-4">
-                {/* Email */}
+            {!showRegister ? (
+              <form onSubmit={handleLogin} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
+                  <label
+                    htmlFor="login-email"
+                    className="mb-2 block text-xs font-semibold text-slate-700"
+                  >
+                    Correo electrónico
                   </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="admin@bitaxus.test"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
+                  <div className="relative">
+                    <Mail
+                      size={16}
+                      className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                      aria-hidden="true"
+                    />
+                    <input
+                      id="login-email"
+                      type="email"
+                      value={email}
+                      onChange={event => setEmail(event.target.value)}
+                      placeholder="admin@bitaxus.test"
+                      className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-800 outline-none transition focus:border-[#d95f61] focus:ring-2 focus:ring-[#d95f61]/15"
+                      required
+                    />
+                  </div>
                 </div>
-
-                {/* Password */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="login-password"
+                    className="mb-2 block text-xs font-semibold text-slate-700"
+                  >
                     Contraseña
                   </label>
                   <div className="relative">
+                    <LockKeyhole
+                      size={16}
+                      className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                      aria-hidden="true"
+                    />
                     <input
+                      id="login-password"
                       type={showPassword ? "text" : "password"}
                       value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onChange={event => setPassword(event.target.value)}
+                      placeholder="Ingresa tu contraseña"
+                      className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-12 text-sm text-slate-800 outline-none transition focus:border-[#d95f61] focus:ring-2 focus:ring-[#d95f61]/15"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(visible => !visible)}
-                      className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-gray-500 transition-colors hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                      className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
                       aria-label={
                         showPassword
                           ? "Ocultar contraseña"
@@ -141,198 +202,146 @@ export function LoginPage() {
                     </button>
                   </div>
                 </div>
-
-                {/* Submit */}
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium mt-6"
+                  className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#e06465] px-4 text-sm font-semibold text-white transition hover:bg-[#cc595b] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isLoading ? "Iniciando..." : "Iniciar Sesión"}
+                  {isLoading ? "Ingresando..." : "Ingresar"}{" "}
+                  {!isLoading && <ArrowRight size={16} />}
                 </button>
               </form>
-
-              {/* Register Link */}
-              <div className="mt-4 text-center">
-                <p className="text-gray-600 text-sm">
-                  ¿No tienes cuenta?{" "}
-                  <button
-                    onClick={() => setShowRegister(true)}
-                    className="text-blue-600 hover:text-blue-700 font-medium"
-                  >
-                    Regístrate
-                  </button>
-                </p>
-              </div>
-
-              {/* Demo Login */}
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <p className="text-xs text-gray-600 mb-2 text-center">
-                  Demo: Usa cualquier email y contraseña
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEmail("demo@bitaxus.com");
-                    setPassword("demo123");
-                  }}
-                  className="w-full px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm"
-                >
-                  Usar email de demo
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              {/* Register Form */}
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Crear Cuenta
-              </h2>
-
-              {error && (
-                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800">{error}</p>
-                </div>
-              )}
-
+            ) : (
               <form onSubmit={handleRegister} className="space-y-4">
-                {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
+                  <label
+                    htmlFor="register-email"
+                    className="mb-2 block text-xs font-semibold text-slate-700"
+                  >
+                    Correo electrónico
                   </label>
                   <input
+                    id="register-email"
                     type="email"
                     value={registerData.email}
-                    onChange={e =>
-                      setRegisterData({
-                        ...registerData,
-                        email: e.target.value,
-                      })
+                    onChange={event =>
+                      updateRegister("email", event.target.value)
                     }
                     placeholder="tu@email.com"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm outline-none transition focus:border-[#d95f61] focus:ring-2 focus:ring-[#d95f61]/15"
                     required
                   />
                 </div>
-
-                {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nombre Completo
+                  <label
+                    htmlFor="register-name"
+                    className="mb-2 block text-xs font-semibold text-slate-700"
+                  >
+                    Nombre completo
                   </label>
                   <input
+                    id="register-name"
                     type="text"
                     value={registerData.name}
-                    onChange={e =>
-                      setRegisterData({ ...registerData, name: e.target.value })
+                    onChange={event =>
+                      updateRegister("name", event.target.value)
                     }
-                    placeholder="Juan Pérez"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Tu nombre"
+                    className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm outline-none transition focus:border-[#d95f61] focus:ring-2 focus:ring-[#d95f61]/15"
                     required
                   />
                 </div>
-
-                {/* Tenant Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nombre de la Empresa
+                  <label
+                    htmlFor="register-tenant"
+                    className="mb-2 block text-xs font-semibold text-slate-700"
+                  >
+                    Nombre de la empresa
                   </label>
                   <input
+                    id="register-tenant"
                     type="text"
                     value={registerData.tenantName}
-                    onChange={e =>
-                      setRegisterData({
-                        ...registerData,
-                        tenantName: e.target.value,
-                      })
+                    onChange={event =>
+                      updateRegister("tenantName", event.target.value)
                     }
                     placeholder="Mi Empresa"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm outline-none transition focus:border-[#d95f61] focus:ring-2 focus:ring-[#d95f61]/15"
                     required
                   />
                 </div>
-
-                {/* Password */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="register-password"
+                    className="mb-2 block text-xs font-semibold text-slate-700"
+                  >
                     Contraseña
                   </label>
                   <div className="relative">
                     <input
+                      id="register-password"
                       type={showRegisterPassword ? "text" : "password"}
                       value={registerData.password}
-                      onChange={e =>
-                        setRegisterData({
-                          ...registerData,
-                          password: e.target.value,
-                        })
+                      onChange={event =>
+                        updateRegister("password", event.target.value)
                       }
-                      placeholder="••••••••"
-                      className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Mínimo 6 caracteres"
+                      className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 pr-12 text-sm outline-none transition focus:border-[#d95f61] focus:ring-2 focus:ring-[#d95f61]/15"
                       required
+                      minLength={6}
                     />
                     <button
                       type="button"
                       onClick={() =>
                         setShowRegisterPassword(visible => !visible)
                       }
-                      className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-gray-500 transition-colors hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                      className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
                       aria-label={
                         showRegisterPassword
                           ? "Ocultar contraseña"
                           : "Mostrar contraseña"
                       }
                       aria-pressed={showRegisterPassword}
-                      title={
-                        showRegisterPassword
-                          ? "Ocultar contraseña"
-                          : "Mostrar contraseña"
-                      }
                     >
                       {showRegisterPassword ? (
-                        <EyeOff size={18} aria-hidden="true" />
+                        <EyeOff size={17} aria-hidden="true" />
                       ) : (
-                        <Eye size={18} aria-hidden="true" />
+                        <Eye size={17} aria-hidden="true" />
                       )}
                     </button>
                   </div>
                 </div>
-
-                {/* Submit */}
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium mt-6"
+                  className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#e06465] px-4 text-sm font-semibold text-white transition hover:bg-[#cc595b] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isLoading ? "Registrando..." : "Crear Cuenta"}
+                  {isLoading ? "Creando cuenta..." : "Crear cuenta"}{" "}
+                  {!isLoading && <ArrowRight size={16} />}
                 </button>
               </form>
+            )}
 
-              {/* Back to Login */}
-              <div className="mt-4 text-center">
-                <p className="text-gray-600 text-sm">
-                  ¿Ya tienes cuenta?{" "}
-                  <button
-                    onClick={() => {
-                      setShowRegister(false);
-                      setError("");
-                    }}
-                    className="text-blue-600 hover:text-blue-700 font-medium"
-                  >
-                    Inicia sesión
-                  </button>
-                </p>
-              </div>
-            </>
-          )}
-        </div>
+            <div className="mt-6 border-t border-slate-200 pt-5 text-center text-sm text-slate-500">
+              {showRegister ? "¿Ya tienes cuenta?" : "¿Necesitas acceso?"}{" "}
+              <button
+                type="button"
+                onClick={() => {
+                  setShowRegister(value => !value);
+                  setError("");
+                }}
+                className="font-semibold text-[#d95f61] transition hover:text-[#b64b4d] focus:outline-none focus:underline"
+              >
+                {showRegister ? "Inicia sesión" : "Solicita ayuda"}
+              </button>
+            </div>
+          </div>
 
-        {/* Footer */}
-        <div className="mt-8 text-center text-blue-100 text-sm">
-          <p>© 2024 Bitaxus. Todos los derechos reservados.</p>
+          <p className="mt-7 flex items-center justify-center gap-2 text-center text-xs text-slate-400">
+            <ShieldCheck size={14} /> Acceso protegido para tu organización.
+          </p>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
