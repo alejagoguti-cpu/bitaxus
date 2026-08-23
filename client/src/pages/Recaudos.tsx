@@ -62,6 +62,10 @@ export default function Recaudos({ onNavigate }: { onNavigate: (section: string)
   const [date, setDate] = useState("");
 
   useEffect(() => {
+    if (formOpen) void payersQuery.refetch();
+  }, [formOpen]);
+
+  useEffect(() => {
     if (!newPayerOpen || payerSubmitting) return;
     const started = Boolean(newPayerName || newPayerId || newPayerEmail || newPayerPhone);
     if (!started || newPayerValidation.isValid) { setPayerError(""); return; }
