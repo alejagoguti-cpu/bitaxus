@@ -1,22 +1,51 @@
 /**
- * useDashboardSupabase Hook
- * Supabase integration for dashboard metrics
+ * Dashboard data hooks for the public GitHub Pages build.
+ *
+ * The connected Supabase project currently exposes receipts and payments in the
+ * public schema. Keep the dashboard dependent only on those real tables and
+ * let RLS provide row-level visibility for the signed-in user.
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { supabase, callEdgeFunction } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
+
+export interface PublicReceipt {
+  id: string;
+  payer_id: string | null;
+  payer_name: string;
+  concept: string;
+  amount: number;
+  currency: string;
+  description: string | null;
+  receipt_date: string;
+  status: string;
+  created_at: string;
+}
+
+export interface PublicPayment {
+  id: string;
+  payment_type: string;
+  beneficiary: string | null;
+  dispersion_name: string | null;
+  account: string;
+  amount: number;
+  currency: string;
+  concept: string;
+  description: string | null;
+  payment_date: string;
+  monthly: boolean;
+  status: string;
+  created_at: string;
+}
 
 export interface DashboardMetrics {
   totalReceipts: number;
   totalReceiptsAmount: number;
   totalPayments: number;
   totalPaymentsAmount: number;
-  totalDispersions: number;
-  totalDispersionsAmount: number;
+  pendingReceipts: number;
   pendingPayments: number;
-  completedPayments: number;
-  canceledPayments: number;
-  activeCounterparties: number;
+  balance: number;
 }
 
 interface UseDashboardMetricsOptions {
@@ -24,105 +53,112 @@ interface UseDashboardMetricsOptions {
   period?: "today" | "week" | "month" | "year";
 }
 
-export function useDashboardMetricsSupabase(options: UseDashboardMetricsOptions) {
-  return useQuery({
-    queryKey: ["dashboard-metrics", options.tenantId, options.period || "month"],
+export function useDashboardMetricsSupabase(
+  options: UseDashboardMetricsOptions
+) {
+  return useQuery<DashboardMetrics>({
+    queryKey: [
+      "dashboard-metrics",
+      options.tenantId,
+      options.period || "month",
+    ],
     queryFn: async () => {
-      return callEdgeFunction<DashboardMetrics>("dashboard/metrics", {
-        tenant_id: options.tenantId,
-        period: options.period || "month",
-      });
+      const [receipts, payments] = await Promise.all([
+        supabase.from("receipts").select("amount, status"),
+        supabase.from("payments").select("amount, status"),
+      ]);
+
+      if (receipts.error) throw receipts.error;
+      if (payments.error) throw payments.error;
+
+      const receiptRows = receipts.data ?? [];
+      const paymentRows = payments.data ?? [];
+      const totalReceiptsAmount = receiptRows.reduce(
+        (sum, row) => sum + Number(row.amount || 0),
+        0
+      );
+      const totalPaymentsAmount = paymentRows.reduce(
+        (sum, row) => sum + Number(row.amount || 0),
+        0
+      );
+
+      return {
+        totalReceipts: receiptRows.length,
+        totalReceiptsAmount,
+        totalPayments: paymentRows.length,
+        totalPaymentsAmount,
+        pendingReceipts: receiptRows.filter(row => row.status === "Pendiente")
+          .length,
+        pendingPayments: paymentRows.filter(row =>
+          ["Programado", "En proceso"].includes(row.status)
+        ).length,
+        balance: totalReceiptsAmount - totalPaymentsAmount,
+      };
     },
     staleTime: 60000,
-    retry: 2,
+    retry: false,
+    enabled: Boolean(options.tenantId),
   });
 }
 
 export function useDashboardWidgetsSupabase(tenantId: string) {
-  const receiptsQuery = useQuery({
-    queryKey: ["dashboard-receipts-summary", tenantId],
+  const receiptsQuery = useQuery<PublicReceipt[]>({
+    queryKey: ["dashboard-receipts", tenantId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("receipts")
-        .select("status, amount", { count: "exact" })
-        .eq("tenant_id", tenantId)
-        .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+        .select(
+          "id, payer_id, payer_name, concept, amount, currency, description, receipt_date, status, created_at"
+        )
+        .order("created_at", { ascending: false })
+        .limit(50);
 
       if (error) throw error;
-
-      const total = data?.reduce((sum, r) => sum + (r.amount || 0), 0) || 0;
-      return { total, count: data?.length || 0 };
+      return (data ?? []) as PublicReceipt[];
     },
-    staleTime: 60000,
-    retry: 2,
+    staleTime: 30000,
+    retry: false,
+    enabled: Boolean(tenantId),
   });
 
-  const paymentsQuery = useQuery({
-    queryKey: ["dashboard-payments-summary", tenantId],
+  const paymentsQuery = useQuery<PublicPayment[]>({
+    queryKey: ["dashboard-payments", tenantId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("payments")
-        .select("status, amount", { count: "exact" })
-        .eq("tenant_id", tenantId)
-        .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+        .select(
+          "id, payment_type, beneficiary, dispersion_name, account, amount, currency, concept, description, payment_date, monthly, status, created_at"
+        )
+        .order("created_at", { ascending: false })
+        .limit(50);
 
       if (error) throw error;
-
-      const total = data?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0;
-      const byStatus = {
-        pending: data?.filter(p => p.status === "Pendiente").length || 0,
-        completed: data?.filter(p => p.status === "Completado").length || 0,
-        canceled: data?.filter(p => p.status === "Cancelado").length || 0,
-      };
-
-      return { total, count: data?.length || 0, byStatus };
+      return (data ?? []) as PublicPayment[];
     },
-    staleTime: 60000,
-    retry: 2,
-  });
-
-  const dispersionsQuery = useQuery({
-    queryKey: ["dashboard-dispersions-summary", tenantId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("dispersions")
-        .select("status, total_amount", { count: "exact" })
-        .eq("tenant_id", tenantId)
-        .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
-
-      if (error) throw error;
-
-      const total = data?.reduce((sum, d) => sum + (d.total_amount || 0), 0) || 0;
-      return { total, count: data?.length || 0 };
-    },
-    staleTime: 60000,
-    retry: 2,
+    staleTime: 30000,
+    retry: false,
+    enabled: Boolean(tenantId),
   });
 
   return {
     receipts: receiptsQuery,
     payments: paymentsQuery,
-    dispersions: dispersionsQuery,
-    isLoading: receiptsQuery.isLoading || paymentsQuery.isLoading || dispersionsQuery.isLoading,
-    error: receiptsQuery.error || paymentsQuery.error || dispersionsQuery.error,
+    dispersions: {
+      data: [] as never[],
+      isLoading: false,
+      error: null,
+    },
+    isLoading: receiptsQuery.isLoading || paymentsQuery.isLoading,
+    error: receiptsQuery.error || paymentsQuery.error,
   };
 }
 
 export function useDashboardRecentActivity(tenantId: string) {
-  return useQuery({
+  return useQuery<never[]>({
     queryKey: ["dashboard-recent-activity", tenantId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("activity_logs")
-        .select("*")
-        .eq("tenant_id", tenantId)
-        .order("created_at", { ascending: false })
-        .limit(10);
-
-      if (error) throw error;
-      return data || [];
-    },
-    staleTime: 30000,
-    retry: 2,
+    queryFn: async () => [],
+    enabled: false,
+    staleTime: Infinity,
+    initialData: [],
   });
 }
