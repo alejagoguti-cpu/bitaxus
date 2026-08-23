@@ -29,13 +29,10 @@ export function useCounterpartiesSupabase(options: UseCounterpartiesOptions) {
     queryFn: async () => {
       let query = supabase
         .from("counterparties")
-        .select("*", { count: "exact" })
-        .eq("tenant_id", options.tenantId)
+        .select("id,name,id_type,id_number,type,relation,phone,email,status,metadata,created_at,updated_at", { count: "exact" })
         .order("name", { ascending: true });
 
-      if (options.type) {
-        query = query.eq("type", options.type);
-      }
+      if (options.type) query = query.eq("relation", options.type === "client" ? "Cliente" : "Proveedor");
 
       if (options.search) {
         query = query.or(
@@ -51,7 +48,7 @@ export function useCounterpartiesSupabase(options: UseCounterpartiesOptions) {
       if (error) throw error;
 
       return {
-        data: data as Counterparty[],
+        data: (data ?? []).map(row => ({ ...row, tenant_id: options.tenantId })) as Counterparty[],
         total: count || 0,
         page: options.page || 1,
         limit: options.limit || 10,
