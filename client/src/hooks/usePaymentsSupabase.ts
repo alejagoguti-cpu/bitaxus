@@ -30,43 +30,40 @@ export function usePaymentsSupabase(options: UsePaymentsOptions) {
     queryFn: async () => {
       let query = supabase
         .from("payments")
-        .select(
-          `
-          *,
-          beneficiary:counterparties(id, name, email),
-          source_account:bank_accounts(id, bank_name, account_number),
-          created_by:users(id, name)
-        `,
-          { count: "exact" }
-        )
-        .eq("tenant_id", options.tenantId)
-        .order("scheduled_date", { ascending: false });
+        .select("id,payment_type,beneficiary,dispersion_name,account,amount,currency,concept,description,payment_date,monthly,status,created_at", { count: "exact" })
+        .order("payment_date", { ascending: false });
 
-      if (options.status) {
-        query = query.eq("status", options.status);
-      }
-
-      if (options.startDate) {
-        query = query.gte("scheduled_date", options.startDate);
-      }
-
-      if (options.endDate) {
-        query = query.lte("scheduled_date", options.endDate);
-      }
+      if (options.status) query = query.eq("status", options.status);
+      if (options.startDate) query = query.gte("payment_date", options.startDate);
+      if (options.endDate) query = query.lte("payment_date", options.endDate);
 
       const offset = ((options.page || 1) - 1) * (options.limit || 10);
       query = query.range(offset, offset + (options.limit || 10) - 1);
-
       const { data, error, count } = await query;
-
       if (error) throw error;
 
-      return {
-        data: data as Payment[],
-        total: count || 0,
-        page: options.page || 1,
-        limit: options.limit || 10,
-      };
+      const rows = (data ?? []).map(row => ({
+        id: row.id,
+        tenant_id: options.tenantId,
+        payment_number: row.id,
+        source_account_id: "",
+        beneficiary_id: "",
+        concept: row.concept,
+        amount: Number(row.amount || 0),
+        currency: row.currency || "COP",
+        scheduled_date: row.payment_date,
+        status: row.status as PaymentStatus,
+        recurrence: "once" as Payment["recurrence"],
+        is_recurring: Boolean(row.monthly),
+        notes: row.description || undefined,
+        period_year: Number(String(row.payment_date).slice(0, 4)),
+        period_month: Number(String(row.payment_date).slice(5, 7)),
+        created_at: row.created_at,
+        updated_at: row.created_at,
+        beneficiary: row.beneficiary ? { id: "", tenant_id: options.tenantId, name: row.beneficiary, id_type: "", id_number: "", type: "Persona jurídica", relation: "Proveedor", phone: "", email: "", status: "Activa", metadata: {}, created_at: row.created_at, updated_at: row.created_at } : undefined,
+      })) as Payment[];
+
+      return { data: rows, total: count || 0, page: options.page || 1, limit: options.limit || 10 };
     },
     staleTime: 30000,
     retry: 2,
