@@ -15,7 +15,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  db: { schema: "app" },
+  // The GitHub Pages build uses the tables created in the public schema.
+  // The previous app schema made valid Auth sessions look like login failures.
+  db: { schema: "public" },
   auth: {
     persistSession: true,
     autoRefreshToken: true,
