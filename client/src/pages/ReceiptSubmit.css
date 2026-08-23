@@ -1,0 +1,35 @@
+.receipt-form .form-actions .primary-action:disabled {
+  position: relative;
+  min-width: 190px;
+  cursor: wait !important;
+  color: transparent !important;
+  background: linear-gradient(135deg, #ca555b, #e97a78) !important;
+  box-shadow: 0 10px 22px rgba(201,81,88,.2) !important;
+}
+.receipt-form .form-actions .primary-action:disabled::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(50% - 75px);
+  width: 17px;
+  height: 17px;
+  margin-top: -9px;
+  border: 2px solid rgba(255,255,255,.36);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: receipt-submit-spin .72s linear infinite;
+}
+.receipt-form .form-actions .primary-action:disabled::after {
+  content: "Procesando recaudo";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-37%, -50%);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.receipt-form .form-actions .secondary-action:disabled { opacity: .55; cursor: wait; }
+@keyframes receipt-submit-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .receipt-form .form-actions .primary-action:disabled::before { animation: none; border-top-color: rgba(255,255,255,.8); } }

@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { canReviewReceipt } from "./receiptFlow";
 import "./ReceiptSuccess.css";
+import "./ReceiptSubmit.css";
 import { ArrowDownLeft, CalendarDays, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Plus, Search, SlidersHorizontal, Tag, X, UserRound, Building2, AlertTriangle } from "lucide-react";
 import HorizontalScrollHint from "../components/HorizontalScrollHint";
 import ExportActions from "../components/ExportActions";
