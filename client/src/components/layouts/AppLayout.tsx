@@ -139,7 +139,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         <nav
-          className="mobile-sidebar-nav shrink-0 space-y-1 overflow-hidden px-4 py-4 lg:flex-1 lg:space-y-2 lg:overflow-y-auto lg:px-4 lg:py-8"
+          className="mobile-sidebar-nav shrink-0 space-y-1 overflow-hidden px-4 py-4 lg:flex-none lg:space-y-1 lg:overflow-hidden lg:px-4 lg:py-5"
           aria-label="Navegación principal"
         >
           {navigation.map(({ label, path, icon: Icon }) => {
@@ -151,7 +151,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 type="button"
                 key={path}
                 onClick={() => goTo(path)}
-                className={`flex min-h-11 w-full items-center gap-4 rounded-xl px-5 text-left text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-[#e06465] lg:min-h-14 lg:gap-5 lg:rounded-2xl lg:px-6 lg:text-base ${isActive ? "bg-gradient-to-r from-[#e06465]/25 to-[#e06465]/5 text-[#ff7a7b] shadow-[inset_4px_0_0_#e06465]" : "text-white/70 hover:bg-white/[0.07] hover:text-white"}`}
+                className={`flex min-h-11 w-full items-center gap-4 rounded-xl px-5 text-left text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-[#e06465] lg:min-h-12 lg:gap-4 lg:rounded-xl lg:px-5 lg:text-sm ${isActive ? "bg-gradient-to-r from-[#e06465]/25 to-[#e06465]/5 text-[#ff7a7b] shadow-[inset_4px_0_0_#e06465]" : "text-white/70 hover:bg-white/[0.07] hover:text-white"}`}
                 aria-current={isActive ? "page" : undefined}
               >
                 <Icon size={20} strokeWidth={1.8} className="lg:h-[23px] lg:w-[23px]" />

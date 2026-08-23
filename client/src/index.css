@@ -1101,6 +1101,7 @@ body{background:var(--canvas);color:var(--ink);font-size:14px}.app-shell{backgro
 
 /* Mobile sidebar must fit its compact navigation and never expose a scroll rail. */
 @media (max-width:1023px){.mobile-sidebar-nav{flex:0 0 auto!important;max-height:none!important;overflow:hidden!important;overscroll-behavior:none!important;scrollbar-width:none!important;-ms-overflow-style:none!important}.mobile-sidebar-nav::-webkit-scrollbar{display:none!important}}
+@media (min-width:1024px){.mobile-sidebar-nav{flex:0 0 auto!important;overflow:hidden!important;overscroll-behavior:none!important;scrollbar-width:none!important;-ms-overflow-style:none!important}.mobile-sidebar-nav::-webkit-scrollbar{display:none!important}}
 
 .report-empty-chart{min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center;color:#7b8088}.report-empty-chart strong{font-size:13px;color:var(--ink);font-weight:800}.report-empty-chart span{max-width:250px;font-size:11px;line-height:1.5}.report-empty-donut{min-height:150px}.report-chart:has(.report-empty-chart) .chart-legend{opacity:.55}.report-chart:has(.report-empty-chart) .chart-head p,.status-report:has(.report-empty-donut) .chart-head p{color:#8b9097}
 /* Premium scheduling flow */
