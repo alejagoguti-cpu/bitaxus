@@ -113,7 +113,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[min(82vw,480px)] flex-col border-r border-white/[0.08] bg-[#050606] text-white shadow-2xl transition-transform duration-200 lg:sticky lg:top-0 lg:z-30 lg:h-screen lg:w-[280px] lg:translate-x-0 lg:shadow-none ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed inset-y-0 left-0 z-50 flex w-[min(82vw,480px)] flex-col border-r border-white/[0.08] bg-[#050606] text-white shadow-2xl transition-transform duration-200 lg:fixed lg:top-0 lg:z-30 lg:h-screen lg:w-[280px] lg:translate-x-0 lg:shadow-none ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex h-24 shrink-0 items-center justify-between border-b border-white/[0.08] px-8 lg:h-24 lg:px-7">
           <button
