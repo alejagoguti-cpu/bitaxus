@@ -52,7 +52,8 @@ export function useGlobalOperationsSupabase(tenantId?: string, filters?: { from?
       if (error) throw error;
       return (data ?? []) as PublicGlobalOperation[];
     },
-    enabled: Boolean(tenantId),
+    // RLS filters rows by auth.uid(); tenantId is presentation metadata only.
+    enabled: true,
     retry: false,
     staleTime: 30000,
   });

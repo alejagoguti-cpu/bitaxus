@@ -97,7 +97,8 @@ export function useDashboardMetricsSupabase(
     },
     staleTime: 60000,
     retry: false,
-    enabled: Boolean(options.tenantId),
+    // RLS filters rows by auth.uid(); tenantId is presentation metadata only.
+    enabled: true,
   });
 }
 
@@ -118,7 +119,8 @@ export function useDashboardWidgetsSupabase(tenantId: string) {
     },
     staleTime: 30000,
     retry: false,
-    enabled: Boolean(tenantId),
+    // RLS filters rows by auth.uid(); tenantId is presentation metadata only.
+    enabled: true,
   });
 
   const paymentsQuery = useQuery<PublicPayment[]>({
@@ -137,7 +139,8 @@ export function useDashboardWidgetsSupabase(tenantId: string) {
     },
     staleTime: 30000,
     retry: false,
-    enabled: Boolean(tenantId),
+    // RLS filters rows by auth.uid(); tenantId is presentation metadata only.
+    enabled: true,
   });
 
   return {

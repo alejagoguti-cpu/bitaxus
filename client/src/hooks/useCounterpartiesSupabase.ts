@@ -52,7 +52,8 @@ export function useCounterpartiesSupabase(tenantOrOptions?: string | Counterpart
       if (error) throw error;
       return (data ?? []) as PublicCounterparty[];
     },
-    enabled: Boolean(tenantId),
+    // RLS filters rows by auth.uid(); the synthetic tenant is only presentation metadata.
+    enabled: true,
     retry: false,
     staleTime: 30000,
   });
