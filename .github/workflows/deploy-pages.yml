@@ -33,6 +33,10 @@ jobs:
         run: pnpm run build:client
         env:
           GITHUB_ACTIONS: true
+          # Estas dos variables son públicas por diseño y están protegidas por RLS.
+          # La service role key nunca se incluye en este workflow ni en el bundle.
+          VITE_SUPABASE_URL: https://hduqkztwwvbgmttlmsle.supabase.co
+          VITE_SUPABASE_ANON_KEY: sb_publishable_V5PJfk7ZDr2frE8o-Ry8yQ_qSbFnjYR
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:

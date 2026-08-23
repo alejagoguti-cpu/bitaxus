@@ -19,8 +19,8 @@ export {
   useCreatePaymentSupabase as useCreatePayment,
   useProcessPaymentSupabase as useProcessPayment,
   useCancelPaymentSupabase as useCancelPayment,
-  usePaymentOperationsSupabase as usePaymentOperations,
 } from "./usePaymentsSupabase";
+export { usePaymentOperationsSupabase as usePaymentOperations } from "./usePaymentOperationsSupabase";
 
 // Dashboard - Supabase
 export {
