@@ -112,6 +112,7 @@ function StatusTooltip({ active, payload }: StatusTooltipProps) {
 }
 
 export function ReportsPage({ tenantId }: ReportsPageProps) {
+  const shouldAnimateBars = typeof window !== "undefined" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const [period, setPeriod] = useState<ReportPeriod>("Últimos 6 meses");
   const [operation, setOperation] = useState<ReportOperationFilter>("Todas");
   const [query, setQuery] = useState("");
@@ -293,12 +294,12 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
             <div className="report-bar-chart-plot" role="img" aria-label="Gráfico de barras de entradas y salidas mensuales en pesos colombianos">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={volumeData} margin={{ top: 12, right: 12, left: 8, bottom: 30 }} barGap={5}>
-                  <CartesianGrid vertical={false} stroke="#e8eaed" strokeDasharray="3 3" />
-                  <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: "#d9dde2" }} tick={{ fill: "#777f89", fontSize: 11 }} label={{ value: "Eje X · Mes", position: "insideBottom", offset: -17, fill: "#777f89", fontSize: 10 }} />
-                  <YAxis width={68} tickLine={false} axisLine={{ stroke: "#d9dde2" }} tick={{ fill: "#777f89", fontSize: 10 }} tickFormatter={compactMoney} label={{ value: "Eje Y · COP", angle: -90, position: "insideLeft", offset: 5, fill: "#777f89", fontSize: 10 }} />
+                  <CartesianGrid vertical={false} stroke="#f2d8d7" strokeDasharray="3 4" />
+                  <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: "#e5a5a3" }} tick={{ fill: "#626973", fontSize: 11 }} label={{ value: "Eje X · Mes", position: "insideBottom", offset: -17, fill: "#cf4d4b", fontSize: 10, fontWeight: 700 }} />
+                  <YAxis width={68} tickLine={false} axisLine={{ stroke: "#e5a5a3" }} tick={{ fill: "#626973", fontSize: 10 }} tickFormatter={compactMoney} label={{ value: "Eje Y · COP", angle: -90, position: "insideLeft", offset: 5, fill: "#cf4d4b", fontSize: 10, fontWeight: 700 }} />
                   <Tooltip cursor={{ fill: "rgba(239, 91, 89, 0.06)" }} content={props => <VolumeTooltip {...(props as unknown as VolumeTooltipProps)} />} />
-                  <Bar name="Entradas" dataKey="incoming" fill="#ef5b59" radius={[5, 5, 0, 0]} maxBarSize={30} />
-                  <Bar name="Salidas" dataKey="outgoing" fill="#25292e" radius={[5, 5, 0, 0]} maxBarSize={30} />
+                  <Bar name="Entradas" dataKey="incoming" fill="#ef5b59" radius={[5, 5, 0, 0]} maxBarSize={30} isAnimationActive={shouldAnimateBars} animationBegin={80} animationDuration={680} animationEasing="ease-out" />
+                  <Bar name="Salidas" dataKey="outgoing" fill="#25292e" radius={[5, 5, 0, 0]} maxBarSize={30} isAnimationActive={shouldAnimateBars} animationBegin={150} animationDuration={680} animationEasing="ease-out" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
