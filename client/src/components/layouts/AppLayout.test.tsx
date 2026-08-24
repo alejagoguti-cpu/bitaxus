@@ -28,6 +28,8 @@ describe("AppLayout en Home", () => {
     expect(screen.getByRole("navigation", { name: "Navegación principal" })).not.toBeNull();
     expect(screen.getByRole("button", { name: "Inicio" }).getAttribute("aria-current")).toBe("page");
     expect(screen.getByRole("button", { name: "Recaudos" })).not.toBeNull();
-    expect(container.querySelector(".dashboard-global-header")).toBeNull();
+    expect(container.querySelector("header")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Abrir menú de usuario" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Notificaciones" })).toBeNull();
   });
 });
