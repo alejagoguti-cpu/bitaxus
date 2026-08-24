@@ -22,6 +22,7 @@ import "./PaymentFlow.css";
 import "./ReceiptSuccess.css";
 import "./ReceiptSubmit.css";
 import "./PaymentOperationsWorkspace.css";
+import "./RecordDetail.css";
 
 type Scope = "all" | PaymentMode;
 type PaymentRecord = {
@@ -373,7 +374,7 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenant
             {paymentsQuery.isLoading && <tr><td colSpan={8} className="empty-row">Cargando operaciones…</td></tr>}
             {paymentsQuery.error && <tr><td colSpan={8} className="empty-row">No fue posible cargar las operaciones.</td></tr>}
             {!paymentsQuery.isLoading && !paymentsQuery.error && !items.length && <tr><td colSpan={8} className="empty-row">No hay operaciones registradas con esos filtros.</td></tr>}
-            {items.map(item => <tr key={item.id}><td title={item.id}>{item.id.slice(0, 8)}</td><td><span className={`payment-type ${item.type === "Dispersión" ? "coral" : "ink"}`}>{item.type}</span></td><td>{item.counterparty}</td><td>{item.concept}</td><td>{item.value}</td><td>{item.date}</td><td><span className={`payment-status ${item.status.toLocaleLowerCase("es-CO").replaceAll(" ", "-")}`}>{item.status}</span></td><td><ChevronRight size={16} /></td></tr>)}
+            {items.map(item => <tr key={item.id}><td title={item.id}>{item.id.slice(0, 8)}</td><td><span className={`payment-type ${item.type === "Dispersión" ? "coral" : "ink"}`}>{item.type}</span></td><td><button type="button" className="table-text-link" onClick={() => navigate(`/payments/${item.id}`)}>{item.counterparty}</button></td><td>{item.concept}</td><td>{item.value}</td><td>{item.date}</td><td><span className={`payment-status ${item.status.toLocaleLowerCase("es-CO").replaceAll(" ", "-")}`}>{item.status}</span></td><td><button type="button" className="row-detail-action" aria-label={`Ver detalle de ${item.counterparty}`} onClick={() => navigate(`/payments/${item.id}`)}><ChevronRight size={16} /></button></td></tr>)}
           </tbody></table>
         </HorizontalScrollHint>
         <div className="payments-footer">

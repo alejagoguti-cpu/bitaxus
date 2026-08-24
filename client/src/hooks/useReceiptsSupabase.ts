@@ -92,13 +92,7 @@ export function useReceiptSupabase(receiptId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("receipts")
-        .select(
-          `
-          *,
-          payer:counterparties(id, name, email, phone),
-          created_by:users(id, name, email)
-        `
-        )
+        .select("*")
         .eq("id", receiptId)
         .single();
 
@@ -142,6 +136,48 @@ export function useCreateReceiptSupabase(tenantId: string) {
     onError: (error) => {
       console.error("Error creating receipt:", error);
       throw error;
+    },
+  });
+}
+
+export type ReceiptUpdateInput = {
+  payer_id?: string;
+  concept?: string;
+  amount?: number;
+  currency?: string;
+  date?: string;
+  receipt_date?: string;
+  reference_id?: string | null;
+  notes?: string | null;
+  description?: string | null;
+  status?: ReceiptStatus | string;
+};
+
+export function useEditReceiptSupabase(receiptId: string, tenantId?: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: ReceiptUpdateInput) => {
+      const payload = { ...input, updated_at: new Date().toISOString() };
+      if (input.date && !input.receipt_date) {
+        payload.receipt_date = input.date;
+        delete payload.date;
+      }
+      const { data, error } = await supabase
+        .from("receipts")
+        .update(payload)
+        .eq("id", receiptId)
+        .select()
+        .single();
+      if (error) throw error;
+      return data as Receipt;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["receipt", receiptId] });
+      queryClient.invalidateQueries({ queryKey: ["receipts", tenantId] });
+      queryClient.invalidateQueries({ queryKey: ["public-receipts"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-receipts"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
     },
   });
 }

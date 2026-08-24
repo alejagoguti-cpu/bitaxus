@@ -65,9 +65,11 @@ export function useCounterpartySupabase(counterpartyId: string) {
   return useQuery<PublicCounterparty>({ queryKey: ["public-counterparty", counterpartyId], queryFn: async () => { const { data, error } = await supabase.from("counterparties").select(selectColumns).eq("id", counterpartyId).single(); if (error) throw error; return data as PublicCounterparty; }, enabled: Boolean(counterpartyId), retry: false });
 }
 
+export type CounterpartyUpdateInput = Partial<CounterpartyInput> & { status?: PublicCounterparty["status"] };
+
 export function useUpdateCounterpartySupabase(counterpartyId: string, tenantId?: string) {
   const client = useQueryClient();
-  return useMutation({ mutationFn: async (input: Partial<CounterpartyInput>) => { const { data, error } = await supabase.from("counterparties").update({ ...input, updated_at: new Date().toISOString() }).eq("id", counterpartyId).select(selectColumns).single(); if (error) throw error; return data as PublicCounterparty; }, onSuccess: () => { client.invalidateQueries({ queryKey: ["public-counterparty", counterpartyId] }); client.invalidateQueries({ queryKey: ["public-counterparties", tenantId ?? "anonymous"] }); } });
+  return useMutation({ mutationFn: async (input: CounterpartyUpdateInput) => { const { data, error } = await supabase.from("counterparties").update({ ...input, updated_at: new Date().toISOString() }).eq("id", counterpartyId).select(selectColumns).single(); if (error) throw error; return data as PublicCounterparty; }, onSuccess: () => { client.invalidateQueries({ queryKey: ["public-counterparty", counterpartyId] }); client.invalidateQueries({ queryKey: ["public-counterparties", tenantId ?? "anonymous"] }); } });
 }
 
 export function useDeleteCounterpartySupabase(counterpartyId: string, tenantId?: string) {

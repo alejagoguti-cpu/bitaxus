@@ -76,14 +76,7 @@ export function usePaymentSupabase(paymentId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("payments")
-        .select(
-          `
-          *,
-          beneficiary:counterparties(id, name, email, phone),
-          source_account:bank_accounts(id, bank_name, account_number, account_holder),
-          created_by:users(id, name, email)
-        `
-        )
+        .select("*")
         .eq("id", paymentId)
         .single();
 
@@ -115,6 +108,42 @@ export function useCreatePaymentSupabase(tenantId: string) {
     onError: (error) => {
       console.error("Error creating payment:", error);
       throw error;
+    },
+  });
+}
+
+export type PaymentUpdateInput = {
+  beneficiary?: string | null;
+  dispersion_name?: string | null;
+  account?: string | null;
+  amount?: number;
+  concept?: string;
+  description?: string | null;
+  payment_date?: string;
+  monthly?: boolean;
+  status?: PaymentStatus | string;
+};
+
+export function useUpdatePaymentSupabase(paymentId: string, tenantId?: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: PaymentUpdateInput) => {
+      const { data, error } = await supabase
+        .from("payments")
+        .update({ ...input, updated_at: new Date().toISOString() })
+        .eq("id", paymentId)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["payment", paymentId] });
+      queryClient.invalidateQueries({ queryKey: ["payments", tenantId] });
+      queryClient.invalidateQueries({ queryKey: ["public-payment-operations"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-payments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
     },
   });
 }

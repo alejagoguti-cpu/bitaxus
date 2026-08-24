@@ -9,6 +9,7 @@ export {
   useReceiptSupabase as useReceipt,
   useCreateReceiptSupabase as useCreateReceipt,
   useUpdateReceiptSupabase as useUpdateReceipt,
+  useEditReceiptSupabase,
   useReceiptSubscription,
 } from "./useReceiptsSupabase";
 
@@ -19,6 +20,7 @@ export {
   useCreatePaymentSupabase as useCreatePayment,
   useProcessPaymentSupabase as useProcessPayment,
   useCancelPaymentSupabase as useCancelPayment,
+  useUpdatePaymentSupabase,
 } from "./usePaymentsSupabase";
 export { usePaymentOperationsSupabase as usePaymentOperations } from "./usePaymentOperationsSupabase";
 

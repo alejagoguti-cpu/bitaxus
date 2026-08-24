@@ -13,6 +13,9 @@ import { PaymentsPage } from "@/pages/PaymentsPage";
 import { ProgramarPagoPage } from "@/pages/ProgramarPagoPage";
 import { DispersionsPage } from "@/pages/DispersionsPage";
 import { CounterpartiesPage } from "@/pages/CounterpartiesPage";
+import { CounterpartyDetailPage } from "@/pages/CounterpartyDetailPage";
+import { PaymentDetailPage } from "@/pages/PaymentDetailPage";
+import { ReceiptDetailPage } from "@/pages/ReceiptDetailPage";
 import { ReportsPage } from "@/pages/ReportsPage";
 import { SettingsPage } from "@/pages/SettingsPage";
 import Recaudos from "@/pages/Recaudos";
@@ -141,6 +144,7 @@ export const routes = [
   {
     path: "/receipts/:id",
     title: "Detalle de Recaudo",
+    component: ReceiptDetailPage,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR, UserRole.VIEWER],
   },
 
@@ -161,6 +165,7 @@ export const routes = [
   {
     path: "/payments/:id",
     title: "Detalle de Pago",
+    component: PaymentDetailPage,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR, UserRole.VIEWER],
   },
 
@@ -187,6 +192,7 @@ export const routes = [
   {
     path: "/counterparties/:id",
     title: "Detalle de Contraparte",
+    component: CounterpartyDetailPage,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR, UserRole.VIEWER],
   },
 
