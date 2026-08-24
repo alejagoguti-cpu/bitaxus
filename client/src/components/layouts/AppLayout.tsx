@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { GlobalHeader, GlobalHeaderProvider } from "./GlobalHeader";
+import { NativeSelectGuard } from "@/components/NativeSelectGuard";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -112,6 +113,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           </GlobalHeaderProvider>
         </main>
       </div>
+      <NativeSelectGuard />
     </div>
   );
 }
