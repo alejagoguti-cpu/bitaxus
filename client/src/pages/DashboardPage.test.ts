@@ -24,14 +24,36 @@ describe("public dashboard data contract", () => {
     expect(hookSource).toContain('queryKey: ["dashboard-payments", tenantId, period]');
   });
 
+  it("filters dashboard rows by operation date and counts scheduled payments", () => {
+    expect(hookSource).toContain('.gte("receipt_date", periodStart.slice(0, 10))');
+    expect(hookSource).toContain('.gte("payment_date", periodStart.slice(0, 10))');
+    expect(hookSource).toContain("const quarterStartMonth = Math.floor(start.getMonth() / 3) * 3;");
+    expect(pageSource).toContain('["Pendiente", "Programado", "En proceso"]');
+  });
+
   it("renders a clear empty state instead of crashing when there are no rows", () => {
     expect(pageSource).toContain("Aún no hay movimientos registrados.");
-    expect(pageSource).toContain("No pudimos cargar los movimientos.");
+    expect(pageSource).toContain("No pudimos cargar los movimientos desde Supabase.");
   });
 
   it("keeps the compact operational entry points and a user-aware greeting", () => {
     expect(pageSource).toContain('Hola, {user?.name || "tu cuenta"}');
     expect(pageSource).toContain("Programar recaudo");
     expect(pageSource).toContain("Programar pago");
+  });
+
+  it("keeps dashboard queries fresh after payment and receipt mutations", () => {
+    const paymentsSource = readFileSync(
+      resolve(process.cwd(), "client/src/pages/PaymentOperationsWorkspace.tsx"),
+      "utf8"
+    );
+    const receiptsSource = readFileSync(
+      resolve(process.cwd(), "client/src/pages/ProgramarRecaudoPage.tsx"),
+      "utf8"
+    );
+    expect(paymentsSource).toContain('queryClient.invalidateQueries({ queryKey: ["dashboard-payments"] })');
+    expect(paymentsSource).toContain('queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] })');
+    expect(receiptsSource).toContain('queryClient.invalidateQueries({ queryKey: ["dashboard-receipts"] })');
+    expect(receiptsSource).toContain('queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] })');
   });
 });

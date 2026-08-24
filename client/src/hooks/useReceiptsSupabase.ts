@@ -136,6 +136,8 @@ export function useCreateReceiptSupabase(tenantId: string) {
       queryClient.invalidateQueries({
         queryKey: ["receipts", tenantId],
       });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-receipts"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
     },
     onError: (error) => {
       console.error("Error creating receipt:", error);
@@ -167,6 +169,8 @@ export function useUpdateReceiptSupabase(receiptId: string, tenantId: string) {
       // Invalidate both the single receipt and receipts list
       queryClient.invalidateQueries({ queryKey: ["receipt", receiptId] });
       queryClient.invalidateQueries({ queryKey: ["receipts", tenantId] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-receipts"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
     },
     onError: (error) => {
       console.error("Error updating receipt:", error);

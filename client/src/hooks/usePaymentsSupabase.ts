@@ -109,6 +109,8 @@ export function useCreatePaymentSupabase(tenantId: string) {
       queryClient.invalidateQueries({
         queryKey: ["payments", tenantId],
       });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-payments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
     },
     onError: (error) => {
       console.error("Error creating payment:", error);
@@ -133,6 +135,8 @@ export function useProcessPaymentSupabase(
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["payment", paymentId] });
       queryClient.invalidateQueries({ queryKey: ["payments", tenantId] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-payments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
     },
     onError: (error) => {
       console.error("Error processing payment:", error);
@@ -166,6 +170,8 @@ export function useCancelPaymentSupabase(
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["payment", paymentId] });
       queryClient.invalidateQueries({ queryKey: ["payments", tenantId] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-payments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
     },
     onError: (error) => {
       console.error("Error canceling payment:", error);

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import {
   ArrowDownLeft,
@@ -22,7 +22,7 @@ import {
   X,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { validateNewPayer } from "./payerValidation";
 import "./ProgramarRecaudoPage.css";
 
@@ -111,6 +111,7 @@ function getAuthErrorMessage(error: unknown, fallback: string) {
 export function ProgramarRecaudoPage({ tenantId }: { tenantId?: string }) {
   const { user } = useAuth();
   const [, navigate] = useLocation();
+  const queryClient = useQueryClient();
   const payerMenuRef = useRef<HTMLDivElement>(null);
   const [formStep, setFormStep] = useState<1 | 2>(1);
   const [selectedPayer, setSelectedPayer] = useState<Payer | null>(null);
@@ -149,7 +150,7 @@ export function ProgramarRecaudoPage({ tenantId }: { tenantId?: string }) {
     },
     staleTime: 30_000,
     retry: false,
-    enabled: Boolean(tenantId),
+    enabled: Boolean(tenantId && isSupabaseConfigured),
   });
 
   useEffect(() => {
@@ -280,6 +281,11 @@ export function ProgramarRecaudoPage({ tenantId }: { tenantId?: string }) {
       return;
     }
 
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["dashboard-receipts"] }),
+      queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] }),
+      queryClient.invalidateQueries({ queryKey: ["receipts"] }),
+    ]);
     setSubmitting(false);
     setSuccess(true);
   }

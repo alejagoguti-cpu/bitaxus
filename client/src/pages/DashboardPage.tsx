@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { isSupabaseConfigured } from "@/lib/supabase";
 import { useDashboardWidgets } from "@/hooks";
 import { formatCurrency, formatDateDisplay } from "@/lib/formatting";
 import type { DashboardPeriod, PublicPayment, PublicReceipt } from "@/hooks/useDashboardSupabase";
@@ -142,14 +143,20 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
   const paymentRows = payments.data ?? [];
 
   const metrics = useMemo(() => {
-    const incoming = receiptRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-    const outgoing = paymentRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+    const incoming = receiptRows.reduce(
+      (sum, row) => sum + (String(row.currency || "COP").toUpperCase() === "COP" ? Number(row.amount || 0) : 0),
+      0
+    );
+    const outgoing = paymentRows.reduce(
+      (sum, row) => sum + (String(row.currency || "COP").toUpperCase() === "COP" ? Number(row.amount || 0) : 0),
+      0
+    );
     return {
       incoming,
       outgoing,
       balance: incoming - outgoing,
       pendingReceipts: receiptRows.filter(row => row.status === "Pendiente").length,
-      pendingPayments: paymentRows.filter(row => ["Programado", "En proceso"].includes(row.status)).length,
+      pendingPayments: paymentRows.filter(row => ["Pendiente", "Programado", "En proceso"].includes(row.status)).length,
     };
   }, [paymentRows, receiptRows]);
 
@@ -237,7 +244,7 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
         </div>
       </header>
 
-      {error && <section className="inline-alert" role="alert">No pudimos cargar los movimientos. Vuelve a intentarlo.</section>}
+      {!isSupabaseConfigured ? <section className="inline-alert" role="alert">Supabase no está configurado en este entorno. Agrega las variables públicas para cargar el resumen real.</section> : error && <section className="inline-alert" role="alert">No pudimos cargar los movimientos desde Supabase. Vuelve a intentarlo.</section>}
 
       {summaryVisible ? (
         <section className="summary-card home-summary-card panel">
