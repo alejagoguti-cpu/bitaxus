@@ -21,6 +21,27 @@
 
 .reports-page .reports-filters .branded-select-options {
   z-index: 100;
+  max-height: none;
+  padding: 4px;
+  border-color: #f0c3c0;
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(20, 24, 30, 0.12);
+}
+
+.reports-page .reports-filters .branded-select-option {
+  min-height: 31px;
+  border-radius: 6px;
+  padding: 0 9px;
+  font-size: 11px;
+}
+
+.reports-page .reports-filters > label:has(.branded-select-trigger[aria-expanded="true"]) {
+  position: relative;
+  z-index: 110;
+}
+
+.reports-page .reports-filters:has(.branded-select-trigger[aria-expanded="true"]) {
+  margin-bottom: 138px;
 }
 
 .report-modal .branded-select {
