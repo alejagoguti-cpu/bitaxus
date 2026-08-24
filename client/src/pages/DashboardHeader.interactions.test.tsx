@@ -8,6 +8,8 @@ import { GlobalHeader, GlobalHeaderProvider } from "@/components/layouts/GlobalH
 const mocks = vi.hoisted(() => ({
   navigate: vi.fn(),
   logout: vi.fn().mockResolvedValue(undefined),
+  receipts: [] as Array<Record<string, unknown>>,
+  payments: [] as Array<Record<string, unknown>>,
 }));
 
 vi.mock("@/contexts/AuthContext", () => ({
@@ -22,8 +24,8 @@ vi.mock("@/lib/supabase", () => ({ isSupabaseConfigured: true }));
 
 vi.mock("@/hooks", () => ({
   useDashboardWidgets: () => ({
-    receipts: { data: [], refetch: vi.fn() },
-    payments: { data: [], refetch: vi.fn() },
+    receipts: { data: mocks.receipts, refetch: vi.fn() },
+    payments: { data: mocks.payments, refetch: vi.fn() },
     isLoading: false,
     error: null,
   }),
@@ -42,6 +44,8 @@ describe("Dashboard header menus", () => {
   beforeEach(() => {
     mocks.navigate.mockClear();
     mocks.logout.mockClear();
+    mocks.receipts = [];
+    mocks.payments = [];
   });
 
   const renderDashboardWithGlobalHeader = () => render(
@@ -87,6 +91,20 @@ describe("Dashboard header menus", () => {
     expect(mocks.navigate).toHaveBeenCalledWith("/reports");
   });
 
+  it("lists a real pending operation and routes to its module", async () => {
+    mocks.receipts = [{ id: "receipt-1", payer_name: "Comercial Andina", concept: "Factura", status: "Pendiente", receipt_date: "2026-08-23", created_at: "2026-08-23" }];
+    const user = userEvent.setup();
+    renderDashboardWithGlobalHeader();
+
+    await user.click(screen.getByRole("button", { name: /notificaciones/i }));
+    const notificationDialog = screen.getByRole("dialog", { name: "Notificaciones" });
+    const alert = within(notificationDialog).getByRole("button", { name: /recaudo pendiente/i });
+
+    expect(within(notificationDialog).getByText("Comercial Andina")).not.toBeNull();
+    await user.click(alert);
+    expect(mocks.navigate).toHaveBeenCalledWith("/receipts");
+  });
+
   it("opens profile, exposes configuration and closes the session", async () => {
     const user = userEvent.setup();
     renderDashboardWithGlobalHeader();
@@ -96,8 +114,10 @@ describe("Dashboard header menus", () => {
 
     expect(screen.getByRole("menu")).not.toBeNull();
     expect(screen.getByText("Alejandra")).not.toBeNull();
-    expect(screen.getByRole("button", { name: "Configuración" })).not.toBeNull();
+    await user.click(screen.getByRole("button", { name: "Configuración" }));
+    expect(mocks.navigate).toHaveBeenCalledWith("/settings");
 
+    await user.click(profile);
     await user.click(screen.getByRole("button", { name: "Cerrar sesión" }));
     expect(mocks.logout).toHaveBeenCalledTimes(1);
   });

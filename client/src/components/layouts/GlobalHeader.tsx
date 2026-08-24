@@ -88,7 +88,15 @@ export function GlobalHeader() {
   const [profileOpen, setProfileOpen] = useState(false);
   const company = tenant?.name || "Bitaxus";
   const { receipts, payments } = useDashboardWidgets(tenant?.id || "", period, { subscribe: false });
-  const pendingCount = (receipts.data ?? []).filter(row => row.status === "Pendiente").length + (payments.data ?? []).filter(row => ["Pendiente", "Programado", "En proceso"].includes(row.status)).length;
+  const alerts = useMemo(() => [
+    ...(receipts.data ?? [])
+      .filter(row => row.status === "Pendiente")
+      .map(row => ({ id: `receipt-${row.id}`, title: "Recaudo pendiente", detail: row.payer_name || row.concept || "Recaudo sin contraparte", status: row.status, date: row.receipt_date || row.created_at, path: "/receipts", tone: "receipt" })),
+    ...(payments.data ?? [])
+      .filter(row => ["Pendiente", "Programado", "En proceso"].includes(row.status))
+      .map(row => ({ id: `payment-${row.id}`, title: row.status === "En proceso" ? "Pago en proceso" : "Pago pendiente", detail: row.beneficiary || row.dispersion_name || row.concept || "Pago sin contraparte", status: row.status, date: row.payment_date || row.created_at, path: "/payments", tone: "payment" })),
+  ].sort((left, right) => new Date(right.date).getTime() - new Date(left.date).getTime()).slice(0, 5), [payments.data, receipts.data]);
+  const pendingCount = alerts.length;
 
   useEffect(() => {
     const close = (event: MouseEvent) => {
@@ -133,7 +141,7 @@ export function GlobalHeader() {
             <Bell size={17} strokeWidth={1.8} />
             {pendingCount > 0 && <span>{pendingCount > 9 ? "9+" : pendingCount}</span>}
           </button>
-          {notificationsOpen && <div className="global-header-popover" role="dialog" aria-label="Notificaciones"><b>Notificaciones</b><p>{pendingCount ? `${pendingCount} operación(es) requieren revisión.` : "No hay operaciones pendientes."}</p><button type="button" onClick={() => { closeTools(); navigate("/reports"); }}>Revisar operaciones <ArrowRight size={13} /></button></div>}
+          {notificationsOpen && <div className="global-header-popover global-header-notifications" role="dialog" aria-label="Notificaciones"><div className="global-header-popover-title"><b>Notificaciones</b>{pendingCount > 0 && <span>{pendingCount} pendiente{pendingCount === 1 ? "" : "s"}</span>}</div>{pendingCount === 0 ? <p>No hay operaciones pendientes.</p> : <div className="global-alert-list">{alerts.map(alert => <button type="button" className="global-alert-item" key={alert.id} onClick={() => { closeTools(); navigate(alert.path); }}><span className={`global-alert-dot ${alert.tone}`} aria-hidden="true" /><span className="global-alert-content"><strong>{alert.title}</strong><span>{alert.detail}</span><small>{alert.status}</small></span><ArrowRight size={13} aria-hidden="true" /></button>)}</div>}<button type="button" className="global-header-show-all" onClick={() => { closeTools(); navigate("/reports"); }}>Revisar operaciones <ArrowRight size={13} /></button></div>}
         </div>
         <div className="global-header-tool-wrap">
           <button type="button" className="global-header-icon-button" aria-label="Ayuda" aria-expanded={helpOpen} onClick={() => { setHelpOpen(current => !current); setNotificationsOpen(false); setProfileOpen(false); }}><CircleHelp size={17} strokeWidth={1.8} /></button>
