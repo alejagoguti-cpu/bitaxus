@@ -99,6 +99,67 @@ function sanitizeSearchTerm(value: string) {
   return value.replace(/[%,().]/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
 }
 
+type PaymentQueryFilters = {
+  scope: Scope;
+  tab: string;
+  searchTerm: string;
+  dateFilter: string;
+  statusFilter: string;
+  typeFilter: string;
+  conceptFilter: string;
+};
+
+function buildPaymentRequest({ scope, tab, searchTerm, dateFilter, statusFilter, typeFilter, conceptFilter }: PaymentQueryFilters) {
+  let request = supabase
+    .from("payments")
+    .select("id,payment_type,beneficiary,dispersion_name,account,amount,currency,concept,description,payment_date,monthly,status,created_at", { count: "exact" })
+    .order("payment_date", { ascending: false })
+    .order("created_at", { ascending: false });
+
+  if (scope === "Dispersión") request = request.eq("payment_type", "Dispersión");
+  if (tab === "En proceso") request = request.in("status", ["Pendiente", "Programado", "En proceso"]);
+  if (tab === "Procesados") request = request.eq("status", "Procesado");
+  if (tab === "Cancelados") request = request.eq("status", "Cancelado");
+  if (statusFilter !== "Todos") request = request.eq("status", statusFilter);
+  if (typeFilter !== "Todos") request = request.eq("payment_type", typeFilter);
+  if (conceptFilter !== "Todos") request = request.eq("concept", conceptFilter);
+
+  const dateRange = dateRangeForFilter(dateFilter);
+  if (dateRange.start) request = request.gte("payment_date", dateRange.start);
+  if (dateRange.end) request = request.lt("payment_date", dateRange.end);
+
+  const safeSearch = sanitizeSearchTerm(searchTerm);
+  if (safeSearch) {
+    const filters = [
+      `beneficiary.ilike.%${safeSearch}%`,
+      `dispersion_name.ilike.%${safeSearch}%`,
+      `concept.ilike.%${safeSearch}%`,
+      `description.ilike.%${safeSearch}%`,
+    ];
+    if (/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(safeSearch)) filters.unshift(`id.eq.${safeSearch}`);
+    request = request.or(filters.join(","));
+  }
+
+  return request;
+}
+
+function toPaymentRow(row: PaymentRecord): PaymentRow {
+  const currency = String(row.currency || "COP").toUpperCase();
+  const amountValue = Number(row.amount || 0);
+  return {
+    id: row.id,
+    type: row.payment_type === "Dispersión" ? "Dispersión" : "Pago individual",
+    counterparty: row.beneficiary || row.dispersion_name || "Sin contraparte",
+    concept: row.concept || "Sin concepto",
+    value: formatPaymentAmount(amountValue, currency),
+    rawValue: amountValue,
+    currency,
+    date: row.payment_date ? new Date(`${String(row.payment_date).slice(0, 10)}T12:00:00`).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" }) : "Sin fecha",
+    rawDate: String(row.payment_date || ""),
+    status: row.status || "Pendiente",
+  };
+}
+
 export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenantId: string; scope?: Scope }) {
   const initialMode: PaymentMode = scope === "all" ? "Pago individual" : scope;
   const title = scope === "Dispersión" ? "Dispersiones" : "Pagos y dispersiones";
@@ -155,38 +216,8 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenant
       pageSize,
     ],
     queryFn: async () => {
-      let request = supabase
-        .from("payments")
-        .select("id,payment_type,beneficiary,dispersion_name,account,amount,currency,concept,description,payment_date,monthly,status,created_at", { count: "exact" })
-        .order("payment_date", { ascending: false })
-        .order("created_at", { ascending: false });
-
-      if (scope === "Dispersión") request = request.eq("payment_type", "Dispersión");
-      if (tab === "En proceso") request = request.in("status", ["Pendiente", "Programado", "En proceso"]);
-      if (tab === "Procesados") request = request.eq("status", "Procesado");
-      if (tab === "Cancelados") request = request.eq("status", "Cancelado");
-      if (statusFilter !== "Todos") request = request.eq("status", statusFilter);
-      if (typeFilter !== "Todos") request = request.eq("payment_type", typeFilter);
-      if (conceptFilter !== "Todos") request = request.eq("concept", conceptFilter);
-
-      const dateRange = dateRangeForFilter(dateFilter);
-      if (dateRange.start) request = request.gte("payment_date", dateRange.start);
-      if (dateRange.end) request = request.lt("payment_date", dateRange.end);
-
-      const safeSearch = sanitizeSearchTerm(searchTerm);
-      if (safeSearch) {
-        const filters = [
-          `beneficiary.ilike.%${safeSearch}%`,
-          `dispersion_name.ilike.%${safeSearch}%`,
-          `concept.ilike.%${safeSearch}%`,
-          `description.ilike.%${safeSearch}%`,
-        ];
-        if (/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(safeSearch)) filters.unshift(`id.eq.${safeSearch}`);
-        request = request.or(filters.join(","));
-      }
-
       const from = (page - 1) * pageSize;
-      const { data, error: queryError, count } = await request.range(from, from + pageSize - 1);
+      const { data, error: queryError, count } = await buildPaymentRequest({ scope, tab, searchTerm, dateFilter, statusFilter, typeFilter, conceptFilter }).range(from, from + pageSize - 1);
       if (queryError) throw queryError;
       return { rows: (data ?? []) as PaymentRecord[], total: count ?? 0 };
     },
@@ -197,24 +228,38 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenant
   });
 
   const items = useMemo<PaymentRow[]>(
-    () => (paymentsQuery.data?.rows ?? []).map(row => {
-      const currency = String(row.currency || "COP").toUpperCase();
-      const amountValue = Number(row.amount || 0);
-      return {
-        id: row.id,
-        type: row.payment_type === "Dispersión" ? "Dispersión" : "Pago individual",
-        counterparty: row.beneficiary || row.dispersion_name || "Sin contraparte",
-        concept: row.concept || "Sin concepto",
-        value: formatPaymentAmount(amountValue, currency),
-        rawValue: amountValue,
-        currency,
-        date: row.payment_date ? new Date(`${String(row.payment_date).slice(0, 10)}T12:00:00`).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" }) : "Sin fecha",
-        rawDate: String(row.payment_date || ""),
-        status: row.status || "Pendiente",
-      };
-    }),
+    () => (paymentsQuery.data?.rows ?? []).map(toPaymentRow),
     [paymentsQuery.data?.rows]
   );
+  const fetchExportRows = async (dateRange: { from?: string; to?: string }) => {
+    if (!isSupabaseConfigured) throw new Error("Supabase no está configurado");
+    const exportFilters = { scope, tab, searchTerm, dateFilter, statusFilter, typeFilter, conceptFilter };
+    const rows: PaymentRecord[] = [];
+    const batchSize = 500;
+    let offset = 0;
+    let expectedTotal: number | null = null;
+
+    while (expectedTotal === null || rows.length < expectedTotal) {
+      const requestFilters = { ...exportFilters, dateFilter: dateRange.from || dateRange.to ? "Todos" : dateFilter };
+      let request = buildPaymentRequest(requestFilters);
+      if (dateRange.from) request = request.gte("payment_date", dateRange.from);
+      if (dateRange.to) {
+        const end = new Date(`${dateRange.to}T00:00:00`);
+        end.setDate(end.getDate() + 1);
+        const endExclusive = [end.getFullYear(), String(end.getMonth() + 1).padStart(2, "0"), String(end.getDate()).padStart(2, "0")].join("-");
+        request = request.lt("payment_date", endExclusive);
+      }
+      const { data, error: exportError, count } = await request.range(offset, offset + batchSize - 1);
+      if (exportError) throw exportError;
+      expectedTotal = count ?? rows.length + (data?.length ?? 0);
+      rows.push(...((data ?? []) as PaymentRecord[]));
+      if (!data?.length || data.length < batchSize) break;
+      offset += batchSize;
+    }
+
+    return rows.map(toPaymentRow) as unknown as Record<string, string | number>[];
+  };
+
   const total = paymentsQuery.data?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const firstResult = total === 0 ? 0 : (page - 1) * pageSize + 1;
@@ -321,7 +366,7 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenant
       </div>
 
       <div className="payments-card panel">
-        <div className="table-export-toolbar"><ExportActions title={title} rows={items as unknown as Record<string, string | number>[]} columns={[{ key: "id", label: "ID" }, { key: "type", label: "Tipo" }, { key: "counterparty", label: "Contraparte / grupo" }, { key: "concept", label: "Concepto" }, { key: "value", label: "Valor" }, { key: "date", label: "Fecha" }, { key: "status", label: "Estado" }]} filters={{ Fecha: dateFilter, Estado: statusFilter, Tipo: typeFilter, Concepto: conceptFilter }} /></div>
+        <div className="table-export-toolbar"><ExportActions title={title} rows={items as unknown as Record<string, string | number>[]} columns={[{ key: "id", label: "ID" }, { key: "type", label: "Tipo" }, { key: "counterparty", label: "Contraparte / grupo" }, { key: "concept", label: "Concepto" }, { key: "value", label: "Valor" }, { key: "date", label: "Fecha" }, { key: "status", label: "Estado" }]} filters={{ Pestaña: tab, Fecha: dateFilter, Estado: statusFilter, Tipo: typeFilter, Concepto: conceptFilter }} logoUrl={`${import.meta.env.BASE_URL}bitaxus-logo-black.png`} fetchRows={fetchExportRows} /></div>
         {paymentsQuery.isFetching && !paymentsQuery.isLoading && <div className="payment-refresh-indicator" role="status"><LoaderCircle size={13} className="spin" /> Actualizando resultados…</div>}
         <HorizontalScrollHint className="payments-table-wrap">
           <table className="payments-table"><thead><tr><th>ID</th><th>Tipo</th><th>Contraparte / grupo</th><th>Concepto</th><th>Valor</th><th>Fecha</th><th>Estado</th><th /></tr></thead><tbody>

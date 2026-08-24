@@ -56,8 +56,6 @@ export function AppLayout({ children }: AppLayoutProps) {
       ? "/"
       : `/${normalized.replace(/^\//, "").split("/")[0]}`;
   }, [location]);
-  const isDashboard = activePath === "/";
-
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
     return () => {
@@ -78,8 +76,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#f5f5f3] text-[#141719]">
-      {!isDashboard && (
-        <header className="sticky top-0 z-40 border-b border-black/[0.06] bg-white/95 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-40 border-b border-black/[0.06] bg-white/95 backdrop-blur lg:hidden">
           <div className="flex h-16 items-center justify-between px-4">
             <button
               type="button"
@@ -104,44 +101,6 @@ export function AppLayout({ children }: AppLayoutProps) {
             </button>
           </div>
         </header>
-      )}
-
-      {isDashboard && (
-        <header className="dashboard-global-header sticky top-0 z-40 border-b border-black/[0.06] bg-white/95 backdrop-blur">
-          <div className="flex h-16 items-center justify-between px-5 sm:px-8 lg:px-10">
-            <div className="flex items-center gap-2 text-[15px] font-medium text-slate-500">
-              <Building size={17} strokeWidth={1.8} />
-              <span>Bitaxus</span>
-            </div>
-            <div className="flex items-center gap-3 sm:gap-4">
-              <button
-                type="button"
-                className="relative flex h-10 w-10 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#e06465]"
-                aria-label="Notificaciones"
-              >
-                <Bell size={19} />
-                <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-[#e06465]" />
-              </button>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setShowMenu(visible => !visible)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e06465] font-semibold text-white focus:outline-none focus:ring-2 focus:ring-[#e06465]"
-                  aria-label="Abrir menú de usuario"
-                >
-                  {user?.name?.charAt(0).toUpperCase() || "A"}
-                </button>
-                {showMenu && (
-                  <div className="absolute right-0 top-12 z-50 w-48 rounded-xl border border-black/[0.08] bg-white p-1.5 shadow-xl">
-                    <button type="button" onClick={() => goTo("/settings")} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"><Settings size={15} /> Configuración</button>
-                    <button type="button" onClick={handleLogout} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-[#b64b4d] hover:bg-[#fff3f2]"><CircleHelp size={15} /> Cerrar sesión</button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </header>
-      )}
 
       {isMobileMenuOpen && (
         <button
@@ -152,8 +111,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         />
       )}
 
-      {!isDashboard && (
-        <aside
+      <aside
           className={`fixed inset-y-0 left-0 z-50 flex w-[min(82vw,480px)] flex-col border-r border-white/[0.08] bg-[#050606] text-white shadow-2xl transition-transform duration-200 lg:fixed lg:top-0 lg:z-30 lg:h-screen lg:w-[280px] lg:translate-x-0 lg:shadow-none ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-white/[0.08] px-5 lg:h-24 lg:px-7">
@@ -221,10 +179,9 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
         </div>
         </aside>
-      )}
 
-      <div className={isDashboard ? "" : "lg:ml-[280px]"}>
-        {!isDashboard && <header className="sticky top-0 z-30 hidden border-b border-black/[0.06] bg-white/95 backdrop-blur lg:block">
+      <div className="lg:ml-[280px]">
+        <header className="sticky top-0 z-30 hidden border-b border-black/[0.06] bg-white/95 backdrop-blur lg:block">
           <div className="flex h-16 items-center justify-between px-8">
             <div className="flex items-center gap-3 text-sm text-slate-500">
               <Building size={16} /> {tenant?.name || "Bitaxus"}
@@ -268,7 +225,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               </div>
             </div>
           </div>
-        </header>}
+        </header>
         <main className="min-h-[calc(100vh-4rem)] bg-[#f5f5f3]">
           <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">{children}</div>
         </main>

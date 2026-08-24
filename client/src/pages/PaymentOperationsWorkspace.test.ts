@@ -12,7 +12,7 @@ describe("Pagos y dispersiones workspace", () => {
     expect(workspaceSource).toContain('from("payments")');
     expect(workspaceSource).toContain('queryKey: [\n      "public-payment-operations",');
     expect(workspaceSource).toContain('{ count: "exact" }');
-    expect(workspaceSource).toContain("request.range(from, from + pageSize - 1)");
+    expect(workspaceSource).toContain("range(from, from + pageSize - 1)");
     expect(workspaceSource).toContain("return { rows: (data ?? []) as PaymentRecord[], total: count ?? 0 }");
     expect(workspaceSource).toContain("No fue posible cargar las operaciones.");
   });
@@ -24,6 +24,9 @@ describe("Pagos y dispersiones workspace", () => {
     expect(workspaceSource).toContain('request.eq("concept", conceptFilter)');
     expect(workspaceSource).toContain('request.gte("payment_date", dateRange.start)');
     expect(workspaceSource).toContain("request.or(filters.join(\",\"))");
+    expect(workspaceSource).toContain("fetchExportRows");
+    expect(workspaceSource).toContain("batchSize = 500");
+    expect(workspaceSource).toContain("logoUrl={`${import.meta.env.BASE_URL}bitaxus-logo-black.png`}");
     expect(workspaceSource).toContain("setSearchTerm(query.trim())");
   });
 
