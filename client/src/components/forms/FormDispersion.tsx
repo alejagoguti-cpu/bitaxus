@@ -119,7 +119,7 @@ export function FormDispersion({
               {...register("name")}
               type="text"
               placeholder="Ej: Nómina Mensual"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             />
             {errors.name && (
               <p className="text-xs text-red-600 mt-1">{errors.name.message}</p>
@@ -135,7 +135,7 @@ export function FormDispersion({
               {...register("concept")}
               type="text"
               placeholder="Ej: Nómina de agosto"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             />
             {errors.concept && (
               <p className="text-xs text-red-600 mt-1">{errors.concept.message}</p>
@@ -149,7 +149,7 @@ export function FormDispersion({
             </label>
             <select
               {...register("sourceAccountId")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             >
               <option value="">Selecciona una cuenta</option>
               {bankAccounts.map((account) => (
@@ -173,7 +173,7 @@ export function FormDispersion({
             <input
               {...register("scheduledDate")}
               type="date"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             />
             {errors.scheduledDate && (
               <p className="text-xs text-red-600 mt-1">
@@ -200,7 +200,7 @@ export function FormDispersion({
                 onChange={(e) =>
                   setItemForm({ ...itemForm, beneficiaryId: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
               >
                 <option value="">Selecciona beneficiario</option>
                 {beneficiaries.map((ben) => (
@@ -221,7 +221,7 @@ export function FormDispersion({
                 onChange={(e) =>
                   setItemForm({ ...itemForm, accountId: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
               >
                 <option value="">Selecciona cuenta</option>
                 {beneficiaries
@@ -251,14 +251,14 @@ export function FormDispersion({
                     })
                   }
                   placeholder="0.00"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
                 />
               </div>
               <div className="flex items-end">
                 <button
                   type="button"
                   onClick={addItem}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium text-sm"
+                  className="w-full px-4 py-2 bg-[#d95f61] text-white rounded-md hover:bg-[#b64b4d] transition-colors font-medium text-sm"
                 >
                   + Agregar
                 </button>
@@ -310,10 +310,10 @@ export function FormDispersion({
               </table>
 
               {/* Total */}
-              <div className="mt-4 p-4 bg-blue-50 rounded-md border border-blue-200">
+              <div className="mt-4 p-4 bg-[#fff0ef] rounded-md border border-[#f1bfbd]">
                 <div className="flex justify-between items-center">
                   <span className="font-semibold text-gray-900">Monto Total:</span>
-                  <span className="text-lg font-semibold text-blue-700">
+                  <span className="text-lg font-semibold text-[#b64b4d]">
                     ${totalAmount.toLocaleString()}
                   </span>
                 </div>
@@ -331,7 +331,7 @@ export function FormDispersion({
             {...register("notes")}
             placeholder="Añade notas o comentarios"
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61] resize-none"
           />
         </div>
 
@@ -340,7 +340,7 @@ export function FormDispersion({
           <button
             type="submit"
             disabled={isLoading || items.length === 0}
-            className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            className="flex-1 px-4 py-2 bg-[#d95f61] text-white rounded-md hover:bg-[#b64b4d] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {isLoading ? "Creando..." : "Crear Dispersión"}
           </button>

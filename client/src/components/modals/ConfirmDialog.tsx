@@ -32,13 +32,13 @@ export function ConfirmDialog({
   const variantStyles = {
     danger: "bg-red-50 border-red-200",
     warning: "bg-amber-50 border-amber-200",
-    info: "bg-blue-50 border-blue-200",
+    info: "bg-[#fff0ef] border-[#f1bfbd]",
   };
 
   const buttonStyles = {
     danger: "bg-red-600 hover:bg-red-700",
     warning: "bg-amber-600 hover:bg-amber-700",
-    info: "bg-blue-600 hover:bg-blue-700",
+    info: "bg-[#d95f61] hover:bg-[#b64b4d]",
   };
 
   return (

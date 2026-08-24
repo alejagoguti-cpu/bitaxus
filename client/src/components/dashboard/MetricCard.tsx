@@ -41,14 +41,14 @@ export function MetricCard({
     success: "bg-emerald-50 border-emerald-200",
     warning: "bg-amber-50 border-amber-200",
     error: "bg-red-50 border-red-200",
-    info: "bg-blue-50 border-blue-200",
+    info: "bg-[#fff0ef] border-[#f1bfbd]",
   };
 
   const statusIconClasses = {
     success: "text-emerald-600",
     warning: "text-amber-600",
     error: "text-red-600",
-    info: "text-blue-600",
+    info: "text-[#b64b4d]",
   };
 
   const trendIconClasses = {

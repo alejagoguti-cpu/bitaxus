@@ -54,7 +54,7 @@ export function ReceiptsTable({
                 setStatus(e.target.value as ReceiptStatus | "");
                 setPage(1);
               }}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             >
               <option value="">Todos los estados</option>
               <option value="Pendiente">Pendiente</option>
@@ -98,7 +98,7 @@ export function ReceiptsTable({
               <tr>
                 <td colSpan={7} className="px-6 py-8 text-center">
                   <div className="flex justify-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#d95f61]"></div>
                   </div>
                 </td>
               </tr>
@@ -145,7 +145,7 @@ export function ReceiptsTable({
                     <div className="flex gap-2 justify-center">
                       <button
                         onClick={() => onViewDetail?.(receipt)}
-                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        className="text-[#b64b4d] hover:text-[#8f3e40] text-sm font-medium"
                       >
                         Ver
                       </button>

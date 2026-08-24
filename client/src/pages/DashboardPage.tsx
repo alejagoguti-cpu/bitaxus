@@ -16,9 +16,8 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { useDashboardWidgets } from "@/hooks";
-import { useGlobalHeader } from "@/components/layouts/GlobalHeader";
 import { formatCurrency, formatDateDisplay } from "@/lib/formatting";
-import type { PublicPayment, PublicReceipt } from "@/hooks/useDashboardSupabase";
+import type { DashboardPeriod, PublicPayment, PublicReceipt } from "@/hooks/useDashboardSupabase";
 import "./HomeReference.css";
 
 interface DashboardPageProps {
@@ -54,7 +53,7 @@ function EmptyState({ label }: { label: string }) {
 }
 
 export function DashboardPage({ tenantId }: DashboardPageProps) {
-  const { period } = useGlobalHeader();
+  const [period, setPeriod] = useState<DashboardPeriod>("Este mes");
   const [summaryVisible, setSummaryVisible] = useState(true);
   const [activityCollapsed, setActivityCollapsed] = useState(false);
   const [reviewCollapsed, setReviewCollapsed] = useState(false);

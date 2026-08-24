@@ -88,7 +88,7 @@ export function FormBankAccount({
           </label>
           <select
             {...register("counterpartyId")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           >
             <option value="">Selecciona una contraparte</option>
             {counterparties.map((cp) => (
@@ -111,7 +111,7 @@ export function FormBankAccount({
           </label>
           <select
             {...register("bank_name")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           >
             <option value="">Selecciona un banco</option>
             <option value="Bancolombia">Bancolombia</option>
@@ -136,7 +136,7 @@ export function FormBankAccount({
           </label>
           <select
             {...register("account_type")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           >
             <option value="Ahorros">Ahorros</option>
             <option value="Corriente">Corriente</option>
@@ -158,7 +158,7 @@ export function FormBankAccount({
             {...register("account_number")}
             type="text"
             placeholder="Ej: 05244000153"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
           {errors.account_number && (
             <p className="text-xs text-red-600 mt-1">
@@ -176,7 +176,7 @@ export function FormBankAccount({
             {...register("account_holder")}
             type="text"
             placeholder="Nombre del titular"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
           {errors.account_holder && (
             <p className="text-xs text-red-600 mt-1">
@@ -194,7 +194,7 @@ export function FormBankAccount({
             {...register("routing_number")}
             type="text"
             placeholder="Ej: 007"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
         </div>
 
@@ -204,7 +204,7 @@ export function FormBankAccount({
             <input
               {...register("is_primary")}
               type="checkbox"
-              className="w-4 h-4 rounded border-gray-300 text-blue-600"
+              className="w-4 h-4 rounded border-gray-300 text-[#d95f61]"
             />
             <span className="text-sm font-medium text-gray-700">
               Cuenta Principal
@@ -217,7 +217,7 @@ export function FormBankAccount({
           <button
             type="submit"
             disabled={isLoading}
-            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            className="flex-1 px-4 py-2 bg-[#d95f61] text-white rounded-md hover:bg-[#b64b4d] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {isLoading ? "Creando..." : "Crear Cuenta"}
           </button>

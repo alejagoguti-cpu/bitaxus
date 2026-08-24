@@ -45,7 +45,7 @@ export function CounterpartiesTable({
 
   const getRelationBadge = (relation: string) => {
     if (relation === "Cliente") {
-      return "bg-blue-100 text-blue-800";
+      return "bg-[#fff0ef] text-[#b64b4d]";
     }
     return "bg-purple-100 text-purple-800";
   };
@@ -61,7 +61,7 @@ export function CounterpartiesTable({
     return (
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#d95f61]"></div>
         </div>
       </div>
     );
@@ -88,7 +88,7 @@ export function CounterpartiesTable({
               setSearchTerm(e.target.value);
               setPage(1);
             }}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61] text-sm"
           />
 
           <select
@@ -97,7 +97,7 @@ export function CounterpartiesTable({
               setRelation(e.target.value as "Cliente" | "Proveedor" | "");
               setPage(1);
             }}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61] text-sm"
           >
             <option value="">Todos los tipos</option>
             <option value="Cliente">Cliente</option>
@@ -183,7 +183,7 @@ export function CounterpartiesTable({
                       <div className="flex justify-center gap-2">
                         <button
                           onClick={() => onViewDetail?.(counterparty)}
-                          className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                          className="text-sm text-[#b64b4d] hover:text-[#8f3e40] font-medium"
                         >
                           Ver
                         </button>

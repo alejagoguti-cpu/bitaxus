@@ -43,7 +43,7 @@ export function PaymentsTable({
     return (
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#d95f61]"></div>
         </div>
       </div>
     );
@@ -69,7 +69,7 @@ export function PaymentsTable({
             setStatus(e.target.value as PaymentStatus | "");
             setPage(1);
           }}
-          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61] text-sm"
         >
           <option value="">Todos los estados</option>
           <option value={PaymentStatus.SCHEDULED}>Programado</option>
@@ -145,7 +145,7 @@ export function PaymentsTable({
                       <div className="flex justify-center gap-2">
                         <button
                           onClick={() => onViewDetail?.(payment)}
-                          className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                          className="text-sm text-[#b64b4d] hover:text-[#8f3e40] font-medium"
                         >
                           Ver
                         </button>

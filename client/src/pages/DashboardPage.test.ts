@@ -10,11 +10,6 @@ const hookSource = readFileSync(
   resolve(process.cwd(), "client/src/hooks/useDashboardSupabase.ts"),
   "utf8"
 );
-const headerSource = readFileSync(
-  resolve(process.cwd(), "client/src/components/layouts/GlobalHeader.tsx"),
-  "utf8"
-);
-
 describe("public dashboard data contract", () => {
   it("uses the real receipt and payment summaries", () => {
     expect(pageSource).toContain("useDashboardWidgets(tenantId, period)");
@@ -40,20 +35,17 @@ describe("public dashboard data contract", () => {
     expect(pageSource).toContain("No pudimos cargar los movimientos desde Supabase.");
   });
 
-  it("keeps the compact operational entry points and a user-aware greeting", () => {
-    expect(headerSource).toContain('Hola, {user?.name || "tu cuenta"}');
+  it("conserva las acciones operativas del Home", () => {
     expect(pageSource).toContain("Programar recaudo");
     expect(pageSource).toContain("Programar pago");
+    expect(pageSource).toContain("Consultar en Global");
   });
 
-  it("makes the header controls interactive and uses the reference iconography", () => {
-    expect(headerSource).toContain("icon={Building2}");
-    expect(headerSource).toContain("notificationsOpen");
-    expect(headerSource).toContain("helpOpen");
-    expect(headerSource).toContain("Revisar operaciones");
-    expect(headerSource).toContain("Ir a Reportes");
-    expect(headerSource).toContain("void logout()");
-    expect(headerSource).toContain("{ subscribe: false }");
+  it("funciona sin depender del header global eliminado", () => {
+    expect(pageSource).not.toContain("GlobalHeader");
+    expect(pageSource).not.toContain("useGlobalHeader");
+    expect(pageSource).toContain('useState<DashboardPeriod>("Este mes")');
+    expect(pageSource).toContain('tone="coral"');
     expect(hookSource).toContain("const shouldSubscribe = options.subscribe !== false;");
   });
 

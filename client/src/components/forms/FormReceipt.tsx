@@ -99,7 +99,7 @@ export function FormReceipt({
           </label>
           <select
             {...register("payerId")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           >
             <option value="">Seleccionar pagador...</option>
             {counterparties.map((cp) => (
@@ -122,7 +122,7 @@ export function FormReceipt({
             {...register("concept")}
             type="text"
             placeholder="Honorarios, Prestación, etc."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
           {errors.concept && (
             <span className="text-sm text-red-600">{errors.concept.message}</span>
@@ -140,7 +140,7 @@ export function FormReceipt({
             placeholder="0"
             min="0"
             step="0.01"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
           {errors.amount && (
             <span className="text-sm text-red-600">{errors.amount.message}</span>
@@ -155,7 +155,7 @@ export function FormReceipt({
           <input
             {...register("date")}
             type="date"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
           {errors.date && (
             <span className="text-sm text-red-600">{errors.date.message}</span>
@@ -171,7 +171,7 @@ export function FormReceipt({
             {...register("referenceId")}
             type="text"
             placeholder="Número de referencia del banco"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
         </div>
 
@@ -184,7 +184,7 @@ export function FormReceipt({
             {...register("notes")}
             rows={3}
             placeholder="Notas adicionales..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
         </div>
 
@@ -209,7 +209,7 @@ export function FormReceipt({
           <button
             type="submit"
             disabled={isSubmitting || isLoading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-[#d95f61] text-white rounded-md hover:bg-[#b64b4d] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
             {isSubmitting || isLoading ? "Procesando..." : "Crear Recaudo"}
           </button>

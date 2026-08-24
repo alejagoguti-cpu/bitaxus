@@ -82,7 +82,7 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
             {...register("name")}
             type="text"
             placeholder="Nombre completo o razón social"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
           {errors.name && (
             <p className="text-xs text-red-600 mt-1">{errors.name.message}</p>
@@ -97,7 +97,7 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
             </label>
             <select
               {...register("id_type")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             >
               <option value="CC">Cédula</option>
               <option value="NIT">NIT</option>
@@ -114,7 +114,7 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
               {...register("id_number")}
               type="text"
               placeholder="Número de identificación"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             />
             {errors.id_number && (
               <p className="text-xs text-red-600 mt-1">
@@ -132,7 +132,7 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
             </label>
             <select
               {...register("type")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             >
               <option value="Persona natural">Persona Natural</option>
               <option value="Persona jurídica">Persona Jurídica</option>
@@ -145,7 +145,7 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
             </label>
             <select
               {...register("relation")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             >
               <option value="Cliente">Cliente</option>
               <option value="Proveedor">Proveedor</option>
@@ -162,7 +162,7 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
             {...register("email")}
             type="email"
             placeholder="correo@ejemplo.com"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
           {errors.email && (
             <p className="text-xs text-red-600 mt-1">{errors.email.message}</p>
@@ -178,7 +178,7 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
             {...register("phone")}
             type="tel"
             placeholder="+57 300 1234567"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
           {errors.phone && (
             <p className="text-xs text-red-600 mt-1">{errors.phone.message}</p>
@@ -190,7 +190,7 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
           <button
             type="submit"
             disabled={isLoading}
-            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            className="flex-1 px-4 py-2 bg-[#d95f61] text-white rounded-md hover:bg-[#b64b4d] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {isLoading ? "Creando..." : "Crear Contraparte"}
           </button>

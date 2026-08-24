@@ -88,7 +88,7 @@ export function FormPayment({
           </label>
           <select
             {...register("sourceAccountId")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           >
             <option value="">Selecciona una cuenta</option>
             {bankAccounts.map((account) => (
@@ -111,7 +111,7 @@ export function FormPayment({
           </label>
           <select
             {...register("beneficiaryId")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           >
             <option value="">Selecciona un beneficiario</option>
             {beneficiaries.map((beneficiary) => (
@@ -136,7 +136,7 @@ export function FormPayment({
             {...register("concept")}
             type="text"
             placeholder="Ej: Pago nómina, Compra materiales"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
           {errors.concept && (
             <p className="text-xs text-red-600 mt-1">{errors.concept.message}</p>
@@ -154,7 +154,7 @@ export function FormPayment({
               type="number"
               step="0.01"
               placeholder="0.00"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             />
             {errors.amount && (
               <p className="text-xs text-red-600 mt-1">{errors.amount.message}</p>
@@ -167,7 +167,7 @@ export function FormPayment({
             </label>
             <select
               {...register("currency")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
             >
               <option value="COP">COP</option>
               <option value="USD">USD</option>
@@ -184,7 +184,7 @@ export function FormPayment({
           <input
             {...register("scheduledDate")}
             type="date"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
           />
           {errors.scheduledDate && (
             <p className="text-xs text-red-600 mt-1">
@@ -199,7 +199,7 @@ export function FormPayment({
             <input
               {...register("isRecurring")}
               type="checkbox"
-              className="w-4 h-4 rounded border-gray-300 text-blue-600"
+              className="w-4 h-4 rounded border-gray-300 text-[#d95f61]"
             />
             <span className="text-sm font-medium text-gray-700">
               Pago Recurrente
@@ -213,7 +213,7 @@ export function FormPayment({
               </label>
               <select
                 {...register("recurrence")}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
               >
                 <option value="once">Una sola vez</option>
                 <option value="monthly">Mensual</option>
@@ -238,7 +238,7 @@ export function FormPayment({
             {...register("notes")}
             placeholder="Añade notas o comentarios"
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61] resize-none"
           />
         </div>
 
