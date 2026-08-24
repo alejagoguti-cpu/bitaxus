@@ -60,7 +60,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <img
               src={`${basePath()}/bitaxus-logo.png`}
               alt="Bitaxus"
-              className="h-5 w-auto object-contain lg:h-auto lg:w-[155px] lg:max-h-12"
+              className="h-6 w-auto object-contain lg:h-auto lg:w-[190px] lg:max-h-[58px]"
             />
           </button>
         </div>
