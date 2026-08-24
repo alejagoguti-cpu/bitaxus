@@ -18,7 +18,7 @@ import {
   UserRole,
   UserStatus,
 } from "@shared/types";
-import { supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 
 interface AuthContextType {
   user: User | null;
@@ -147,6 +147,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setIsLoading(false);
+      return;
+    }
+
     let mounted = true;
 
     const initAuth = async () => {
@@ -196,6 +201,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
+    if (!isSupabaseConfigured) {
+      const configError = new Error("Supabase no está configurado. Define VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.");
+      setError(configError);
+      throw configError;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -231,6 +242,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
+    if (!isSupabaseConfigured) {
+      setUser(null);
+      setTenant(null);
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -254,6 +271,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     name: string,
     tenantName: string
   ) => {
+    if (!isSupabaseConfigured) {
+      const configError = new Error("Supabase no está configurado. Define VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.");
+      setError(configError);
+      throw configError;
+    }
+
     setIsLoading(true);
     setError(null);
 

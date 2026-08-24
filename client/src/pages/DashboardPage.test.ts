@@ -13,13 +13,15 @@ const hookSource = readFileSync(
 
 describe("public dashboard data contract", () => {
   it("uses the real receipt and payment summaries", () => {
-    expect(pageSource).toContain("useDashboardWidgets(tenantId)");
+    expect(pageSource).toContain("useDashboardWidgets(tenantId, period)");
     expect(pageSource).toContain("Recaudos menos pagos");
     expect(hookSource).toContain('from("receipts")');
     expect(hookSource).toContain('from("payments")');
     expect(hookSource).not.toContain('eq("tenant_id"');
     expect(hookSource).not.toContain('from("dispersions")');
     expect(hookSource).not.toContain('from("activity_logs")');
+    expect(hookSource).toContain('queryKey: ["dashboard-receipts", tenantId, period]');
+    expect(hookSource).toContain('queryKey: ["dashboard-payments", tenantId, period]');
   });
 
   it("renders a clear empty state instead of crashing when there are no rows", () => {

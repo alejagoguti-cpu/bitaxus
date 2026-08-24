@@ -75,6 +75,10 @@ export function AppLayout({ children }: AppLayoutProps) {
     navigate("/login");
   };
 
+  if (activePath === "/") {
+    return <div className="dashboard-layout-shell">{children}</div>;
+  }
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#f5f5f3] text-[#141719]">
       <header className="sticky top-0 z-40 border-b border-black/[0.06] bg-white/95 backdrop-blur lg:hidden">

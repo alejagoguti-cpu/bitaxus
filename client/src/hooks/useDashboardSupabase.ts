@@ -9,6 +9,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
+export type DashboardPeriod = "Este mes" | "Últimos 30 días" | "Este trimestre";
+
+function getDashboardPeriodStart(period: DashboardPeriod, now = new Date()) {
+  const start = new Date(now);
+  if (period === "Últimos 30 días") {
+    start.setDate(start.getDate() - 30);
+  } else if (period === "Este trimestre") {
+    start.setMonth(start.getMonth() - 2, 1);
+  } else {
+    start.setDate(1);
+  }
+  start.setHours(0, 0, 0, 0);
+  return start.toISOString();
+}
+
 export interface PublicReceipt {
   id: string;
   payer_id: string | null;
@@ -102,15 +117,17 @@ export function useDashboardMetricsSupabase(
   });
 }
 
-export function useDashboardWidgetsSupabase(tenantId: string) {
+export function useDashboardWidgetsSupabase(tenantId: string, period: DashboardPeriod = "Este mes") {
+  const periodStart = getDashboardPeriodStart(period);
   const receiptsQuery = useQuery<PublicReceipt[]>({
-    queryKey: ["dashboard-receipts", tenantId],
+    queryKey: ["dashboard-receipts", tenantId, period],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("receipts")
         .select(
           "id, payer_id, payer_name, concept, amount, currency, description, receipt_date, status, created_at"
         )
+        .gte("created_at", periodStart)
         .order("created_at", { ascending: false })
         .limit(50);
 
@@ -124,13 +141,14 @@ export function useDashboardWidgetsSupabase(tenantId: string) {
   });
 
   const paymentsQuery = useQuery<PublicPayment[]>({
-    queryKey: ["dashboard-payments", tenantId],
+    queryKey: ["dashboard-payments", tenantId, period],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("payments")
         .select(
           "id, payment_type, beneficiary, dispersion_name, account, amount, currency, concept, description, payment_date, monthly, status, created_at"
         )
+        .gte("created_at", periodStart)
         .order("created_at", { ascending: false })
         .limit(50);
 

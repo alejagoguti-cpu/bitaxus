@@ -5,16 +5,19 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim();
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim();
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Missing Supabase credentials. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY"
-  );
-}
+/**
+ * The app must still render its public login state when a deployment is missing
+ * its environment variables. Protected data calls remain disabled by AuthContext
+ * until a real Supabase URL and anon key are available.
+ */
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+const clientUrl = supabaseUrl || "https://placeholder.supabase.co";
+const clientAnonKey = supabaseAnonKey || "placeholder-anon-key";
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(clientUrl, clientAnonKey, {
   // The GitHub Pages build uses the tables created in the public schema.
   // The previous app schema made valid Auth sessions look like login failures.
   db: { schema: "public" },
