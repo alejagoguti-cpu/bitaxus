@@ -32,6 +32,6 @@ describe("LoginPage password visibility", () => {
   it("applies the Belamor typeface only to the welcome phrase", () => {
     expect(source).toContain("Controla tu operación con claridad.");
     expect(source).toContain('fontFamily: "Belamor, sans-serif"');
-    expect(source).toContain('origin-left scale-[2.4]');
+    expect(source).toContain('origin-left -translate-x-10 scale-[2.4]');
   });
 });
