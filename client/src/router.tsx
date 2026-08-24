@@ -10,6 +10,7 @@ import { AppLayout } from "@/components/layouts/AppLayout";
 import { LoginPage } from "@/pages/LoginPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { PaymentsPage } from "@/pages/PaymentsPage";
+import { ProgramarPagoPage } from "@/pages/ProgramarPagoPage";
 import { DispersionsPage } from "@/pages/DispersionsPage";
 import { CounterpartiesPage } from "@/pages/CounterpartiesPage";
 import { ReportsPage } from "@/pages/ReportsPage";
@@ -147,6 +148,13 @@ export const routes = [
     path: "/payments",
     title: "Pagos",
     component: PaymentsPage,
+    requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR],
+  },
+
+  {
+    path: "/payments/new",
+    title: "Programar pago",
+    component: ProgramarPagoPage,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR],
   },
 
