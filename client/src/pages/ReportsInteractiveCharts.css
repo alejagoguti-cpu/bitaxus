@@ -23,6 +23,21 @@
   z-index: 100;
 }
 
+.report-modal .branded-select {
+  margin-top: 6px;
+}
+
+.report-modal .branded-select-trigger {
+  min-height: 42px;
+  border-radius: 9px;
+  border-color: #e4e0df;
+  font-size: 12px;
+}
+
+.report-modal .branded-select-options {
+  z-index: 180;
+}
+
 .reports-page .report-status-chart {
   position: relative;
   width: 184px;
