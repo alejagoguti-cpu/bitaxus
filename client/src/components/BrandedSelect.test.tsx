@@ -27,6 +27,7 @@ describe("BrandedSelect", () => {
     expect(screen.queryByRole("combobox")).toBeNull();
     await user.click(screen.getByRole("button", { name: "Tipo de identificación" }));
     expect(screen.getByRole("listbox")).toBeTruthy();
+    expect(screen.getByRole("option", { name: "Cédula" }).className).toContain("selected");
     await user.click(screen.getByRole("option", { name: "NIT" }));
 
     expect(onChange).toHaveBeenCalledWith("NIT");

@@ -1166,3 +1166,8 @@ body{background:var(--canvas);color:var(--ink);font-size:14px}.app-shell{backgro
 .branded-select-option:hover,.branded-select-option:focus-visible{background:#fff0ef;color:#b64b4d;outline:none}
 .branded-select-option.selected{background:var(--coral);color:#fff}
 .branded-select-option:disabled{opacity:.45;cursor:not-allowed}
+
+/* Fallback for native selects that remain in secondary settings or modal flows.
+   Chromium honors these rules in its option list; custom filters use BrandedSelect. */
+select{accent-color:#ef5b59}
+select option:checked,select option:hover,select option:focus{background:#ef5b59!important;color:#fff!important;box-shadow:0 0 0 100px #ef5b59 inset!important}

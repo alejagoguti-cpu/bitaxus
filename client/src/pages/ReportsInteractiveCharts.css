@@ -3,6 +3,26 @@
   margin-top: 12px;
 }
 
+.reports-page .reports-filters .branded-select-trigger {
+  min-height: 40px;
+  border-color: #e4e0df;
+  border-radius: 10px;
+  background: #fff;
+  color: #25292e;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.reports-page .reports-filters .branded-select-trigger:hover,
+.reports-page .reports-filters .branded-select-trigger[aria-expanded="true"] {
+  border-color: #ef5b59;
+  box-shadow: 0 0 0 3px rgba(239, 91, 89, 0.10);
+}
+
+.reports-page .reports-filters .branded-select-options {
+  z-index: 100;
+}
+
 .reports-page .report-status-chart {
   position: relative;
   width: 184px;

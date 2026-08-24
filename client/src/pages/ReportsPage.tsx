@@ -26,6 +26,7 @@ import {
 } from "recharts";
 import { supabase } from "@/lib/supabase";
 import HorizontalScrollHint from "@/components/HorizontalScrollHint";
+import { BrandedSelect } from "@/components/BrandedSelect";
 import { exportTable } from "@/lib/exportData";
 import {
   summarizeReportOperations,
@@ -275,8 +276,8 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
       )}
 
       <div className="reports-filters" aria-label="Filtros de reportes">
-        <label><span>Periodo</span><select value={period} onChange={event => setPeriod(event.target.value as ReportPeriod)}><option>Este mes</option><option>Últimos 3 meses</option><option>Últimos 6 meses</option><option>Este año</option></select></label>
-        <label><span>Tipo de operación</span><select value={operation} onChange={event => setOperation(event.target.value as ReportOperationFilter)}><option>Todas</option><option>Recaudos</option><option>Pagos</option></select></label>
+        <label><span>Periodo</span><BrandedSelect className="report-filter-select" value={period} onChange={value => setPeriod(value as ReportPeriod)} aria-label="Periodo" options={[{ value: "Este mes", label: "Este mes" }, { value: "Últimos 3 meses", label: "Últimos 3 meses" }, { value: "Últimos 6 meses", label: "Últimos 6 meses" }, { value: "Este año", label: "Este año" }]} /></label>
+        <label><span>Tipo de operación</span><BrandedSelect className="report-filter-select" value={operation} onChange={value => setOperation(value as ReportOperationFilter)} aria-label="Tipo de operación" options={[{ value: "Todas", label: "Todas" }, { value: "Recaudos", label: "Recaudos" }, { value: "Pagos", label: "Pagos" }]} /></label>
         <button type="button" className="clear-report-filters" onClick={() => { setPeriod("Últimos 6 meses"); setOperation("Todas"); setQuery(""); }}>↻ Limpiar filtros</button>
       </div>
 
