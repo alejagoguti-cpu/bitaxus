@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { BrandedSelect } from "@/components/BrandedSelect";
 import "./ProgramarRecaudoPage.css";
 import "./ProgramarPagoPage.css";
 
@@ -409,9 +410,9 @@ export function ProgramarPagoPage({ tenantId }: { tenantId?: string }) {
                     {selectedAccount && <div className="detail-selected-payer"><span className="detail-payer-avatar"><WalletCards size={15} /></span><span><strong>{selectedAccount.label}</strong><small>{selectedAccount.account_holder || "Cuenta de la empresa"}</small></span><button type="button" className="detail-clear-field" aria-label="Quitar cuenta" onClick={() => setSelectedAccount(null)}><X size={14} /></button></div>}
                     <small>La cuenta se guarda como referencia de salida en el pago.</small>
                   </div>
-                  <label className="detail-field" htmlFor="payment-amount">Valor del pago <em>*</em><div className="detail-money-input"><span>$</span><input id="payment-amount" value={amount} onChange={event => setAmount(event.target.value)} inputMode="decimal" placeholder="0" autoComplete="off" /><select value={currency} onChange={event => setCurrency(event.target.value)} aria-label="Moneda"><option value="COP">COP</option><option value="USD">USD</option></select></div><small>Ingresa el valor sin símbolos ni espacios.</small></label>
+                  <label className="detail-field" htmlFor="payment-amount">Valor del pago <em>*</em><div className="detail-money-input"><span>$</span><input id="payment-amount" value={amount} onChange={event => setAmount(event.target.value)} inputMode="decimal" placeholder="0" autoComplete="off" /><BrandedSelect value={currency} onChange={setCurrency} aria-label="Moneda" options={[{ value: "COP", label: "COP" }, { value: "USD", label: "USD" }]} /></div><small>Ingresa el valor sin símbolos ni espacios.</small></label>
                   <label className="detail-field" htmlFor="payment-date">Fecha del pago <em>*</em><div className="detail-input-with-icon"><CalendarDays size={16} /><input id="payment-date" type="date" min={todayInputValue()} value={date} onChange={event => setDate(event.target.value)} /></div><small>El pago quedará pendiente de aprobación.</small></label>
-                  <label className="detail-field" htmlFor="payment-concept">Concepto <em>*</em><select id="payment-concept" className="detail-select" value={concept} onChange={event => setConcept(event.target.value)}>{concepts.map(item => <option key={item.value} value={item.value}>{item.label}</option>)}</select><small>Ayuda a clasificar la operación.</small></label>
+                  <label className="detail-field" htmlFor="payment-concept">Concepto <em>*</em><BrandedSelect value={concept} onChange={setConcept} aria-label="Concepto" placeholder="Selecciona un concepto" options={concepts.filter(item => item.value).map(item => ({ value: item.value, label: item.label }))} /><small>Ayuda a clasificar la operación.</small></label>
                   <label className="detail-field detail-description-field" htmlFor="payment-description">Descripción <span className="optional-label">Opcional</span><textarea id="payment-description" value={description} onChange={event => setDescription(event.target.value)} placeholder="Agrega una nota o referencia adicional" maxLength={240} /><small>{description.length}/240 caracteres</small></label>
                 </div>
               </div>

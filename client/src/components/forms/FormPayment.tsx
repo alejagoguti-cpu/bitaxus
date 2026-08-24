@@ -10,6 +10,7 @@ import { useState } from "react";
 import { createPaymentSchema, CreatePaymentInput } from "@/schemas/forms";
 import { BankAccount, Counterparty } from "@shared/types";
 import { usePaymentOperations } from "@/hooks";
+import { BrandedSelect } from "@/components/BrandedSelect";
 
 interface FormPaymentProps {
   tenantId: string;
@@ -44,6 +45,10 @@ export function FormPayment({
   });
 
   const isRecurring = watch("isRecurring");
+  const sourceAccountField = register("sourceAccountId");
+  const beneficiaryField = register("beneficiaryId");
+  const currencyField = register("currency");
+  const recurrenceField = register("recurrence");
 
   const onSubmit = async (data: CreatePaymentInput) => {
     setSuccessMessage("");
@@ -86,17 +91,15 @@ export function FormPayment({
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Cuenta Origen
           </label>
-          <select
-            {...register("sourceAccountId")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-          >
-            <option value="">Selecciona una cuenta</option>
-            {bankAccounts.map((account) => (
-              <option key={account.id} value={account.id}>
-                {account.bank_name} - {account.account_number}
-              </option>
-            ))}
-          </select>
+          <BrandedSelect
+            value={watch("sourceAccountId")}
+            onChange={(value) => sourceAccountField.onChange({ target: { name: sourceAccountField.name, value } })}
+            placeholder="Selecciona una cuenta"
+            options={bankAccounts.map((account) => ({
+              value: account.id,
+              label: `${account.bank_name} - ${account.account_number}`,
+            }))}
+          />
           {errors.sourceAccountId && (
             <p className="text-xs text-red-600 mt-1">
               {errors.sourceAccountId.message}
@@ -109,17 +112,12 @@ export function FormPayment({
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Beneficiario
           </label>
-          <select
-            {...register("beneficiaryId")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-          >
-            <option value="">Selecciona un beneficiario</option>
-            {beneficiaries.map((beneficiary) => (
-              <option key={beneficiary.id} value={beneficiary.id}>
-                {beneficiary.name}
-              </option>
-            ))}
-          </select>
+          <BrandedSelect
+            value={watch("beneficiaryId")}
+            onChange={(value) => beneficiaryField.onChange({ target: { name: beneficiaryField.name, value } })}
+            placeholder="Selecciona un beneficiario"
+            options={beneficiaries.map((beneficiary) => ({ value: beneficiary.id, label: beneficiary.name }))}
+          />
           {errors.beneficiaryId && (
             <p className="text-xs text-red-600 mt-1">
               {errors.beneficiaryId.message}
@@ -165,14 +163,15 @@ export function FormPayment({
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Moneda
             </label>
-            <select
-              {...register("currency")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-            >
-              <option value="COP">COP</option>
-              <option value="USD">USD</option>
-              <option value="EUR">EUR</option>
-            </select>
+            <BrandedSelect
+              value={watch("currency")}
+              onChange={(value) => currencyField.onChange({ target: { name: currencyField.name, value } })}
+              options={[
+                { value: "COP", label: "COP" },
+                { value: "USD", label: "USD" },
+                { value: "EUR", label: "EUR" },
+              ]}
+            />
           </div>
         </div>
 
@@ -211,15 +210,16 @@ export function FormPayment({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Frecuencia
               </label>
-              <select
-                {...register("recurrence")}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-              >
-                <option value="once">Una sola vez</option>
-                <option value="monthly">Mensual</option>
-                <option value="quarterly">Trimestral</option>
-                <option value="annual">Anual</option>
-              </select>
+                <BrandedSelect
+                  value={watch("recurrence")}
+                  onChange={(value) => recurrenceField.onChange({ target: { name: recurrenceField.name, value } })}
+                  options={[
+                    { value: "once", label: "Una sola vez" },
+                    { value: "monthly", label: "Mensual" },
+                    { value: "quarterly", label: "Trimestral" },
+                    { value: "annual", label: "Anual" },
+                  ]}
+                />
               {errors.recurrence && (
                 <p className="text-xs text-red-600 mt-1">
                   {errors.recurrence.message}

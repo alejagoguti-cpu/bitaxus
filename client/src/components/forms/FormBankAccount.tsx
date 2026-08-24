@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { createBankAccountSchema, CreateBankAccountInput } from "@/schemas/forms";
 import { Counterparty } from "@shared/types";
+import { BrandedSelect } from "@/components/BrandedSelect";
 
 interface FormBankAccountProps {
   tenantId: string;
@@ -29,6 +30,7 @@ export function FormBankAccount({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     reset,
   } = useForm<CreateBankAccountInput>({
@@ -38,6 +40,10 @@ export function FormBankAccount({
       is_primary: false,
     },
   });
+
+  const counterpartyField = register("counterpartyId");
+  const bankNameField = register("bank_name");
+  const accountTypeField = register("account_type");
 
   const onSubmit = async (data: CreateBankAccountInput) => {
     setSuccessMessage("");
@@ -86,17 +92,12 @@ export function FormBankAccount({
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Contraparte *
           </label>
-          <select
-            {...register("counterpartyId")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-          >
-            <option value="">Selecciona una contraparte</option>
-            {counterparties.map((cp) => (
-              <option key={cp.id} value={cp.id}>
-                {cp.name}
-              </option>
-            ))}
-          </select>
+          <BrandedSelect
+            value={watch("counterpartyId")}
+            onChange={(value) => counterpartyField.onChange({ target: { name: counterpartyField.name, value } })}
+            placeholder="Selecciona una contraparte"
+            options={counterparties.map((cp) => ({ value: cp.id, label: cp.name }))}
+          />
           {errors.counterpartyId && (
             <p className="text-xs text-red-600 mt-1">
               {errors.counterpartyId.message}
@@ -109,19 +110,20 @@ export function FormBankAccount({
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Banco *
           </label>
-          <select
-            {...register("bank_name")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-          >
-            <option value="">Selecciona un banco</option>
-            <option value="Bancolombia">Bancolombia</option>
-            <option value="BBVA">BBVA</option>
-            <option value="Davivienda">Davivienda</option>
-            <option value="Scotiabank">Scotiabank</option>
-            <option value="Itaú">Itaú</option>
-            <option value="Santander">Santander</option>
-            <option value="Otro">Otro</option>
-          </select>
+          <BrandedSelect
+            value={watch("bank_name")}
+            onChange={(value) => bankNameField.onChange({ target: { name: bankNameField.name, value } })}
+            placeholder="Selecciona un banco"
+            options={[
+              { value: "Bancolombia", label: "Bancolombia" },
+              { value: "BBVA", label: "BBVA" },
+              { value: "Davivienda", label: "Davivienda" },
+              { value: "Scotiabank", label: "Scotiabank" },
+              { value: "Itaú", label: "Itaú" },
+              { value: "Santander", label: "Santander" },
+              { value: "Otro", label: "Otro" },
+            ]}
+          />
           {errors.bank_name && (
             <p className="text-xs text-red-600 mt-1">
               {errors.bank_name.message}
@@ -134,14 +136,15 @@ export function FormBankAccount({
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Tipo de Cuenta *
           </label>
-          <select
-            {...register("account_type")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-          >
-            <option value="Ahorros">Ahorros</option>
-            <option value="Corriente">Corriente</option>
-            <option value="Ahorro programado">Ahorro Programado</option>
-          </select>
+          <BrandedSelect
+            value={watch("account_type")}
+            onChange={(value) => accountTypeField.onChange({ target: { name: accountTypeField.name, value } })}
+            options={[
+              { value: "Ahorros", label: "Ahorros" },
+              { value: "Corriente", label: "Corriente" },
+              { value: "Ahorro programado", label: "Ahorro Programado" },
+            ]}
+          />
           {errors.account_type && (
             <p className="text-xs text-red-600 mt-1">
               {errors.account_type.message}

@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { createCounterpartySchema, CreateCounterpartyInput } from "@/schemas/forms";
 import { useReceipts } from "@/hooks";
+import { BrandedSelect } from "@/components/BrandedSelect";
 
 interface FormCounterpartyProps {
   tenantId: string;
@@ -22,6 +23,7 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     reset,
   } = useForm<CreateCounterpartyInput>({
@@ -32,6 +34,10 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
       id_type: "CC",
     },
   });
+
+  const idTypeField = register("id_type");
+  const typeField = register("type");
+  const relationField = register("relation");
 
   const onSubmit = async (data: CreateCounterpartyInput) => {
     setSuccessMessage("");
@@ -95,15 +101,16 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Tipo ID *
             </label>
-            <select
-              {...register("id_type")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-            >
-              <option value="CC">Cédula</option>
-              <option value="NIT">NIT</option>
-              <option value="CE">Cédula Extranjería</option>
-              <option value="PP">Pasaporte</option>
-            </select>
+            <BrandedSelect
+              value={watch("id_type")}
+              onChange={(value) => idTypeField.onChange({ target: { name: idTypeField.name, value } })}
+              options={[
+                { value: "CC", label: "Cédula" },
+                { value: "NIT", label: "NIT" },
+                { value: "CE", label: "Cédula Extranjería" },
+                { value: "PP", label: "Pasaporte" },
+              ]}
+            />
           </div>
 
           <div className="col-span-2">
@@ -130,26 +137,28 @@ export function FormCounterparty({ tenantId, onSuccess }: FormCounterpartyProps)
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Tipo de Persona *
             </label>
-            <select
-              {...register("type")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-            >
-              <option value="Persona natural">Persona Natural</option>
-              <option value="Persona jurídica">Persona Jurídica</option>
-            </select>
+            <BrandedSelect
+              value={watch("type")}
+              onChange={(value) => typeField.onChange({ target: { name: typeField.name, value } })}
+              options={[
+                { value: "Persona natural", label: "Persona Natural" },
+                { value: "Persona jurídica", label: "Persona Jurídica" },
+              ]}
+            />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Relación *
             </label>
-            <select
-              {...register("relation")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-            >
-              <option value="Cliente">Cliente</option>
-              <option value="Proveedor">Proveedor</option>
-            </select>
+            <BrandedSelect
+              value={watch("relation")}
+              onChange={(value) => relationField.onChange({ target: { name: relationField.name, value } })}
+              options={[
+                { value: "Cliente", label: "Cliente" },
+                { value: "Proveedor", label: "Proveedor" },
+              ]}
+            />
           </div>
         </div>
 

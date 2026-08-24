@@ -1145,3 +1145,17 @@ body{background:var(--canvas);color:var(--ink);font-size:14px}.app-shell{backgro
 :where(.modal-backdrop, .receipt-form-backdrop, .payment-form-backdrop) input[type="radio"] {
   accent-color: var(--coral, #d95f61);
 }
+
+
+/* Branded popup selects: avoid native option menus on desktop and mobile. */
+.branded-select{position:relative;width:100%;min-width:0}
+.branded-select-trigger{width:100%;min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid #dfe3e7;border-radius:8px;background:#fff;color:var(--ink);padding:0 11px;text-align:left;font:inherit;font-size:12px;line-height:1.2}
+.branded-select-trigger:hover{border-color:#e89a99}
+.branded-select-trigger:focus-visible{outline:3px solid rgba(232,100,99,.25);outline-offset:2px;border-color:var(--coral)}
+.branded-select-trigger:disabled{opacity:.55;cursor:not-allowed}
+.branded-select-placeholder{color:#9a9ea6}
+.branded-select-options{position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:80;max-height:220px;overflow:auto;padding:5px;background:#fff;border:1px solid #f1bfbd;border-radius:10px;box-shadow:0 14px 35px rgba(20,30,50,.14)}
+.branded-select-option{width:100%;min-height:36px;display:flex;align-items:center;justify-content:space-between;gap:8px;border:0;border-radius:7px;background:#fff;color:var(--ink);padding:0 9px;text-align:left;font:inherit;font-size:12px}
+.branded-select-option:hover,.branded-select-option:focus-visible{background:#fff0ef;color:#b64b4d;outline:none}
+.branded-select-option.selected{background:var(--coral);color:#fff}
+.branded-select-option:disabled{opacity:.45;cursor:not-allowed}

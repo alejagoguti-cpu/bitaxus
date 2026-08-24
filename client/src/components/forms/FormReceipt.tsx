@@ -13,6 +13,7 @@ import {
 } from "@/schemas/forms";
 import { useReceiptOperations } from "@/hooks";
 import { Counterparty, ReceiptStatus } from "@shared/types";
+import { BrandedSelect } from "@/components/BrandedSelect";
 
 interface FormReceiptProps {
   tenantId: string;
@@ -42,12 +43,14 @@ export function FormReceipt({
     formState: { errors, isSubmitting },
     reset,
     setValue,
+    watch,
   } = useForm<CreateReceiptInput>({
     resolver: zodResolver(createReceiptSchema),
   });
 
   const { handleCreateReceipt, isLoading, errorMessage, successMessage } =
     useReceiptOperations(tenantId);
+  const payerField = register("payerId");
 
   const [localError, setLocalError] = useState<string>("");
 
@@ -97,17 +100,15 @@ export function FormReceipt({
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Pagador *
           </label>
-          <select
-            {...register("payerId")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-          >
-            <option value="">Seleccionar pagador...</option>
-            {counterparties.map((cp) => (
-              <option key={cp.id} value={cp.id}>
-                {cp.name} ({cp.id_number})
-              </option>
-            ))}
-          </select>
+          <BrandedSelect
+            value={watch("payerId")}
+            onChange={(value) => payerField.onChange({ target: { name: payerField.name, value } })}
+            placeholder="Seleccionar pagador..."
+            options={counterparties.map((cp) => ({
+              value: cp.id,
+              label: `${cp.name} (${cp.id_number})`,
+            }))}
+          />
           {errors.payerId && (
             <span className="text-sm text-red-600">{errors.payerId.message}</span>
           )}

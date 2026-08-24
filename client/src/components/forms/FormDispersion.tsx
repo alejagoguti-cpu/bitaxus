@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { createDispersionSchema, CreateDispersionInput, DispersionItemInput } from "@/schemas/forms";
 import { BankAccount, Counterparty } from "@shared/types";
+import { BrandedSelect } from "@/components/BrandedSelect";
 
 interface FormDispersionProps {
   tenantId: string;
@@ -36,12 +37,14 @@ export function FormDispersion({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     reset,
   } = useForm<CreateDispersionInput>({
     resolver: zodResolver(createDispersionSchema),
   });
 
+  const sourceAccountField = register("sourceAccountId");
   const totalAmount = items.reduce((sum, item) => sum + item.amount, 0);
 
   const addItem = () => {
@@ -147,17 +150,15 @@ export function FormDispersion({
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Cuenta Origen *
             </label>
-            <select
-              {...register("sourceAccountId")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-            >
-              <option value="">Selecciona una cuenta</option>
-              {bankAccounts.map((account) => (
-                <option key={account.id} value={account.id}>
-                  {account.bank_name} - {account.account_number}
-                </option>
-              ))}
-            </select>
+            <BrandedSelect
+              value={watch("sourceAccountId")}
+              onChange={(value) => sourceAccountField.onChange({ target: { name: sourceAccountField.name, value } })}
+              placeholder="Selecciona una cuenta"
+              options={bankAccounts.map((account) => ({
+                value: account.id,
+                label: `${account.bank_name} - ${account.account_number}`,
+              }))}
+            />
             {errors.sourceAccountId && (
               <p className="text-xs text-red-600 mt-1">
                 {errors.sourceAccountId.message}
@@ -195,20 +196,12 @@ export function FormDispersion({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Beneficiario
               </label>
-              <select
+              <BrandedSelect
                 value={itemForm.beneficiaryId}
-                onChange={(e) =>
-                  setItemForm({ ...itemForm, beneficiaryId: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-              >
-                <option value="">Selecciona beneficiario</option>
-                {beneficiaries.map((ben) => (
-                  <option key={ben.id} value={ben.id}>
-                    {ben.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setItemForm({ ...itemForm, beneficiaryId: value, accountId: "" })}
+                placeholder="Selecciona beneficiario"
+                options={beneficiaries.map((ben) => ({ value: ben.id, label: ben.name }))}
+              />
             </div>
 
             {/* Account Selection */}
@@ -216,22 +209,16 @@ export function FormDispersion({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Cuenta Destino
               </label>
-              <select
+              <BrandedSelect
                 value={itemForm.accountId}
-                onChange={(e) =>
-                  setItemForm({ ...itemForm, accountId: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#d95f61]"
-              >
-                <option value="">Selecciona cuenta</option>
-                {beneficiaries
-                  .find((b) => b.id === itemForm.beneficiaryId)
-                  ?.bank_accounts?.map((account) => (
-                    <option key={account.id} value={account.id}>
-                      {account.bank_name} - {account.account_number}
-                    </option>
-                  ))}
-              </select>
+                onChange={(value) => setItemForm({ ...itemForm, accountId: value })}
+                placeholder="Selecciona cuenta"
+                options={(beneficiaries.find((b) => b.id === itemForm.beneficiaryId)?.bank_accounts ?? []).map((account) => ({
+                  value: account.id,
+                  label: `${account.bank_name} - ${account.account_number}`,
+                }))}
+                disabled={!itemForm.beneficiaryId}
+              />
             </div>
 
             {/* Amount */}

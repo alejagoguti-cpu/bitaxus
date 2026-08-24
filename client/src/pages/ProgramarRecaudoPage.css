@@ -1508,3 +1508,35 @@
     animation: none;
   }
 }
+
+
+/* Branded selects inside receipt/payment detail forms. */
+.detail-field > .branded-select .branded-select-trigger,
+.detail-modal-grid .branded-select-trigger {
+  min-height: 43px;
+}
+.detail-money-input > .branded-select {
+  width: 88px;
+  flex: 0 0 88px;
+  align-self: stretch;
+}
+.detail-money-input > .branded-select .branded-select-trigger {
+  height: 100%;
+  min-height: 41px;
+  border: 0;
+  border-left: 1px solid #e7ebee;
+  border-radius: 0;
+  background: #fafbfc;
+  color: #59636f;
+  padding: 0 9px;
+  font-size: 10px;
+  font-weight: 800;
+}
+.detail-money-input > .branded-select .branded-select-options {
+  min-width: 100px;
+  right: 0;
+  left: auto;
+}
+.detail-modal-grid .branded-select-options {
+  z-index: 90;
+}
