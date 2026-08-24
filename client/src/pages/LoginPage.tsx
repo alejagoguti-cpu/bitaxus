@@ -87,7 +87,7 @@ export function LoginPage() {
           <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-[#e56a6a]">
             Operación financiera inteligente
           </p>
-          <h1 className="max-w-lg text-5xl font-semibold leading-[1.02] tracking-[-0.045em] xl:text-6xl">
+          <h1 className="max-w-lg text-5xl font-semibold leading-[1.02] tracking-[-0.045em] xl:text-6xl" style={{ fontFamily: "Belamor, sans-serif", fontWeight: 600 }}>
             Controla tu operación con claridad.
           </h1>
           <p className="mt-7 max-w-md text-base leading-7 text-white/65">

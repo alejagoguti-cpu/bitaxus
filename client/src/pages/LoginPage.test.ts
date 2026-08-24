@@ -28,4 +28,9 @@ describe("LoginPage password visibility", () => {
   it("uses the administrator email as the login hint", () => {
     expect(source).toContain('placeholder="admin@bitaxus.test"');
   });
+
+  it("applies the Belamor typeface only to the welcome phrase", () => {
+    expect(source).toContain("Controla tu operación con claridad.");
+    expect(source).toContain('fontFamily: "Belamor, sans-serif"');
+  });
 });

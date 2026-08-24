@@ -1,4 +1,11 @@
 /* Bitaxus editorial fintech: superficies suaves, coral preciso y jerarquía operacional. */
+@font-face {
+  font-family: "Belamor";
+  src: url("https://files.manuscdn.com/user_upload_by_module/session_file/310519663480534019/VmWCQmuUVqKoBmQS.otf") format("opentype");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
 @import "tailwindcss";
 @import "tw-animate-css";
 
