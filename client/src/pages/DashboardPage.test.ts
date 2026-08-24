@@ -53,6 +53,8 @@ describe("public dashboard data contract", () => {
     expect(headerSource).toContain("Revisar operaciones");
     expect(headerSource).toContain("Ir a Reportes");
     expect(headerSource).toContain("void logout()");
+    expect(headerSource).toContain("{ subscribe: false }");
+    expect(hookSource).toContain("const shouldSubscribe = options.subscribe !== false;");
   });
 
   it("keeps dashboard queries fresh after payment and receipt mutations", () => {

@@ -89,6 +89,10 @@ export interface DashboardMetrics {
   balance: number;
 }
 
+type DashboardWidgetsOptions = {
+  subscribe?: boolean;
+};
+
 export function useDashboardMetricsSupabase(options: UseDashboardMetricsOptions) {
   const periodStart = getMetricsPeriodStart(options.period || "month");
 
@@ -146,13 +150,15 @@ export function useDashboardMetricsSupabase(options: UseDashboardMetricsOptions)
 
 export function useDashboardWidgetsSupabase(
   tenantId: string,
-  period: DashboardPeriod = "Este mes"
+  period: DashboardPeriod = "Este mes",
+  options: DashboardWidgetsOptions = {}
 ) {
   const queryClient = useQueryClient();
   const periodStart = getDashboardPeriodStart(period);
+  const shouldSubscribe = options.subscribe !== false;
 
   useEffect(() => {
-    if (!tenantId || !isSupabaseConfigured) return;
+    if (!shouldSubscribe || !tenantId || !isSupabaseConfigured) return;
     const channel = supabase
       .channel(`dashboard-updates:${tenantId}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "receipts" }, () => {
@@ -168,7 +174,7 @@ export function useDashboardWidgetsSupabase(
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [queryClient, tenantId]);
+  }, [queryClient, shouldSubscribe, tenantId]);
   const receiptsQuery = useQuery<PublicReceipt[]>({
     queryKey: ["dashboard-receipts", tenantId, period],
     queryFn: async () => {

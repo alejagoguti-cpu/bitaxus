@@ -87,7 +87,7 @@ export function GlobalHeader() {
   const [helpOpen, setHelpOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const company = tenant?.name || "Bitaxus";
-  const { receipts, payments } = useDashboardWidgets(tenant?.id || "", period);
+  const { receipts, payments } = useDashboardWidgets(tenant?.id || "", period, { subscribe: false });
   const pendingCount = (receipts.data ?? []).filter(row => row.status === "Pendiente").length + (payments.data ?? []).filter(row => ["Pendiente", "Programado", "En proceso"].includes(row.status)).length;
 
   useEffect(() => {
