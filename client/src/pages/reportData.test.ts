@@ -20,5 +20,7 @@ describe("resumen de operaciones para Reportes", () => {
     expect(summary.outgoing).toBe(30000);
     expect(summary.completed).toBe(1);
     expect(summary.pending).toBe(1);
+    expect(summary.months).toHaveLength(3);
+    expect(summary.months.at(-1)).toMatchObject({ incoming: 120000, outgoing: 30000 });
   });
 });
