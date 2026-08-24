@@ -122,6 +122,7 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
   const [rangeEnd, setRangeEnd] = useState("");
   const [isExporting, setIsExporting] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [activeStatusIndex, setActiveStatusIndex] = useState<number | null>(null);
   void tenantId;
 
   const receiptsQuery = useQuery({
@@ -250,6 +251,7 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
     { name: "En proceso", value: summary.pending, percent: pendingPercent, color: "#d9dde2" },
     { name: "Canceladas", value: summary.cancelled, percent: cancelledPercent, color: "#ef5b59" },
   ];
+  const activeStatus = activeStatusIndex === null ? null : statusData[activeStatusIndex];
 
   return (
     <section className="reports-page">
@@ -312,13 +314,13 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
               <div className="report-status-chart" role="img" aria-label="Gráfico circular de estados de operaciones">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Tooltip content={props => <StatusTooltip {...(props as unknown as StatusTooltipProps)} />} />
-                    <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius="58%" outerRadius="82%" paddingAngle={2} stroke="none" isAnimationActive={false}>
+                    <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius="58%" outerRadius="82%" paddingAngle={2} stroke="none" isAnimationActive={false} onMouseEnter={(_, index) => setActiveStatusIndex(index)} onMouseLeave={() => setActiveStatusIndex(null)}>
                       {statusData.map(slice => <Cell key={slice.name} fill={slice.color} />)}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="status-chart-center" aria-hidden="true"><strong>{summary.filtered.length}</strong><small>operaciones</small></div>
+                {activeStatus && <div className="status-hover-tooltip"><StatusTooltip active payload={[{ payload: activeStatus }]} /></div>}
               </div>
               <div className="status-legend" aria-label="Detalle de estados">
                 {statusData.map(slice => <span key={slice.name} title={`${slice.name}: ${slice.value} operaciones (${Math.round(slice.percent)}%)`}><i style={{ background: slice.color }} /> {slice.name} <b>{Math.round(slice.percent)}%</b></span>)}
