@@ -42,6 +42,16 @@ describe("public dashboard data contract", () => {
     expect(pageSource).toContain("Programar pago");
   });
 
+  it("makes the header controls interactive and uses the reference iconography", () => {
+    expect(pageSource).toContain("icon={Building}");
+    expect(pageSource).toContain("notificationsOpen");
+    expect(pageSource).toContain("helpOpen");
+    expect(pageSource).toContain("Revisar operaciones");
+    expect(pageSource).toContain("Ir a Reportes");
+    expect(pageSource).toContain("const handleLogout = async () =>");
+    expect(pageSource).toContain('navigate("/login")');
+  });
+
   it("keeps dashboard queries fresh after payment and receipt mutations", () => {
     const paymentsSource = readFileSync(
       resolve(process.cwd(), "client/src/pages/PaymentOperationsWorkspace.tsx"),

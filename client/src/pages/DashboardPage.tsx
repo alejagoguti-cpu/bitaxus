@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   ArrowDownLeft,
   ArrowRight,
   ArrowUpRight,
   Bell,
+  Building,
   Building2,
   CalendarDays,
   ChevronDown,
@@ -130,13 +131,17 @@ function EmptyState({ label }: { label: string }) {
 }
 
 export function DashboardPage({ tenantId }: DashboardPageProps) {
-  const { user, tenant } = useAuth();
+  const { user, tenant, logout } = useAuth();
+  const [, navigate] = useLocation();
   const [company, setCompany] = useState(tenant?.name || "OnTarget SAS");
   const [period, setPeriod] = useState<DashboardPeriod>("Este mes");
   const [summaryVisible, setSummaryVisible] = useState(true);
   const [activityCollapsed, setActivityCollapsed] = useState(false);
   const [reviewCollapsed, setReviewCollapsed] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const headerToolsRef = useRef<HTMLDivElement>(null);
   const now = new Date();
   const { receipts, payments, isLoading, error } = useDashboardWidgets(tenantId, period);
   const receiptRows = receipts.data ?? [];
@@ -192,6 +197,37 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
     void receipts.refetch();
     void payments.refetch();
   };
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
+  useEffect(() => {
+    if (tenant?.name) setCompany(tenant.name);
+  }, [tenant?.name]);
+
+  useEffect(() => {
+    const closeHeaderMenus = (event: MouseEvent) => {
+      if (headerToolsRef.current && !headerToolsRef.current.contains(event.target as Node)) {
+        setNotificationsOpen(false);
+        setHelpOpen(false);
+        setProfileOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setNotificationsOpen(false);
+        setHelpOpen(false);
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", closeHeaderMenus);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("mousedown", closeHeaderMenus);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
 
   return (
     <main className="dashboard-page dashboard-reference">
@@ -200,11 +236,11 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
           <h1>Hola, {user?.name || "tu cuenta"}</h1>
           <p>Este es el estado de tu operación.</p>
         </div>
-        <div className="dashboard-controls">
+        <div className="dashboard-controls" ref={headerToolsRef}>
           <DashboardDropdown
-            icon={Building2}
+            icon={Building}
             value={company}
-            options={["OnTarget SAS", "Andina Corp.", "Beta Holdings"]}
+            options={[tenant?.name || "OnTarget SAS"]}
             onChange={setCompany}
             ariaLabel="Seleccionar empresa"
           />
@@ -215,32 +251,75 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
             onChange={value => setPeriod(value as DashboardPeriod)}
             ariaLabel="Seleccionar periodo"
           />
-          <button type="button" className="dashboard-icon-button notification-button" aria-label="Notificaciones, 3 nuevas">
-            <Bell size={15} strokeWidth={1.8} />
-            <span>3</span>
-          </button>
-          <button type="button" className="dashboard-icon-button" aria-label="Ayuda">
-            <CircleHelp size={15} strokeWidth={1.8} />
-          </button>
-          <div className="dashboard-profile-wrap">
+          <div className="dashboard-tool-wrap">
             <button
               type="button"
-              className="dashboard-avatar"
-              aria-label="Abrir menú de perfil"
-              aria-expanded={profileOpen}
-              onClick={() => setProfileOpen(current => !current)}
+              className="dashboard-icon-button notification-button"
+              aria-label={`Notificaciones, ${pendingTotal} pendientes`}
+              aria-expanded={notificationsOpen}
+              onClick={() => {
+                setNotificationsOpen(current => !current);
+                setHelpOpen(false);
+                setProfileOpen(false);
+              }}
             >
-              {(user?.name || "Alejandra").charAt(0).toUpperCase()}
+              <Bell size={15} strokeWidth={1.8} />
+              {pendingTotal > 0 && <span>{pendingTotal > 9 ? "9+" : pendingTotal}</span>}
             </button>
-            {profileOpen && (
-              <div className="dashboard-profile-menu">
-                <b>{user?.name || "Alejandra"}</b>
-                <span>{tenant?.name || company}</span>
-                <Link to="/settings" onClick={() => setProfileOpen(false)}>Configuración</Link>
+            {notificationsOpen && (
+              <div className="dashboard-tool-menu" role="dialog" aria-label="Notificaciones">
+                <b>Notificaciones</b>
+                <p>{pendingTotal ? `Tienes ${pendingTotal} operación(es) pendientes de revisión.` : "No tienes operaciones pendientes."}</p>
+                <button type="button" onClick={() => { setNotificationsOpen(false); navigate("/reports"); }}>Revisar operaciones <ArrowRight size={12} /></button>
               </div>
             )}
           </div>
-          <ChevronDown size={12} className="dashboard-avatar-chevron" />
+          <div className="dashboard-tool-wrap">
+            <button
+              type="button"
+              className="dashboard-icon-button"
+              aria-label="Ayuda"
+              aria-expanded={helpOpen}
+              onClick={() => {
+                setHelpOpen(current => !current);
+                setNotificationsOpen(false);
+                setProfileOpen(false);
+              }}
+            >
+              <CircleHelp size={15} strokeWidth={1.8} />
+            </button>
+            {helpOpen && (
+              <div className="dashboard-tool-menu help-menu" role="dialog" aria-label="Ayuda">
+                <b>Centro de ayuda</b>
+                <p>Consulta reportes para revisar el estado de tus operaciones.</p>
+                <button type="button" onClick={() => { setHelpOpen(false); navigate("/reports"); }}>Ir a Reportes <ArrowRight size={12} /></button>
+              </div>
+            )}
+          </div>
+          <div className="dashboard-profile-wrap">
+            <button
+              type="button"
+              className="dashboard-profile-trigger"
+              aria-label="Abrir menú de perfil"
+              aria-expanded={profileOpen}
+              onClick={() => {
+                setProfileOpen(current => !current);
+                setNotificationsOpen(false);
+                setHelpOpen(false);
+              }}
+            >
+              <span className="dashboard-avatar">{(user?.name || "Alejandra").charAt(0).toUpperCase()}</span>
+              <ChevronDown size={12} className="dashboard-avatar-chevron" />
+            </button>
+            {profileOpen && (
+              <div className="dashboard-profile-menu" role="menu">
+                <b>{user?.name || "Alejandra"}</b>
+                <span>{tenant?.name || company}</span>
+                <Link to="/settings" onClick={() => setProfileOpen(false)}>Configuración</Link>
+                <button type="button" onClick={handleLogout}>Cerrar sesión</button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 

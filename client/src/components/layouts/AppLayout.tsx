@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Bell,
-  Building2,
+  Building,
   ChartNoAxesCombined,
   ChevronRight,
   CircleHelp,
@@ -110,7 +110,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <header className="dashboard-global-header sticky top-0 z-40 border-b border-black/[0.06] bg-white/95 backdrop-blur">
           <div className="flex h-16 items-center justify-between px-5 sm:px-8 lg:px-10">
             <div className="flex items-center gap-2 text-[15px] font-medium text-slate-500">
-              <Building2 size={17} strokeWidth={1.8} />
+              <Building size={17} strokeWidth={1.8} />
               <span>Bitaxus</span>
             </div>
             <div className="flex items-center gap-3 sm:gap-4">
@@ -227,7 +227,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         {!isDashboard && <header className="sticky top-0 z-30 hidden border-b border-black/[0.06] bg-white/95 backdrop-blur lg:block">
           <div className="flex h-16 items-center justify-between px-8">
             <div className="flex items-center gap-3 text-sm text-slate-500">
-              <Building2 size={16} /> {tenant?.name || "Bitaxus"}
+              <Building size={16} /> {tenant?.name || "Bitaxus"}
             </div>
             <div className="flex items-center gap-4">
               <button
