@@ -135,7 +135,7 @@ export function getReceiptStatusLabel(status: ReceiptStatus): string {
 export function getPaymentStatusColor(status: PaymentStatus): string {
   switch (status) {
     case PaymentStatus.SCHEDULED:
-      return "blue"; // Info
+      return "coral"; // Estado programado
     case PaymentStatus.IN_PROGRESS:
       return "amber"; // Warning
     case PaymentStatus.PROCESSED:
@@ -175,7 +175,7 @@ export function getPaymentStatusLabel(status: PaymentStatus): string {
 export function getDispersionStatusColor(status: DispersionStatus): string {
   switch (status) {
     case DispersionStatus.SCHEDULED:
-      return "blue";
+      return "coral";
     case DispersionStatus.IN_PROGRESS:
       return "amber";
     case DispersionStatus.PROCESSED:

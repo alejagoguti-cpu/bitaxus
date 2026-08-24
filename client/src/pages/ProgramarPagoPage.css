@@ -1,6 +1,6 @@
 .payment-detail-page {
-  --payment-detail-blue: #567fc8;
-  --payment-detail-blue-dark: #3f68b1;
+  --payment-detail-coral: #d95f61;
+  --payment-detail-coral-dark: #b64b4d;
 }
 
 .payment-config-warning {
@@ -23,12 +23,12 @@
 }
 
 .payment-summary-accent {
-  background: var(--payment-detail-blue) !important;
+  background: var(--payment-detail-coral) !important;
 }
 
 .payment-summary-icon {
-  background: #eff4ff !important;
-  color: var(--payment-detail-blue-dark) !important;
+  background: #fff3f2 !important;
+  color: var(--payment-detail-coral-dark) !important;
 }
 
 .detail-account-select {
@@ -68,8 +68,8 @@
 .detail-account-select:hover,
 .detail-account-select.is-open,
 .detail-account-select:focus-visible {
-  border-color: #aebfdf;
-  box-shadow: 0 0 0 3px rgba(86, 127, 200, 0.12);
+  border-color: #e8a9aa;
+  box-shadow: 0 0 0 3px rgba(217, 95, 97, 0.12);
   outline: 0;
 }
 
@@ -126,8 +126,8 @@
 }
 
 .detail-account-reference input:focus {
-  border-color: #aebfdf;
-  box-shadow: 0 0 0 3px rgba(86, 127, 200, 0.12);
+  border-color: #e8a9aa;
+  box-shadow: 0 0 0 3px rgba(217, 95, 97, 0.12);
   outline: 0;
 }
 
@@ -188,7 +188,7 @@
 }
 
 .payment-monthly-toggle > button.on {
-  background: var(--payment-detail-blue);
+  background: var(--payment-detail-coral);
 }
 
 .payment-monthly-toggle > button.on i {
@@ -196,7 +196,7 @@
 }
 
 .payment-monthly-toggle > button:focus-visible {
-  outline: 3px solid rgba(86, 127, 200, 0.2);
+  outline: 3px solid rgba(217, 95, 97, 0.2);
   outline-offset: 3px;
 }
 
@@ -208,19 +208,19 @@
 }
 
 .payment-detail-page .detail-form-footer .primary-detail-action {
-  background: var(--payment-detail-blue);
+  background: var(--payment-detail-coral);
 }
 
 .payment-detail-page .detail-form-footer .primary-detail-action:hover {
-  background: var(--payment-detail-blue-dark);
+  background: var(--payment-detail-coral-dark);
 }
 
 .payment-detail-page .detail-edit-link {
-  color: var(--payment-detail-blue-dark);
+  color: var(--payment-detail-coral-dark);
 }
 
 .payment-detail-page .detail-edit-link:hover {
-  color: #2f5594;
+  color: #a74446;
 }
 
 .exit-confirm-modal {
