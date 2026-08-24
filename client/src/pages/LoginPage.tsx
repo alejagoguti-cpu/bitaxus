@@ -80,7 +80,7 @@ export function LoginPage() {
           <img
             src={asset("bitaxus-logo.png")}
             alt="Bitaxus"
-            className="h-7 w-auto object-contain"
+            className="h-12 w-auto object-contain"
           />
         </div>
         <div className="relative z-10 max-w-xl pb-10 xl:pb-24">
