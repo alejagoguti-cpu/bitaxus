@@ -999,3 +999,8 @@
     right: 0;
   }
 }
+
+/* Keep the desktop dashboard focused rather than stretching across ultra-wide workspaces. */
+@media (min-width: 761px) {
+  .dashboard-reference { max-width: 1180px; margin-inline: auto; }
+}

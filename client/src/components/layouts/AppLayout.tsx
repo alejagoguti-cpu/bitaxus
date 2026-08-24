@@ -112,9 +112,9 @@ export function AppLayout({ children }: AppLayoutProps) {
       )}
 
       <aside
-          className={`fixed inset-y-0 left-0 z-50 flex w-[min(82vw,480px)] flex-col border-r border-white/[0.08] bg-[#050606] text-white shadow-2xl transition-transform duration-200 lg:fixed lg:top-0 lg:z-30 lg:h-screen lg:w-[280px] lg:translate-x-0 lg:shadow-none ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed inset-y-0 left-0 z-50 flex w-[min(82vw,480px)] flex-col border-r border-white/[0.08] bg-[#050606] text-white shadow-2xl transition-transform duration-200 lg:fixed lg:top-0 lg:z-30 lg:h-screen lg:w-[300px] lg:translate-x-0 lg:shadow-none ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-white/[0.08] px-5 lg:h-24 lg:px-7">
+        <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-white/[0.08] px-5 lg:h-28 lg:px-8">
           <button
             type="button"
             onClick={() => goTo("/")}
@@ -124,7 +124,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <img
               src={`${basePath()}/bitaxus-logo.png`}
               alt="Bitaxus"
-              className="h-5 w-auto object-contain lg:h-8"
+              className="h-5 w-auto object-contain lg:h-10"
             />
           </button>
           <button
@@ -138,7 +138,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         <nav
-          className="mobile-sidebar-nav shrink-0 space-y-1 overflow-hidden px-4 py-4 lg:flex-none lg:space-y-1 lg:overflow-hidden lg:px-4 lg:py-5"
+          className="mobile-sidebar-nav shrink-0 space-y-1 overflow-hidden px-4 py-4 lg:flex-none lg:space-y-1 lg:overflow-hidden lg:px-5 lg:py-5"
           style={{ overflowY: "hidden", overflowX: "hidden" }}
           aria-label="Navegación principal"
         >
@@ -161,7 +161,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           })}
         </nav>
 
-        <div className="mt-auto shrink-0 p-4 lg:p-4">
+        <div className="mt-auto shrink-0 p-4 lg:p-5">
           <div
             className="w-full rounded-2xl border border-white/[0.12] bg-[#151719] p-4 text-left lg:p-5"
             role="note"
@@ -180,7 +180,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
         </aside>
 
-      <div className="lg:ml-[280px]">
+      <div className="lg:ml-[300px]">
         <header className="sticky top-0 z-30 hidden border-b border-black/[0.06] bg-white/95 backdrop-blur lg:block">
           <div className="flex h-16 items-center justify-between px-8">
             <div className="flex items-center gap-3 text-sm text-slate-500">
