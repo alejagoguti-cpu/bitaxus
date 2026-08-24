@@ -19,6 +19,8 @@ describe("public Supabase authentication", () => {
     );
     expect(source).not.toContain("if (userError) throw userError;");
     expect(source).not.toContain("if (tenantError) throw tenantError;");
+    expect(source).toContain("if (!isSupabaseConfigured)");
+    expect(source).toContain("setIsLoading(false);");
   });
 
   it("normalizes Supabase invalid-credential feedback in Spanish", () => {
