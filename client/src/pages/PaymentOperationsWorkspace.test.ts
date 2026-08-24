@@ -8,12 +8,23 @@ const workspaceSource = readFileSync(
 );
 
 describe("Pagos y dispersiones workspace", () => {
-  it("loads the live payments and supplier directory from Supabase", () => {
+  it("loads the live payments with an exact, server-paginated Supabase query", () => {
     expect(workspaceSource).toContain('from("payments")');
-    expect(workspaceSource).toContain('from("counterparties")');
-    expect(workspaceSource).toContain('queryKey: ["public-payment-operations", tenantId]');
-    expect(workspaceSource).toContain('queryKey: ["public-payment-counterparties", tenantId]');
+    expect(workspaceSource).toContain('queryKey: [\n      "public-payment-operations",');
+    expect(workspaceSource).toContain('{ count: "exact" }');
+    expect(workspaceSource).toContain("request.range(from, from + pageSize - 1)");
+    expect(workspaceSource).toContain("return { rows: (data ?? []) as PaymentRecord[], total: count ?? 0 }");
     expect(workspaceSource).toContain("No fue posible cargar las operaciones.");
+  });
+
+  it("applies tab, status, type, concept, date and text filters in Supabase", () => {
+    expect(workspaceSource).toContain("request.in(\"status\", [\"Pendiente\", \"Programado\", \"En proceso\"])");
+    expect(workspaceSource).toContain('request.eq("status", statusFilter)');
+    expect(workspaceSource).toContain('request.eq("payment_type", typeFilter)');
+    expect(workspaceSource).toContain('request.eq("concept", conceptFilter)');
+    expect(workspaceSource).toContain('request.gte("payment_date", dateRange.start)');
+    expect(workspaceSource).toContain("request.or(filters.join(\",\"))");
+    expect(workspaceSource).toContain("setSearchTerm(query.trim())");
   });
 
   it("keeps filters and payment/dispersal modes in the active view", () => {
@@ -23,6 +34,8 @@ describe("Pagos y dispersiones workspace", () => {
     expect(workspaceSource).toContain("Dispersión");
     expect(workspaceSource).toContain("Buscar por contraparte, ID o concepto");
     expect(workspaceSource).toContain("Programar mensualmente");
+    expect(workspaceSource).toContain("Por página");
+    expect(workspaceSource).toContain("Mostrando {firstResult} a {lastResult} de {total} operación(es)");
   });
 
   it("creates pending operations and refreshes the dashboard queries", () => {
