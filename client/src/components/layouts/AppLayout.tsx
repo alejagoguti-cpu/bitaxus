@@ -12,6 +12,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { useLocation } from "wouter";
+import { GlobalHeader, GlobalHeaderProvider } from "./GlobalHeader";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -103,7 +104,12 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       <div className="ml-[300px] min-h-screen">
         <main className="min-h-screen bg-[#f5f5f3]">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
+          <GlobalHeaderProvider>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <GlobalHeader />
+              {children}
+            </div>
+          </GlobalHeaderProvider>
         </main>
       </div>
     </div>
