@@ -1,16 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import {
   ArrowDownLeft,
   ArrowRight,
   ArrowUpRight,
-  Bell,
-  Building,
-  Building2,
-  CalendarDays,
   ChevronDown,
   ChevronRight,
-  CircleHelp,
   Clock3,
   Eye,
   EyeOff,
@@ -19,11 +14,11 @@ import {
   WalletCards,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 import { isSupabaseConfigured } from "@/lib/supabase";
 import { useDashboardWidgets } from "@/hooks";
+import { useGlobalHeader } from "@/components/layouts/GlobalHeader";
 import { formatCurrency, formatDateDisplay } from "@/lib/formatting";
-import type { DashboardPeriod, PublicPayment, PublicReceipt } from "@/hooks/useDashboardSupabase";
+import type { PublicPayment, PublicReceipt } from "@/hooks/useDashboardSupabase";
 import "./HomeReference.css";
 
 interface DashboardPageProps {
@@ -49,78 +44,6 @@ function Icon({ icon: IconComponent, tone = "slate" }: { icon: LucideIcon; tone?
   );
 }
 
-function DashboardDropdown({
-  icon: IconComponent,
-  value,
-  options,
-  onChange,
-  ariaLabel,
-}: {
-  icon: LucideIcon;
-  value: string;
-  options: string[];
-  onChange: (value: string) => void;
-  ariaLabel: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const close = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, []);
-
-  useEffect(() => {
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
-  }, []);
-
-  return (
-    <div className={`dashboard-dropdown ${open ? "open" : ""}`} ref={containerRef}>
-      <button
-        type="button"
-        className="dashboard-select"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-label={ariaLabel}
-        onClick={() => setOpen(current => !current)}
-      >
-        <IconComponent size={13} strokeWidth={1.8} />
-        <span>{value}</span>
-        <ChevronDown size={12} />
-      </button>
-      {open && (
-        <div className="dashboard-dropdown-menu" role="listbox" aria-label={ariaLabel}>
-          {options.map(option => (
-            <button
-              type="button"
-              role="option"
-              aria-selected={option === value}
-              className={option === value ? "selected" : ""}
-              key={option}
-              onClick={() => {
-                onChange(option);
-                setOpen(false);
-              }}
-            >
-              <span>{option}</span>
-              {option === value && <span className="selected-mark">✓</span>}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 function EmptyState({ label }: { label: string }) {
   return (
     <div className="empty-state">
@@ -131,17 +54,10 @@ function EmptyState({ label }: { label: string }) {
 }
 
 export function DashboardPage({ tenantId }: DashboardPageProps) {
-  const { user, tenant, logout } = useAuth();
-  const [, navigate] = useLocation();
-  const [company, setCompany] = useState(tenant?.name || "OnTarget SAS");
-  const [period, setPeriod] = useState<DashboardPeriod>("Este mes");
+  const { period } = useGlobalHeader();
   const [summaryVisible, setSummaryVisible] = useState(true);
   const [activityCollapsed, setActivityCollapsed] = useState(false);
   const [reviewCollapsed, setReviewCollapsed] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [helpOpen, setHelpOpen] = useState(false);
-  const headerToolsRef = useRef<HTMLDivElement>(null);
   const now = new Date();
   const { receipts, payments, isLoading, error } = useDashboardWidgets(tenantId, period);
   const receiptRows = receipts.data ?? [];
@@ -197,132 +113,8 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
     void receipts.refetch();
     void payments.refetch();
   };
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
-  };
-
-  useEffect(() => {
-    if (tenant?.name) setCompany(tenant.name);
-  }, [tenant?.name]);
-
-  useEffect(() => {
-    const closeHeaderMenus = (event: MouseEvent) => {
-      if (headerToolsRef.current && !headerToolsRef.current.contains(event.target as Node)) {
-        setNotificationsOpen(false);
-        setHelpOpen(false);
-        setProfileOpen(false);
-      }
-    };
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setNotificationsOpen(false);
-        setHelpOpen(false);
-        setProfileOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", closeHeaderMenus);
-    document.addEventListener("keydown", closeOnEscape);
-    return () => {
-      document.removeEventListener("mousedown", closeHeaderMenus);
-      document.removeEventListener("keydown", closeOnEscape);
-    };
-  }, []);
-
   return (
-    <main className="dashboard-page dashboard-reference">
-      <header className="dashboard-heading">
-        <div className="dashboard-greeting">
-          <h1>Hola, {user?.name || "tu cuenta"}</h1>
-          <p>Este es el estado de tu operación.</p>
-        </div>
-        <div className="dashboard-controls" ref={headerToolsRef}>
-          <DashboardDropdown
-            icon={Building}
-            value={company}
-            options={[tenant?.name || "OnTarget SAS"]}
-            onChange={setCompany}
-            ariaLabel="Seleccionar empresa"
-          />
-          <DashboardDropdown
-            icon={CalendarDays}
-            value={period}
-            options={["Este mes", "Últimos 30 días", "Este trimestre"]}
-            onChange={value => setPeriod(value as DashboardPeriod)}
-            ariaLabel="Seleccionar periodo"
-          />
-          <div className="dashboard-tool-wrap">
-            <button
-              type="button"
-              className="dashboard-icon-button notification-button"
-              aria-label={`Notificaciones, ${pendingTotal} pendientes`}
-              aria-expanded={notificationsOpen}
-              onClick={() => {
-                setNotificationsOpen(current => !current);
-                setHelpOpen(false);
-                setProfileOpen(false);
-              }}
-            >
-              <Bell size={15} strokeWidth={1.8} />
-              {pendingTotal > 0 && <span>{pendingTotal > 9 ? "9+" : pendingTotal}</span>}
-            </button>
-            {notificationsOpen && (
-              <div className="dashboard-tool-menu" role="dialog" aria-label="Notificaciones">
-                <b>Notificaciones</b>
-                <p>{pendingTotal ? `Tienes ${pendingTotal} operación(es) pendientes de revisión.` : "No tienes operaciones pendientes."}</p>
-                <button type="button" onClick={() => { setNotificationsOpen(false); navigate("/reports"); }}>Revisar operaciones <ArrowRight size={12} /></button>
-              </div>
-            )}
-          </div>
-          <div className="dashboard-tool-wrap">
-            <button
-              type="button"
-              className="dashboard-icon-button"
-              aria-label="Ayuda"
-              aria-expanded={helpOpen}
-              onClick={() => {
-                setHelpOpen(current => !current);
-                setNotificationsOpen(false);
-                setProfileOpen(false);
-              }}
-            >
-              <CircleHelp size={15} strokeWidth={1.8} />
-            </button>
-            {helpOpen && (
-              <div className="dashboard-tool-menu help-menu" role="dialog" aria-label="Ayuda">
-                <b>Centro de ayuda</b>
-                <p>Consulta reportes para revisar el estado de tus operaciones.</p>
-                <button type="button" onClick={() => { setHelpOpen(false); navigate("/reports"); }}>Ir a Reportes <ArrowRight size={12} /></button>
-              </div>
-            )}
-          </div>
-          <div className="dashboard-profile-wrap">
-            <button
-              type="button"
-              className="dashboard-profile-trigger"
-              aria-label="Abrir menú de perfil"
-              aria-expanded={profileOpen}
-              onClick={() => {
-                setProfileOpen(current => !current);
-                setNotificationsOpen(false);
-                setHelpOpen(false);
-              }}
-            >
-              <span className="dashboard-avatar">{(user?.name || "Alejandra").charAt(0).toUpperCase()}</span>
-              <ChevronDown size={12} className="dashboard-avatar-chevron" />
-            </button>
-            {profileOpen && (
-              <div className="dashboard-profile-menu" role="menu">
-                <b>{user?.name || "Alejandra"}</b>
-                <span>{tenant?.name || company}</span>
-                <Link to="/settings" onClick={() => setProfileOpen(false)}>Configuración</Link>
-                <button type="button" onClick={handleLogout}>Cerrar sesión</button>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
+    <main className="dashboard-page dashboard-reference dashboard-reference--nested">
       {!isSupabaseConfigured ? <section className="inline-alert" role="alert">Supabase no está configurado en este entorno. Agrega las variables públicas para cargar el resumen real.</section> : error && <section className="inline-alert" role="alert">No pudimos cargar los movimientos desde Supabase. Vuelve a intentarlo.</section>}
 
       {summaryVisible ? (

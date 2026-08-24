@@ -10,6 +10,10 @@ const hookSource = readFileSync(
   resolve(process.cwd(), "client/src/hooks/useDashboardSupabase.ts"),
   "utf8"
 );
+const headerSource = readFileSync(
+  resolve(process.cwd(), "client/src/components/layouts/GlobalHeader.tsx"),
+  "utf8"
+);
 
 describe("public dashboard data contract", () => {
   it("uses the real receipt and payment summaries", () => {
@@ -37,19 +41,18 @@ describe("public dashboard data contract", () => {
   });
 
   it("keeps the compact operational entry points and a user-aware greeting", () => {
-    expect(pageSource).toContain('Hola, {user?.name || "tu cuenta"}');
+    expect(headerSource).toContain('Hola, {user?.name || "tu cuenta"}');
     expect(pageSource).toContain("Programar recaudo");
     expect(pageSource).toContain("Programar pago");
   });
 
   it("makes the header controls interactive and uses the reference iconography", () => {
-    expect(pageSource).toContain("icon={Building}");
-    expect(pageSource).toContain("notificationsOpen");
-    expect(pageSource).toContain("helpOpen");
-    expect(pageSource).toContain("Revisar operaciones");
-    expect(pageSource).toContain("Ir a Reportes");
-    expect(pageSource).toContain("const handleLogout = async () =>");
-    expect(pageSource).toContain('navigate("/login")');
+    expect(headerSource).toContain("icon={Building2}");
+    expect(headerSource).toContain("notificationsOpen");
+    expect(headerSource).toContain("helpOpen");
+    expect(headerSource).toContain("Revisar operaciones");
+    expect(headerSource).toContain("Ir a Reportes");
+    expect(headerSource).toContain("void logout()");
   });
 
   it("keeps dashboard queries fresh after payment and receipt mutations", () => {

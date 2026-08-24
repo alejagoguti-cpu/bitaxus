@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DashboardPage } from "./DashboardPage";
+import { GlobalHeader, GlobalHeaderProvider } from "@/components/layouts/GlobalHeader";
 
 const mocks = vi.hoisted(() => ({
   navigate: vi.fn(),
@@ -43,17 +44,25 @@ describe("Dashboard header menus", () => {
     mocks.logout.mockClear();
   });
 
+  const renderDashboardWithGlobalHeader = () => render(
+    <GlobalHeaderProvider>
+      <GlobalHeader />
+      <DashboardPage tenantId="tenant-1" />
+    </GlobalHeaderProvider>
+  );
+
   it("opens notifications and navigates to reports", async () => {
     const user = userEvent.setup();
-    render(<DashboardPage tenantId="tenant-1" />);
+    renderDashboardWithGlobalHeader();
 
     const notifications = screen.getByRole("button", { name: /notificaciones/i });
     expect(notifications.getAttribute("aria-expanded")).toBe("false");
 
     await user.click(notifications);
 
-    expect(screen.getByRole("dialog", { name: "Notificaciones" })).not.toBeNull();
-    expect(screen.getByText("No tienes operaciones pendientes.")).not.toBeNull();
+    const notificationDialog = screen.getByRole("dialog", { name: "Notificaciones" });
+    expect(notificationDialog).not.toBeNull();
+    expect(within(notificationDialog).getByText("No hay operaciones pendientes.")).not.toBeNull();
     expect(notifications.getAttribute("aria-expanded")).toBe("true");
 
     await user.click(screen.getByRole("button", { name: /revisar operaciones/i }));
@@ -64,7 +73,7 @@ describe("Dashboard header menus", () => {
 
   it("opens help, closes another header menu and routes to reports", async () => {
     const user = userEvent.setup();
-    render(<DashboardPage tenantId="tenant-1" />);
+    renderDashboardWithGlobalHeader();
 
     await user.click(screen.getByRole("button", { name: /notificaciones/i }));
     expect(screen.getByRole("dialog", { name: "Notificaciones" })).not.toBeNull();
@@ -80,17 +89,16 @@ describe("Dashboard header menus", () => {
 
   it("opens profile, exposes configuration and closes the session", async () => {
     const user = userEvent.setup();
-    render(<DashboardPage tenantId="tenant-1" />);
+    renderDashboardWithGlobalHeader();
 
     const profile = screen.getByRole("button", { name: "Abrir menú de perfil" });
     await user.click(profile);
 
     expect(screen.getByRole("menu")).not.toBeNull();
     expect(screen.getByText("Alejandra")).not.toBeNull();
-    expect(screen.getByRole("link", { name: "Configuración" }).getAttribute("href")).toBe("/settings");
+    expect(screen.getByRole("button", { name: "Configuración" })).not.toBeNull();
 
     await user.click(screen.getByRole("button", { name: "Cerrar sesión" }));
     expect(mocks.logout).toHaveBeenCalledTimes(1);
-    expect(mocks.navigate).toHaveBeenCalledWith("/login");
   });
 });

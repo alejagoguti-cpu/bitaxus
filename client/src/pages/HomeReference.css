@@ -14,6 +14,11 @@
     #f7f8fa;
 }
 
+.dashboard-reference--nested {
+  min-height: auto;
+  padding: 4px 0 26px;
+}
+
 .dashboard-reference,
 .dashboard-reference * {
   font-family: "DM Sans", "Manrope", ui-sans-serif, system-ui, sans-serif;
