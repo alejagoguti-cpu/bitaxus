@@ -15,6 +15,7 @@ import { CounterpartiesPage } from "@/pages/CounterpartiesPage";
 import { ReportsPage } from "@/pages/ReportsPage";
 import { SettingsPage } from "@/pages/SettingsPage";
 import Recaudos from "@/pages/Recaudos";
+import { ProgramarRecaudoPage } from "@/pages/ProgramarRecaudoPage";
 import Global from "@/pages/Global";
 import { useLocation } from "wouter";
 import { PublicReconciliationPage } from "@/pages/PublicReconciliationPage";
@@ -63,7 +64,9 @@ function LegacyRecaudosPage() {
       onNavigate={section =>
         section === "Pagos y dispersiones"
           ? navigate("/payments")
-          : navigate("/")
+          : section === "Programar recaudo"
+            ? navigate("/receipts/new")
+            : navigate("/")
       }
     />
   );
@@ -110,6 +113,13 @@ export const routes = [
     path: "/receipts",
     title: "Recaudos",
     component: LegacyRecaudosPage,
+    requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR],
+  },
+
+  {
+    path: "/receipts/new",
+    title: "Programar recaudo",
+    component: ProgramarRecaudoPage,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR],
   },
 

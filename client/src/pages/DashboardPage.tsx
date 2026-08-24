@@ -289,7 +289,7 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
       )}
 
       <section className="quick-actions home-quick-actions">
-        <Link to="/receipts"><Icon icon={ArrowDownLeft} tone="green" /><b>Programar recaudo</b><ChevronRight size={15} /></Link>
+        <Link to="/receipts/new"><Icon icon={ArrowDownLeft} tone="green" /><b>Programar recaudo</b><ChevronRight size={15} /></Link>
         <Link to="/payments"><Icon icon={ArrowUpRight} tone="blue" /><b>Programar pago</b><ChevronRight size={15} /></Link>
         <Link to="/global"><Icon icon={Globe2} tone="purple" /><b>Consultar en Global</b><ChevronRight size={15} /></Link>
       </section>
