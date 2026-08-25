@@ -12,6 +12,7 @@
   gap: 24px;
 }
 
+.global-header-greeting { min-width: 0; }
 .global-header-greeting h1 {
   margin: 0 0 4px;
   color: #202838;
@@ -23,6 +24,7 @@
 }
 
 .global-header-greeting p { margin: 0; color: #8a9099; font-size: 11px; line-height: 1.4; }
+.global-header-menu-toggle { display: none; }
 .global-header-controls { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
 .global-header-dropdown, .global-header-tool-wrap { position: relative; }
 .global-header-select {
@@ -71,8 +73,14 @@
 
 @media (max-width: 760px) {
   .global-dashboard-header { min-height: auto; padding: 16px 0 13px; align-items: flex-start; flex-direction: column; gap: 13px; }
+  .global-header-greeting { width: 100%; display: flex; align-items: center; gap: 11px; }
+  .global-header-greeting > div { min-width: 0; }
+  .global-header-greeting h1 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .global-header-menu-toggle { width: 39px; height: 39px; display: grid; flex: 0 0 auto; place-items: center; color: #232b35; background: #fff; border: 1px solid #e8ebef; border-radius: 11px; box-shadow: 0 5px 16px rgba(24,31,43,.05); }
+  .global-header-menu-toggle:hover, .global-header-menu-toggle:focus-visible { color: #e06465; background: #fff3f2; outline: 2px solid rgba(224,100,101,.24); outline-offset: 2px; }
   .global-header-controls { width: 100%; justify-content: flex-start; gap: 7px; flex-wrap: wrap; }
-  .global-header-select { min-width: 0; flex: 1 1 150px; }
+  .global-header-dropdown { flex: 1 1 calc(50% - 4px); min-width: 0; }
+  .global-header-select { width: 100%; min-width: 0; }
   .global-header-dropdown:nth-child(2) .global-header-select { min-width: 0; }
 }
 
@@ -81,6 +89,7 @@
   .global-header-controls { gap: 4px; }
   .global-header-icon-button { width: 34px; height: 36px; }
   .global-header-profile > span { width: 34px; height: 34px; }
+  .global-header-profile { padding-right: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) { .global-dashboard-header * { transition: none !important; } }

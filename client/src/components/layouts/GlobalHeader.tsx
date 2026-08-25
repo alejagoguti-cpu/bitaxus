@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Building2, Bell, CalendarDays, ChevronDown, CircleHelp, ArrowRight, type LucideIcon } from "lucide-react";
+import { Building2, Bell, CalendarDays, ChevronDown, CircleHelp, ArrowRight, Menu, type LucideIcon } from "lucide-react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDashboardWidgets } from "@/hooks";
@@ -78,7 +78,7 @@ function HeaderDropdown({
   );
 }
 
-export function GlobalHeader() {
+export function GlobalHeader({ onMenuToggle }: { onMenuToggle?: () => void }) {
   const { user, tenant, logout } = useAuth();
   const [, navigate] = useLocation();
   const { period, setPeriod } = useGlobalHeader();
@@ -130,8 +130,8 @@ export function GlobalHeader() {
   return (
     <header className="global-dashboard-header">
       <div className="global-header-greeting">
-        <h1>Hola, {user?.name || "tu cuenta"}</h1>
-        <p>Este es el estado de tu operación.</p>
+        {onMenuToggle && <button type="button" className="global-header-menu-toggle" onClick={onMenuToggle} aria-label="Abrir menú"><Menu size={19} /></button>}
+        <div><h1>Hola, {user?.name || "tu cuenta"}</h1><p>Este es el estado de tu operación.</p></div>
       </div>
       <div className="global-header-controls" ref={toolsRef}>
         <HeaderDropdown icon={Building2} value={company} options={[company]} onChange={() => undefined} label="Seleccionar empresa" />

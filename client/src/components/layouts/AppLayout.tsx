@@ -1,15 +1,17 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import {
   ChartNoAxesCombined,
   Grid2X2,
   Home,
   Landmark,
+  Menu,
   MessageCircle,
   Receipt,
   Settings,
   Shuffle,
   UsersRound,
+  X,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { GlobalHeader, GlobalHeaderProvider } from "./GlobalHeader";
@@ -40,6 +42,8 @@ const basePath = () => import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [location, navigate] = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const activePath = useMemo(() => {
     const normalized = location.replace(basePath(), "") || "/";
@@ -48,27 +52,53 @@ export function AppLayout({ children }: AppLayoutProps) {
       : `/${normalized.replace(/^\//, "").split("/")[0]}`;
   }, [location]);
 
+  useEffect(() => {
+    const media = window.matchMedia?.("(max-width: 1023px)");
+    if (!media) return;
+    const sync = () => {
+      setIsMobile(media.matches);
+      if (!media.matches) setSidebarOpen(false);
+    };
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile || !sidebarOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, [isMobile, sidebarOpen]);
+
+  const closeSidebar = () => setSidebarOpen(false);
+  const selectNavigation = (path: string) => {
+    navigate(path);
+    if (isMobile) closeSidebar();
+  };
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#f5f5f3] text-[#141719]">
-      <aside className="fixed inset-y-0 left-0 z-30 flex w-[300px] flex-col border-r border-white/[0.08] bg-[#050606] text-white shadow-2xl">
-        <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-white/[0.08] px-5 lg:h-28 lg:px-8">
+      {sidebarOpen && <button type="button" className="fixed inset-0 z-[70] bg-[#050606]/55 backdrop-blur-[1px] lg:hidden" onClick={closeSidebar} aria-label="Cerrar menú" />}
+      <aside className={`fixed inset-y-0 left-0 z-[80] flex w-[84vw] max-w-[320px] -translate-x-full flex-col border-r border-white/[0.08] bg-[#050606] text-white shadow-2xl transition-transform duration-200 ease-out ${sidebarOpen ? "translate-x-0" : ""} lg:z-30 lg:w-[300px] lg:max-w-none lg:translate-x-0`} aria-hidden={isMobile && !sidebarOpen ? true : undefined}>
+        <div className="flex h-20 shrink-0 items-center justify-between border-b border-white/[0.08] px-5 lg:h-28 lg:px-8">
           <button
             type="button"
-            onClick={() => navigate("/")}
+            onClick={() => selectNavigation("/")}
             className="focus:outline-none focus:ring-2 focus:ring-[#e06465]"
             aria-label="Ir al inicio"
           >
             <img
               src={`${basePath()}/bitaxus-logo.png`}
               alt="Bitaxus"
-              className="h-6 w-auto origin-left -translate-x-[90px] object-contain lg:h-auto lg:w-[190px] lg:max-h-[58px] lg:origin-left lg:-translate-x-[72px] lg:scale-[1.72]"
+              className="h-auto w-[154px] max-h-11 object-contain lg:w-[190px] lg:max-h-[58px] lg:origin-left lg:-translate-x-[72px] lg:scale-[1.72]"
             />
           </button>
+          <button type="button" className="grid h-9 w-9 place-items-center rounded-lg text-white/70 transition hover:bg-white/[0.08] focus:outline-none focus:ring-2 focus:ring-[#e06465] lg:hidden" onClick={closeSidebar} aria-label="Cerrar menú"><X size={18} /></button>
         </div>
 
         <nav
-          className="mobile-sidebar-nav shrink-0 space-y-1 overflow-hidden px-4 py-4 lg:flex-none lg:space-y-1 lg:overflow-hidden lg:px-5 lg:py-5"
-          style={{ overflowY: "hidden", overflowX: "hidden" }}
+          className="mobile-sidebar-nav min-h-0 flex-1 space-y-1 overflow-y-auto px-4 py-4 lg:flex-none lg:space-y-1 lg:overflow-hidden lg:px-5 lg:py-5"
           aria-label="Navegación principal"
         >
           {navigation.map(({ label, path, icon: Icon }) => {
@@ -77,7 +107,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               <button
                 type="button"
                 key={path}
-                onClick={() => navigate(path)}
+                onClick={() => selectNavigation(path)}
                 className={`flex min-h-11 w-full items-center gap-4 rounded-xl px-5 text-left text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-[#e06465] lg:min-h-12 lg:gap-4 lg:rounded-xl lg:px-5 lg:text-sm ${isActive ? "bg-gradient-to-r from-[#e06465]/25 to-[#e06465]/5 text-[#ff7a7b] shadow-[inset_4px_0_0_#e06465]" : "text-white/70 hover:bg-white/[0.07] hover:text-white"}`}
                 aria-current={isActive ? "page" : undefined}
               >
@@ -103,11 +133,11 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
       </aside>
 
-      <div className="ml-[300px] min-h-screen">
+      <div className="min-h-screen lg:ml-[300px]">
         <main className="min-h-screen bg-[#f5f5f3]">
           <GlobalHeaderProvider>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <GlobalHeader />
+              <GlobalHeader onMenuToggle={() => setSidebarOpen(true)} />
               {children}
             </div>
           </GlobalHeaderProvider>
