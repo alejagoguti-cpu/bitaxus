@@ -12,6 +12,7 @@ import {
   Globe2,
   RefreshCw,
   WalletCards,
+  X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { isSupabaseConfigured } from "@/lib/supabase";
@@ -57,6 +58,7 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
   const [summaryVisible, setSummaryVisible] = useState(true);
   const [activityCollapsed, setActivityCollapsed] = useState(false);
   const [reviewCollapsed, setReviewCollapsed] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState<ActivityItem | null>(null);
   const now = new Date();
   const { receipts, payments, isLoading, error } = useDashboardWidgets(tenantId, period);
   const receiptRows = receipts.data ?? [];
@@ -112,6 +114,16 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
     void receipts.refetch();
     void payments.refetch();
   };
+
+  useEffect(() => {
+    if (!selectedActivity) return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelectedActivity(null);
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [selectedActivity]);
+
   return (
     <main className="dashboard-page dashboard-reference dashboard-reference--nested">
       {!isSupabaseConfigured ? <section className="inline-alert" role="alert">Supabase no está configurado en este entorno. Agrega las variables públicas para cargar el resumen real.</section> : error && <section className="inline-alert" role="alert">No pudimos cargar los movimientos desde Supabase. Vuelve a intentarlo.</section>}
@@ -184,13 +196,13 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
               {isLoading ? <div className="loading-block" aria-label="Cargando actividad" /> : activity.length === 0 ? <EmptyState label="Aún no hay movimientos registrados." /> : (
                 <div className="activity-list">
                   {activity.map(item => (
-                    <div className="activity-row" key={item.id}>
+                    <button type="button" className="activity-row" key={item.id} onClick={() => setSelectedActivity(item)} aria-label={`Ver detalle de ${item.title}`}>
                       <Icon icon={item.type === "receipt" ? ArrowDownLeft : ArrowUpRight} tone={item.type === "receipt" ? "green" : "coral"} />
                       <div className="activity-main"><b>{item.title}</b><span>{item.detail}</span></div>
                       <div className="activity-ref"><span>Referencia de operación</span><span>{formatDateDisplay(item.createdAt)}</span></div>
                       <div className="activity-amount"><b className={item.type === "receipt" ? "money-green" : ""}>{formatCurrency(item.amount, item.currency)}</b><span className={`status ${item.status.toLowerCase().replaceAll(" ", "-")}`}>{item.status}</span></div>
                       <ChevronRight size={14} />
-                    </div>
+                    </button>
                   ))}
                 </div>
               )}
@@ -227,6 +239,30 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
       <button type="button" className="dashboard-refresh" onClick={refresh} aria-label="Actualizar datos" title={`Actualizar datos · ${monthLabel}`}>
         <RefreshCw size={13} />
       </button>
+
+      {selectedActivity && (
+        <div className="activity-detail-backdrop" role="presentation" onMouseDown={() => setSelectedActivity(null)}>
+          <section className="activity-detail-modal" role="dialog" aria-modal="true" aria-labelledby="activity-detail-title" onMouseDown={event => event.stopPropagation()}>
+            <button type="button" className="activity-detail-close" onClick={() => setSelectedActivity(null)} aria-label="Cerrar detalle"><X size={17} /></button>
+            <span className={`activity-detail-kind ${selectedActivity.type}`}>
+              {selectedActivity.type === "receipt" ? "Recaudo" : "Pago"}
+            </span>
+            <h2 id="activity-detail-title">{selectedActivity.title}</h2>
+            <p className="activity-detail-counterparty">{selectedActivity.detail}</p>
+            <div className="activity-detail-amount">
+              <span>Valor de la operación</span>
+              <strong className={selectedActivity.type === "receipt" ? "money-green" : ""}>{formatCurrency(selectedActivity.amount, selectedActivity.currency)}</strong>
+            </div>
+            <dl className="activity-detail-grid">
+              <div><dt>Estado</dt><dd><span className={`status ${selectedActivity.status.toLowerCase().replaceAll(" ", "-")}`}>{selectedActivity.status}</span></dd></div>
+              <div><dt>Fecha de registro</dt><dd>{formatDateDisplay(selectedActivity.createdAt)}</dd></div>
+              <div><dt>Moneda</dt><dd>{selectedActivity.currency.toUpperCase()}</dd></div>
+              <div><dt>Referencia</dt><dd>{selectedActivity.id.replace(/^(receipt|payment)-/, "")}</dd></div>
+            </dl>
+            <button type="button" className="activity-detail-done" onClick={() => setSelectedActivity(null)}>Cerrar detalle</button>
+          </section>
+        </div>
+      )}
     </main>
   );
 }

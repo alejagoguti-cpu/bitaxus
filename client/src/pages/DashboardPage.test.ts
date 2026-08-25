@@ -35,6 +35,13 @@ describe("public dashboard data contract", () => {
     expect(pageSource).toContain("No pudimos cargar los movimientos desde Supabase.");
   });
 
+  it("muestra el detalle accesible de una operación al seleccionar una fila", () => {
+    expect(pageSource).toContain('setSelectedActivity(item)');
+    expect(pageSource).toContain('role="dialog"');
+    expect(pageSource).toContain("Cerrar detalle");
+    expect(pageSource).toContain('event.key === "Escape"');
+  });
+
   it("conserva las acciones operativas del Home", () => {
     expect(pageSource).toContain("Programar recaudo");
     expect(pageSource).toContain("Programar pago");
