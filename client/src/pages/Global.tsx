@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowDownLeft, ArrowLeftRight, ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, Download, Globe2, Headphones, Info, LoaderCircle, Search, Send, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import HorizontalScrollHint from "../components/HorizontalScrollHint";
@@ -18,6 +18,12 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
   const update = (key: keyof typeof form, value: string) => setForm(current => ({ ...current, [key]: value }));
   const open = (type: GlobalOperationType) => { setModal(type); update("source_amount", ""); update("target_amount", ""); update("exchange_rate", ""); update("description", ""); };
   const submit = () => { if (!modal) return; const input: GlobalOperationInput = { operation_type: modal, source_currency: form.source_currency, target_currency: modal === "Conversión" ? form.target_currency : undefined, source_amount: Number(form.source_amount), target_amount: modal === "Conversión" ? Number(form.target_amount) : undefined, exchange_rate: modal === "Conversión" ? Number(form.exchange_rate) : undefined, account: form.account || undefined, counterparty: form.counterparty || undefined, reference: form.reference || undefined, description: form.description || undefined, operation_date: form.operation_date }; createOperation.mutate(input, { onSuccess: () => { setModal(null); setNotice("Operación Global guardada correctamente."); window.setTimeout(() => setNotice(""), 4200); }, onError: error => setNotice(error.message) }); };
+  useEffect(() => {
+    if (!modal || createOperation.isPending) return;
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setModal(null); };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [modal, createOperation.isPending]);
   const exportGlobal = () => { const columns = ["id", "operation_type", "source_currency", "source_amount", "target_currency", "target_amount", "operation_date", "status"]; const csv = [columns.join(","), ...operations.map(item => columns.map(column => JSON.stringify((item as unknown as Record<string, unknown>)[column] ?? "")).join(","))].join("\n"); const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); const a = document.createElement("a"); a.href = url; a.download = "bitaxus-global.csv"; a.click(); URL.revokeObjectURL(url); };
   const disabled = createOperation.isPending || !form.source_amount || (modal === "Conversión" && (!form.target_amount || !form.exchange_rate));
 

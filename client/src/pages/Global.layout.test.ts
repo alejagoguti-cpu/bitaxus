@@ -15,5 +15,6 @@ describe("composición de Bitaxus Global", () => {
     expect(source).toContain("Registra una recepción de recursos.");
     expect(source).toContain("Registra una conversión entre monedas.");
     expect(source).toContain("Registra fondos enviados a una contraparte.");
+    expect(source).toContain('event.key === "Escape"');
   });
 });
