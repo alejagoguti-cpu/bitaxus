@@ -45,11 +45,14 @@ type PaymentRow = {
   type: PaymentMode;
   counterparty: string;
   concept: string;
+  account: string;
+  description: string;
   value: string;
   rawValue: number;
   currency: string;
   date: string;
   rawDate: string;
+  monthly: boolean;
   status: string;
 };
 type PaymentPage = { rows: PaymentRecord[]; total: number };
@@ -152,11 +155,14 @@ function toPaymentRow(row: PaymentRecord): PaymentRow {
     type: row.payment_type === "Dispersión" ? "Dispersión" : "Pago individual",
     counterparty: row.beneficiary || row.dispersion_name || "Sin contraparte",
     concept: row.concept || "Sin concepto",
+    account: row.account || "Sin cuenta o referencia",
+    description: row.description || "Sin descripción adicional",
     value: formatPaymentAmount(amountValue, currency),
     rawValue: amountValue,
     currency,
     date: row.payment_date ? new Date(`${String(row.payment_date).slice(0, 10)}T12:00:00`).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" }) : "Sin fecha",
     rawDate: String(row.payment_date || ""),
+    monthly: Boolean(row.monthly),
     status: row.status || "Pendiente",
   };
 }
@@ -190,6 +196,7 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenant
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState<PaymentRow | null>(null);
   const queryClient = useQueryClient();
   const [, navigate] = useLocation();
 
@@ -293,6 +300,15 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenant
     return () => document.removeEventListener("keydown", close);
   }, [formOpen, hasChanges]);
 
+  useEffect(() => {
+    if (!selectedPayment) return;
+    const closeDetail = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelectedPayment(null);
+    };
+    document.addEventListener("keydown", closeDetail);
+    return () => document.removeEventListener("keydown", closeDetail);
+  }, [selectedPayment]);
+
   const draft = { mode, beneficiary: selectedBeneficiary, dispersionName, amount, concept, date };
   const continueToReview = () => {
     const validation = validatePaymentDraft(draft);
@@ -374,7 +390,7 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenant
             {paymentsQuery.isLoading && <tr><td colSpan={8} className="empty-row">Cargando operaciones…</td></tr>}
             {paymentsQuery.error && <tr><td colSpan={8} className="empty-row">No fue posible cargar las operaciones.</td></tr>}
             {!paymentsQuery.isLoading && !paymentsQuery.error && !items.length && <tr><td colSpan={8} className="empty-row">No hay operaciones registradas con esos filtros.</td></tr>}
-            {items.map(item => <tr key={item.id}><td title={item.id}>{item.id.slice(0, 8)}</td><td><span className={`payment-type ${item.type === "Dispersión" ? "coral" : "ink"}`}>{item.type}</span></td><td><button type="button" className="table-text-link" onClick={() => navigate(`/payments/${item.id}`)}>{item.counterparty}</button></td><td>{item.concept}</td><td>{item.value}</td><td>{item.date}</td><td><span className={`payment-status ${item.status.toLocaleLowerCase("es-CO").replaceAll(" ", "-")}`}>{item.status}</span></td><td><button type="button" className="row-detail-action" aria-label={`Ver detalle de ${item.counterparty}`} onClick={() => navigate(`/payments/${item.id}`)}><ChevronRight size={16} /></button></td></tr>)}
+            {items.map(item => <tr key={item.id} className="payment-detail-row" tabIndex={0} onClick={() => setSelectedPayment(item)} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSelectedPayment(item); } }} aria-label={`Ver detalle de ${item.counterparty}`}><td title={item.id}>{item.id.slice(0, 8)}</td><td><span className={`payment-type ${item.type === "Dispersión" ? "coral" : "ink"}`}>{item.type}</span></td><td>{item.counterparty}</td><td>{item.concept}</td><td>{item.value}</td><td>{item.date}</td><td><span className={`payment-status ${item.status.toLocaleLowerCase("es-CO").replaceAll(" ", "-")}`}>{item.status}</span></td><td><button type="button" className="row-detail-action" aria-label={`Ver detalle de ${item.counterparty}`} onClick={event => { event.stopPropagation(); setSelectedPayment(item); }}><ChevronRight size={16} /></button></td></tr>)}
           </tbody></table>
         </HorizontalScrollHint>
         <div className="payments-footer">
@@ -387,6 +403,8 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenant
           <label className="page-size-select"><span>Por página</span><select value={pageSize} onChange={event => setPageSize(Number(event.target.value))}><option value={10}>10</option><option value={25}>25</option><option value={50}>50</option></select></label>
         </div>
       </div>
+
+      {selectedPayment && <div className="modal-backdrop payment-detail-backdrop" onClick={() => setSelectedPayment(null)}><section className="payment-detail-modal" role="dialog" aria-modal="true" aria-labelledby="payment-detail-title" onClick={event => event.stopPropagation()}><button type="button" className="form-close" onClick={() => setSelectedPayment(null)} aria-label="Cerrar detalle"><X size={18} /></button><span className={`payment-detail-kind ${selectedPayment.type === "Dispersión" ? "coral" : "ink"}`}>{selectedPayment.type}</span><h3 id="payment-detail-title">{selectedPayment.counterparty}</h3><p>{selectedPayment.concept}</p><div className="payment-detail-amount"><span>Valor de la operación</span><strong>{selectedPayment.value}</strong></div><dl className="payment-detail-grid"><div><dt>Estado</dt><dd><span className={`payment-status ${selectedPayment.status.toLocaleLowerCase("es-CO").replaceAll(" ", "-")}`}>{selectedPayment.status}</span></dd></div><div><dt>Fecha de operación</dt><dd>{selectedPayment.date}</dd></div><div><dt>Cuenta / referencia</dt><dd>{selectedPayment.account}</dd></div><div><dt>Frecuencia</dt><dd>{selectedPayment.monthly ? "Programada mensualmente" : "Única"}</dd></div><div><dt>Referencia</dt><dd>{selectedPayment.id}</dd></div><div><dt>Moneda</dt><dd>{selectedPayment.currency}</dd></div></dl><div className="payment-detail-description"><span>Descripción</span><p>{selectedPayment.description}</p></div><button type="button" className="primary-action payment-detail-close" onClick={() => setSelectedPayment(null)}>Cerrar detalle</button></section></div>}
 
       {formOpen && <div className="modal-backdrop payment-form-backdrop" onClick={requestClose}><div className="payment-drawer shared-operation-modal" role="dialog" aria-modal="true" aria-labelledby="payment-flow-title" onClick={event => event.stopPropagation()}>
         <button type="button" className="form-close" onClick={requestClose} aria-label="Cerrar formulario"><X size={18} /></button>

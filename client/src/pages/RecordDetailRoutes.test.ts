@@ -20,8 +20,9 @@ describe("Navegación y detalle de registros", () => {
     expect(routerSource).toContain("component: CounterpartyDetailPage");
   });
 
-  it("conecta los nombres y acciones de cada listado con su detalle", () => {
-    expect(paymentsSource).toContain("navigate(`/payments/${item.id}`)");
+  it("conecta los listados con su vista de detalle adecuada", () => {
+    expect(paymentsSource).toContain("setSelectedPayment(item)");
+    expect(paymentsSource).toContain('role="dialog"');
     expect(receiptsSource).toContain("navigate(`/receipts/${item.id}`)");
     expect(counterpartiesSource).toContain("navigate(`/counterparties/${row.id}`)");
   });
