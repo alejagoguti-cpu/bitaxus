@@ -51,9 +51,8 @@ describe("Pagos y dispersiones workspace", () => {
 
   it("abre un detalle accesible al seleccionar una fila de pago o dispersión", () => {
     expect(workspaceSource).toContain("setSelectedPayment(item)");
-    expect(workspaceSource).toContain('role="dialog"');
+    expect(workspaceSource).toContain('OperationDetailModal');
     expect(workspaceSource).toContain("Fecha de operación");
-    expect(workspaceSource).toContain("Cerrar detalle");
-    expect(workspaceSource).toContain('event.key === "Escape"');
+    expect(workspaceSource).toContain("onClose={() => setSelectedPayment(null)}");
   });
 });

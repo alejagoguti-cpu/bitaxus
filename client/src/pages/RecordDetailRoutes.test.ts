@@ -22,9 +22,11 @@ describe("Navegación y detalle de registros", () => {
 
   it("conecta los listados con su vista de detalle adecuada", () => {
     expect(paymentsSource).toContain("setSelectedPayment(item)");
-    expect(paymentsSource).toContain('role="dialog"');
-    expect(receiptsSource).toContain("navigate(`/receipts/${item.id}`)");
-    expect(counterpartiesSource).toContain("navigate(`/counterparties/${row.id}`)");
+    expect(paymentsSource).toContain("OperationDetailModal");
+    expect(receiptsSource).toContain("setSelectedReceipt(item)");
+    expect(receiptsSource).toContain("OperationDetailModal");
+    expect(counterpartiesSource).toContain("setSelected(row)");
+    expect(counterpartiesSource).toContain("OperationDetailModal");
   });
 
   it("ofrece edición Supabase en cada detalle", () => {
