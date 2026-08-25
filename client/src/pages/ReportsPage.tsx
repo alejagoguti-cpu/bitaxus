@@ -256,7 +256,7 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
   const activeStatus = activeStatusIndex === null ? null : statusData[activeStatusIndex];
 
   return (
-    <section className="reports-page">
+    <section className={`reports-page ${modalOpen ? "reports-page--modal-open" : ""}`}>
       <header className="reports-header">
         <div>
           <div className="reports-title"><h2>Reportes</h2></div>
