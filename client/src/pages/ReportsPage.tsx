@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowDownLeft,
@@ -126,6 +126,15 @@ export function ReportsPage({ tenantId }: ReportsPageProps) {
   const [feedback, setFeedback] = useState("");
   const [activeStatusIndex, setActiveStatusIndex] = useState<number | null>(null);
   void tenantId;
+
+  useEffect(() => {
+    if (!modalOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setModalOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [modalOpen]);
 
   const receiptsQuery = useQuery({
     queryKey: ["report-receipts"],

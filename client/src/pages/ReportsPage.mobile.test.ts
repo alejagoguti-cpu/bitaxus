@@ -11,5 +11,6 @@ describe("Modal móvil de Reportes", () => {
     expect(styleSource).toContain(".reports-page--modal-open");
     expect(styleSource).toContain("transform: none !important");
     expect(styleSource).toContain("max-height: calc(100dvh - 28px)");
+    expect(pageSource).toContain('event.key === "Escape"');
   });
 });
