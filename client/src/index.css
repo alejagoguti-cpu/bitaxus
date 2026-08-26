@@ -1212,3 +1212,4 @@ select option:checked,select option:hover,select option:focus{background:#ef5b59
 /* La operación se consulta en pantalla: se retiran las acciones CSV/PDF solicitadas. */
 .table-export-toolbar{display:none!important}
 .report-table-actions .table-export-action{display:none!important}
+.reconciliation-table-card .export-actions{display:none!important}
