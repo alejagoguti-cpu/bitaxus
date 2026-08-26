@@ -22,7 +22,10 @@
 .reports-page .reports-filters .branded-select-options {
   position: static;
   z-index: auto;
-  max-height: 144px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  max-height: none;
   margin-top: 6px;
   padding: 4px;
   border-color: #f0c3c0;
@@ -40,6 +43,13 @@
 .reports-page .reports-filters > label:has(.branded-select-trigger[aria-expanded="true"]) {
   height: auto;
   align-self: start;
+}
+
+@media (max-width: 560px) {
+  .reports-page .reports-filters .branded-select-options {
+    display: block;
+    max-height: 144px;
+  }
 }
 
 .report-modal .branded-select {
