@@ -80,7 +80,11 @@ function buildFallbackProfile(authUser: SupabaseUser): AuthProfile {
     email,
     city: metadataString(metadata, "city", "Bogotá"),
     country: metadataString(metadata, "country", "Colombia"),
-    phone: metadataString(metadata, "phone", "") || undefined,
+    phone: metadataString(
+      metadata,
+      "tenant_phone",
+      metadataString(metadata, "phone", "")
+    ) || undefined,
     plan: TenantPlan.BUSINESS,
     status: TenantStatus.ACTIVE,
     settings: {},

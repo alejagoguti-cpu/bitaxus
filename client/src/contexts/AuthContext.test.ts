@@ -27,4 +27,8 @@ describe("public Supabase authentication", () => {
     expect(source).toContain("El correo o la contraseña no son correctos.");
     expect(source).toContain("email: email.trim(),");
   });
+
+  it("preserves a separate phone number for the tenant fallback profile", () => {
+    expect(source).toContain('"tenant_phone"');
+  });
 });

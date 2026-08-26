@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import ExportActions from "./ExportActions";
 import { exportRowsToPdf } from "../lib/exportData";
@@ -13,6 +15,12 @@ vi.mock("../lib/exportData", () => ({
 afterEach(() => cleanup());
 
 describe("ExportActions PDF", () => {
+  it("expone una capa modal aislada y cierre por Escape", () => {
+    const source = readFileSync(resolve(process.cwd(), "client/src/components/ExportActions.tsx"), "utf8");
+    expect(source).toContain("export-modal-backdrop");
+    expect(source).toContain('event.key === "Escape"');
+  });
+
   it("exports the complete filtered report instead of only the visible page", async () => {
     const user = userEvent.setup();
     const fetchRows = vi.fn().mockResolvedValue([

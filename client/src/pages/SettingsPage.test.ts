@@ -10,6 +10,8 @@ describe("Panel de Configuración", () => {
     expect(source).toContain("Sesión actual");
     expect(source).toContain("Cerrar sesión");
     expect(source).toContain("settings-page-v2");
+    expect(source).toContain("Editar perfil");
+    expect(source).toContain("Preferencias de notificaciones");
+    expect(source).toContain("Sí, cerrar sesión");
   });
 });
-
