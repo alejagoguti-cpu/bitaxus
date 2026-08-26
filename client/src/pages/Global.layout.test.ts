@@ -35,13 +35,12 @@ describe("composición de Bitaxus Global", () => {
     expect(source).toContain('balanceOperationsQuery');
   });
 
-  it("hace visible la moneda activa, su saldo y favoritas antes de abrir una acción", () => {
+  it("mantiene la moneda activa para el selector sin recargar el panel de acciones", () => {
     expect(source).toContain('const [quickCurrencyCode, setQuickCurrencyCode]');
-    expect(source).toContain('quick-global-currency-summary');
-    expect(source).toContain('Moneda activa');
-    expect(source).toContain('quick-currency-options');
-    expect(source).toContain('Moneda visible antes de operar');
     expect(source).toContain('isCurrent ? " · Activa" : ""');
+    expect(source).not.toContain('quick-global-currency-summary');
+    expect(source).not.toContain('quick-currency-options');
+    expect(source).not.toContain('Moneda visible antes de operar');
   });
 
   it("mantiene las acciones rápidas limpias sin repetir saldo o moneda bajo cada acción", () => {
