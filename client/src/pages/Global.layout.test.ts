@@ -25,4 +25,21 @@ describe("composición de Bitaxus Global", () => {
     expect(source).toContain("chooseCurrency(currency)");
     expect(source).toContain("global-currency-list");
   });
+
+  it("prioriza favoritas y presenta saldo operativo real al seleccionar una moneda", () => {
+    expect(source).toContain('FAVORITE_CURRENCIES_KEY');
+    expect(source).toContain('window.localStorage.setItem(FAVORITE_CURRENCIES_KEY');
+    expect(source).toContain('favoriteCodes.includes(right.code)');
+    expect(source).toContain('Saldo disponible · ${money(balances[currency.code], currency.code)}');
+    expect(source).toContain('Sin saldo operativo registrado');
+    expect(source).toContain('balanceOperationsQuery');
+  });
+
+  it("muestra una confirmación visual antes de abrir el formulario de la moneda elegida", () => {
+    expect(source).toContain('setSelectedCurrencyCode(currency.code)');
+    expect(source).toContain('setTimeout(() => {');
+    expect(source).toContain('global-currency-option${isSelected ? " is-selected" : ""}');
+    expect(source).toContain('Moneda seleccionada. Abriendo formulario…');
+    expect(source).toContain('currency-favorite');
+  });
 });
