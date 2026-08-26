@@ -36,7 +36,7 @@ describe("Programar pago detail view", () => {
   it("is linked from Home and registered as a protected route", () => {
     expect(routerSource).toContain('path: "/payments/new"');
     expect(routerSource).toContain("component: ProgramarPagoPage");
-    expect(dashboardSource).toContain('<Link to="/payments/new">');
+    expect(dashboardSource).toContain('to="/payments/new"');
   });
 
   it("refreshes payment and dashboard queries after saving", () => {

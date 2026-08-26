@@ -48,6 +48,13 @@ describe("public dashboard data contract", () => {
     expect(pageSource).toContain("Consultar en Global");
   });
 
+  it("permite elegir entre pago individual y dispersión desde la acción de pagos", () => {
+    expect(pageSource).toContain("Pago individual o dispersión");
+    expect(pageSource).toContain("setPaymentChoiceOpen(true)");
+    expect(pageSource).toContain('to="/payments/new"');
+    expect(pageSource).toContain('to="/dispersions?new=1"');
+  });
+
   it("funciona sin depender del header global eliminado", () => {
     expect(pageSource).not.toContain("GlobalHeader");
     expect(pageSource).not.toContain("useGlobalHeader");

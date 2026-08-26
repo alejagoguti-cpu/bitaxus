@@ -11,6 +11,7 @@ import {
   EyeOff,
   Globe2,
   RefreshCw,
+  UsersRound,
   WalletCards,
   X,
 } from "lucide-react";
@@ -59,6 +60,7 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
   const [activityCollapsed, setActivityCollapsed] = useState(false);
   const [reviewCollapsed, setReviewCollapsed] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityItem | null>(null);
+  const [paymentChoiceOpen, setPaymentChoiceOpen] = useState(false);
   const now = new Date();
   const { receipts, payments, isLoading, error } = useDashboardWidgets(tenantId, period);
   const receiptRows = receipts.data ?? [];
@@ -124,6 +126,15 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
     return () => window.removeEventListener("keydown", handleEscape);
   }, [selectedActivity]);
 
+  useEffect(() => {
+    if (!paymentChoiceOpen) return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPaymentChoiceOpen(false);
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [paymentChoiceOpen]);
+
   return (
     <main className="dashboard-page dashboard-reference dashboard-reference--nested">
       {!isSupabaseConfigured ? <section className="inline-alert" role="alert">Supabase no está configurado en este entorno. Agrega las variables públicas para cargar el resumen real.</section> : error && <section className="inline-alert" role="alert">No pudimos cargar los movimientos desde Supabase. Vuelve a intentarlo.</section>}
@@ -179,7 +190,9 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
 
       <section className="quick-actions home-quick-actions">
         <Link to="/receipts/new"><Icon icon={ArrowDownLeft} tone="green" /><b>Programar recaudo</b><ChevronRight size={15} /></Link>
-        <Link to="/payments/new"><Icon icon={ArrowUpRight} tone="coral" /><b>Programar pago</b><ChevronRight size={15} /></Link>
+        <button type="button" className="home-payment-quick-action" onClick={() => setPaymentChoiceOpen(true)} aria-haspopup="dialog" aria-expanded={paymentChoiceOpen}>
+          <Icon icon={ArrowUpRight} tone="coral" /><span><b>Programar pago</b><small>Pago individual o dispersión</small></span><ChevronRight size={15} />
+        </button>
         <Link to="/global"><Icon icon={Globe2} tone="purple" /><b>Consultar en Global</b><ChevronRight size={15} /></Link>
       </section>
 
@@ -260,6 +273,29 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
               <div><dt>Referencia</dt><dd>{selectedActivity.id.replace(/^(receipt|payment)-/, "")}</dd></div>
             </dl>
             <button type="button" className="activity-detail-done" onClick={() => setSelectedActivity(null)}>Cerrar detalle</button>
+          </section>
+        </div>
+      )}
+
+      {paymentChoiceOpen && (
+        <div className="payment-choice-backdrop" role="presentation" onMouseDown={() => setPaymentChoiceOpen(false)}>
+          <section className="payment-choice-modal" role="dialog" aria-modal="true" aria-labelledby="payment-choice-title" onMouseDown={event => event.stopPropagation()}>
+            <button type="button" className="payment-choice-close" onClick={() => setPaymentChoiceOpen(false)} aria-label="Cerrar selección"><X size={17} /></button>
+            <span className="payment-choice-eyebrow">Operaciones de salida</span>
+            <h2 id="payment-choice-title">¿Qué deseas programar?</h2>
+            <p>Selecciona el tipo de salida para continuar con el formulario correspondiente.</p>
+            <div className="payment-choice-options">
+              <Link to="/payments/new" onClick={() => setPaymentChoiceOpen(false)}>
+                <span className="payment-choice-icon"><ArrowUpRight size={18} /></span>
+                <span><b>Pago individual</b><small>Programa una salida para un proveedor o beneficiario.</small></span>
+                <ChevronRight size={17} />
+              </Link>
+              <Link to="/dispersions?new=1" onClick={() => setPaymentChoiceOpen(false)}>
+                <span className="payment-choice-icon"><UsersRound size={18} /></span>
+                <span><b>Dispersión</b><small>Programa una salida agrupada para varios destinatarios.</small></span>
+                <ChevronRight size={17} />
+              </Link>
+            </div>
           </section>
         </div>
       )}

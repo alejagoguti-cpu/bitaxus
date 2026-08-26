@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DashboardPage } from "./DashboardPage";
 
@@ -39,6 +39,9 @@ describe("Dashboard sin header global", () => {
     expect(screen.queryByRole("button", { name: /notificaciones/i })).toBeNull();
     expect(screen.queryByRole("button", { name: "Ayuda" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Abrir menú de perfil" })).toBeNull();
-    expect(screen.getByRole("link", { name: /programar pago/i })).not.toBeNull();
+    const paymentAction = screen.getByRole("button", { name: /programar pago/i });
+    expect(paymentAction).not.toBeNull();
+    fireEvent.click(paymentAction);
+    expect(screen.getByRole("dialog", { name: /qué deseas programar/i })).not.toBeNull();
   });
 });

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import {
@@ -168,7 +168,7 @@ function toPaymentRow(row: PaymentRecord): PaymentRow {
   };
 }
 
-export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenantId: string; scope?: Scope }) {
+export function PaymentOperationsWorkspace({ tenantId, scope = "all", autoOpen = false }: { tenantId: string; scope?: Scope; autoOpen?: boolean }) {
   const initialMode: PaymentMode = scope === "all" ? "Pago individual" : scope;
   const title = scope === "Dispersión" ? "Dispersiones" : "Pagos y dispersiones";
   const subtitle = scope === "Dispersión" ? "Programa y consulta salidas agrupadas de tu operación." : "Programa y consulta las operaciones de salida de tu operación.";
@@ -198,6 +198,7 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenant
   const [success, setSuccess] = useState(false);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<PaymentRow | null>(null);
+  const autoOpenHandled = useRef(false);
   const queryClient = useQueryClient();
   const [, navigate] = useLocation();
 
@@ -293,6 +294,12 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all" }: { tenant
   };
   const openForm = () => { reset(); setSuccess(false); setFormOpen(true); };
   const requestClose = () => { if (hasChanges) setConfirmDiscard(true); else setFormOpen(false); };
+
+  useEffect(() => {
+    if (!autoOpen || autoOpenHandled.current) return;
+    autoOpenHandled.current = true;
+    openForm();
+  }, [autoOpen]);
 
   useEffect(() => {
     if (!formOpen) return;

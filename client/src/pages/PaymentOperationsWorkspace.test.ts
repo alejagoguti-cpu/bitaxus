@@ -55,4 +55,10 @@ describe("Pagos y dispersiones workspace", () => {
     expect(workspaceSource).toContain("Fecha de operación");
     expect(workspaceSource).toContain("onClose={() => setSelectedPayment(null)}");
   });
+
+  it("abre el formulario de dispersión cuando llega desde la elección del Inicio", () => {
+    expect(workspaceSource).toContain("autoOpen = false");
+    expect(workspaceSource).toContain("autoOpenHandled");
+    expect(workspaceSource).toContain("if (!autoOpen || autoOpenHandled.current) return;");
+  });
 });
