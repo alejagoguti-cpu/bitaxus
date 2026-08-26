@@ -185,11 +185,11 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
           <div className="balance-grid">
             <article className="balance-card cop">
               <div className="balance-icon">$</div><span>Pesos colombianos</span><strong>{money(balances.COP ?? 0, "COP")}</strong><small>COP</small>
-              <div className="balance-actions" aria-label="Acciones para pesos colombianos"><button onClick={() => open("Recepción", "COP")}><ArrowDownLeft size={15} /> Recibir</button><button onClick={() => open("Conversión", "COP")}><ArrowLeftRight size={15} /> Convertir</button><button onClick={() => open("Dispersión", "COP")}><Send size={15} /> Dispersar</button></div>
+              <div className="balance-actions" aria-label="Acciones para pesos colombianos"><button onClick={() => startQuickAction("Recepción")}><ArrowDownLeft size={15} /> Recibir</button><button onClick={() => startQuickAction("Conversión")}><ArrowLeftRight size={15} /> Convertir</button><button onClick={() => startQuickAction("Dispersión")}><Send size={15} /> Dispersar</button></div>
             </article>
             <article className="balance-card usd">
               <div className="balance-icon">$</div><span>Dólares estadounidenses</span><strong>{money(balances.USD ?? 0, "USD")}</strong><small>USD</small>
-              <div className="balance-actions" aria-label="Acciones para dólares estadounidenses"><button onClick={() => open("Recepción", "USD")}><ArrowDownLeft size={15} /> Recibir</button><button onClick={() => open("Conversión", "USD")}><ArrowLeftRight size={15} /> Convertir</button><button onClick={() => open("Dispersión", "USD")}><Send size={15} /> Dispersar</button></div>
+              <div className="balance-actions" aria-label="Acciones para dólares estadounidenses"><button onClick={() => startQuickAction("Recepción")}><ArrowDownLeft size={15} /> Recibir</button><button onClick={() => startQuickAction("Conversión")}><ArrowLeftRight size={15} /> Convertir</button><button onClick={() => startQuickAction("Dispersión")}><Send size={15} /> Dispersar</button></div>
             </article>
           </div>
 
@@ -207,7 +207,6 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
         </main>
 
         <aside className="global-aside">
-          <div className="quick-global panel"><h3>Acciones rápidas</h3><button type="button" onClick={() => startQuickAction("Recepción")}><span className="quick-icon green"><ArrowDownLeft size={17} /></span><span><b>Recibir</b></span><ChevronRight size={16} /></button><button type="button" onClick={() => startQuickAction("Conversión")}><span className="quick-icon coral"><ArrowLeftRight size={17} /></span><span><b>Convertir</b></span><ChevronRight size={16} /></button><button type="button" onClick={() => startQuickAction("Dispersión")}><span className="quick-icon green"><Send size={17} /></span><span><b>Dispersar</b></span><ChevronRight size={16} /></button></div>
           <div className="global-guide panel"><h3>Guía rápida</h3>{["Registra recursos entrantes con Recibir.", "Usa Convertir para mover valor entre monedas.", "Usa Dispersar para registrar una salida.", "Confirma el estado al completar la revisión."].map((item, index) => <div className="guide-step" key={item}><b>{index + 1}</b><span>{item}</span></div>)}<button className="help-global" onClick={() => setNotice("Solicita ayuda desde el canal de soporte de Bitaxus.")}><Headphones size={17} /><span><b>¿Necesitas ayuda?</b><small>Habla con el Agente Bitaxus</small></span><ArrowRight size={15} /></button></div>
         </aside>
       </div>

@@ -5,13 +5,14 @@ import { describe, expect, it } from "vitest";
 const source = readFileSync(resolve(process.cwd(), "client/src/pages/Global.tsx"), "utf8");
 
 describe("composición de Bitaxus Global", () => {
-  it("mantiene las acciones en las tarjetas y también el panel lateral solicitado", () => {
+  it("retira el panel lateral de acciones y solicita moneda antes de abrir una operación", () => {
     expect(source).toContain('className="balance-actions"');
-    expect(source).toContain('open("Recepción", "COP")');
-    expect(source).toContain('open("Conversión", "COP")');
-    expect(source).toContain('open("Dispersión", "COP")');
-    expect(source).toContain("Acciones rápidas");
-    expect(source).toContain('className="quick-global panel"');
+    expect(source).toContain('onClick={() => startQuickAction("Recepción")}');
+    expect(source).toContain('onClick={() => startQuickAction("Conversión")}');
+    expect(source).toContain('onClick={() => startQuickAction("Dispersión")}');
+    expect(source).not.toContain("Acciones rápidas");
+    expect(source).not.toContain('className="quick-global panel"');
+    expect(source).not.toContain('open("Recepción", "COP")');
     expect(source).toContain('startQuickAction("Recepción")');
     expect(source).toContain('startQuickAction("Conversión")');
     expect(source).toContain('startQuickAction("Dispersión")');
@@ -43,13 +44,11 @@ describe("composición de Bitaxus Global", () => {
     expect(source).not.toContain('Moneda visible antes de operar');
   });
 
-  it("mantiene las acciones rápidas limpias sin repetir saldo o moneda bajo cada acción", () => {
+  it("no deja contenido de acciones rápidas en el panel lateral", () => {
     expect(source).not.toContain('Origen actual: {quickCurrency.code}. Puedes cambiarlo al continuar.');
     expect(source).not.toContain('<b>Recibir</b><small>{quickCurrency.code}');
     expect(source).not.toContain('<b>Dispersar</b><small>{quickCurrency.code}');
-    expect(source).toContain('<b>Recibir</b></span><ChevronRight');
-    expect(source).toContain('<b>Convertir</b></span><ChevronRight');
-    expect(source).toContain('<b>Dispersar</b></span><ChevronRight');
+    expect(source).not.toContain('<div className="quick-global panel">');
   });
 
   it("muestra una confirmación visual antes de abrir el formulario de la moneda elegida", () => {
