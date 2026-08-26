@@ -1179,3 +1179,32 @@ select option:checked,select option:hover,select option:focus{background:#ef5b59
 .native-select-guard button:hover,.native-select-guard button:focus-visible{background:rgba(255,255,255,.1);color:#fff;outline:0}
 .native-select-guard button.selected{background:#ef5b59;color:#fff;box-shadow:inset 3px 0 0 #ffb1af}
 .native-select-guard button:disabled{opacity:.38;cursor:not-allowed}
+
+/* Toolbars en flujo: los filtros nunca cubren CSV/PDF. */
+.receipts-page .receipts-table-card .table-export-toolbar,
+.payments-page .payments-card .table-export-toolbar,
+.counterparties-page .counterparties-card .table-export-toolbar{
+  position:relative!important;
+  top:auto!important;
+  right:auto!important;
+  z-index:1!important;
+  min-height:48px;
+  margin:0!important;
+  padding:12px 16px 8px!important;
+}
+
+/* Capa modal única: los portales y backdrop se sitúan sobre filtros, selects y tablas. */
+.modal-backdrop,.operation-detail-backdrop,.receipt-form-backdrop,.payment-form-backdrop,.detail-modal-backdrop,.settings-dialog-backdrop{
+  z-index:1200!important;
+  isolation:isolate;
+}
+.export-modal-backdrop{z-index:2000!important}
+
+@media(max-width:760px){
+  .receipts-page .receipts-table-card .table-export-toolbar,
+  .payments-page .payments-card .table-export-toolbar,
+  .counterparties-page .counterparties-card .table-export-toolbar{
+    min-height:0;
+    padding:10px 12px 6px!important;
+  }
+}

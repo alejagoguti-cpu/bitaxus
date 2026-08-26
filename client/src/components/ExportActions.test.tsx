@@ -19,6 +19,7 @@ describe("ExportActions PDF", () => {
     const source = readFileSync(resolve(process.cwd(), "client/src/components/ExportActions.tsx"), "utf8");
     expect(source).toContain("export-modal-backdrop");
     expect(source).toContain('event.key === "Escape"');
+    expect(source).toContain("createPortal");
   });
 
   it("exports the complete filtered report instead of only the visible page", async () => {
