@@ -5,17 +5,18 @@ import { describe, expect, it } from "vitest";
 const source = readFileSync(resolve(process.cwd(), "client/src/pages/Global.tsx"), "utf8");
 
 describe("composición de Bitaxus Global", () => {
-  it("retira el panel lateral de acciones y solicita moneda antes de abrir una operación", () => {
+  it("muestra tres tarjetas principales sin paneles laterales", () => {
     expect(source).toContain('className="balance-actions"');
-    expect(source).toContain('onClick={() => startQuickAction("Recepción")}');
-    expect(source).toContain('onClick={() => startQuickAction("Conversión")}');
-    expect(source).toContain('onClick={() => startQuickAction("Dispersión")}');
+    expect(source).toContain('className="balance-card currency-config-card"');
+    expect(source).toContain("Configurar moneda");
+    expect(source).toContain("openCurrencyPicker()");
+    expect(source).toContain('open("Recepción", quickCurrency.code)');
+    expect(source).toContain('open("Conversión", quickCurrency.code)');
+    expect(source).toContain('open("Dispersión", quickCurrency.code)');
     expect(source).not.toContain("Acciones rápidas");
     expect(source).not.toContain('className="quick-global panel"');
-    expect(source).not.toContain('open("Recepción", "COP")');
-    expect(source).toContain('startQuickAction("Recepción")');
-    expect(source).toContain('startQuickAction("Conversión")');
-    expect(source).toContain('startQuickAction("Dispersión")');
+    expect(source).not.toContain('className="global-aside"');
+    expect(source).not.toContain("Guía rápida");
     expect(source).toContain('event.key === "Escape"');
   });
 
@@ -36,26 +37,28 @@ describe("composición de Bitaxus Global", () => {
     expect(source).toContain('balanceOperationsQuery');
   });
 
-  it("mantiene la moneda activa para el selector sin recargar el panel de acciones", () => {
+  it("mantiene la moneda activa para la tercera tarjeta de configuración", () => {
     expect(source).toContain('const [quickCurrencyCode, setQuickCurrencyCode]');
     expect(source).toContain('isCurrent ? " · Activa" : ""');
+    expect(source).toContain('currencyAction === "Configuración"');
     expect(source).not.toContain('quick-global-currency-summary');
     expect(source).not.toContain('quick-currency-options');
     expect(source).not.toContain('Moneda visible antes de operar');
   });
 
-  it("no deja contenido de acciones rápidas en el panel lateral", () => {
+  it("no deja contenido de acciones rápidas ni guía en un panel lateral", () => {
     expect(source).not.toContain('Origen actual: {quickCurrency.code}. Puedes cambiarlo al continuar.');
     expect(source).not.toContain('<b>Recibir</b><small>{quickCurrency.code}');
     expect(source).not.toContain('<b>Dispersar</b><small>{quickCurrency.code}');
     expect(source).not.toContain('<div className="quick-global panel">');
+    expect(source).not.toContain('<aside className="global-aside">');
   });
 
-  it("muestra una confirmación visual antes de abrir el formulario de la moneda elegida", () => {
+  it("muestra una confirmación visual al configurar una moneda o antes de abrir un formulario", () => {
     expect(source).toContain('setSelectedCurrencyCode(currency.code)');
     expect(source).toContain('setTimeout(() => {');
     expect(source).toContain('global-currency-option${isCurrent ? " is-current" : ""}${isSelected ? " is-selected" : ""}');
-    expect(source).toContain('Moneda seleccionada. Abriendo formulario…');
+    expect(source).toContain('Moneda seleccionada. {currencyAction === "Configuración" ? "Actualizando tarjeta…" : "Abriendo formulario…"}');
     expect(source).toContain('currency-favorite');
   });
 
