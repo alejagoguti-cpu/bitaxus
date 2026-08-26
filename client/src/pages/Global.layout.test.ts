@@ -44,6 +44,15 @@ describe("composición de Bitaxus Global", () => {
     expect(source).toContain('isCurrent ? " · Activa" : ""');
   });
 
+  it("mantiene las acciones rápidas limpias sin repetir saldo o moneda bajo cada acción", () => {
+    expect(source).not.toContain('Origen actual: {quickCurrency.code}. Puedes cambiarlo al continuar.');
+    expect(source).not.toContain('<b>Recibir</b><small>{quickCurrency.code}');
+    expect(source).not.toContain('<b>Dispersar</b><small>{quickCurrency.code}');
+    expect(source).toContain('<b>Recibir</b></span><ChevronRight');
+    expect(source).toContain('<b>Convertir</b></span><ChevronRight');
+    expect(source).toContain('<b>Dispersar</b></span><ChevronRight');
+  });
+
   it("muestra una confirmación visual antes de abrir el formulario de la moneda elegida", () => {
     expect(source).toContain('setSelectedCurrencyCode(currency.code)');
     expect(source).toContain('setTimeout(() => {');
