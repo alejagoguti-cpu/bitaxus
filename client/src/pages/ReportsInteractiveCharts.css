@@ -38,6 +38,7 @@
 }
 
 .reports-page .reports-filters > label:has(.branded-select-trigger[aria-expanded="true"]) {
+  height: auto;
   align-self: start;
 }
 

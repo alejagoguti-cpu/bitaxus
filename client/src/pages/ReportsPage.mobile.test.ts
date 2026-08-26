@@ -17,6 +17,7 @@ describe("Modal móvil de Reportes", () => {
   it("integra la lista de filtros al panel sin crear un hueco antes de los KPI", () => {
     expect(styleSource).toContain("position: static");
     expect(styleSource).toContain("max-height: 144px");
+    expect(styleSource).toContain("height: auto");
     expect(styleSource).not.toContain("margin-bottom: 138px");
   });
 });
