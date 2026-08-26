@@ -1,196 +1,92 @@
-/**
- * SettingsPage Component
- * User and tenant settings
- */
-
 import { useState } from "react";
+import { Building2, ChevronRight, KeyRound, LogOut, Mail, MapPin, Phone, ShieldCheck, Sparkles, UserRound } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "wouter";
+import "./SettingsPage.css";
+
+const planName = (plan?: string) => plan === "free" ? "Gratuito" : plan === "business" ? "Negocios" : "Empresarial";
 
 export function SettingsPage() {
   const { user, tenant, logout } = useAuth();
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const displayName = user?.name || user?.email || "Sin información";
+  const role = user?.role === "admin" ? "Administrador" : user?.role === "operator" ? "Operador" : "Visualizador";
 
   const handleLogout = async () => {
     setIsLoading(true);
-    try {
-      await logout();
-      navigate("/login");
-    } catch (err) {
-      console.error("Logout error:", err);
-    } finally {
-      setIsLoading(false);
-    }
+    try { await logout(); navigate("/login"); }
+    catch (err) { console.error("Logout error:", err); }
+    finally { setIsLoading(false); }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Configuración</h1>
-        <p className="text-gray-600 mt-1">
-          Gestiona tu cuenta y preferencias
-        </p>
+    <section className="settings-page-v2" aria-labelledby="settings-title">
+      <header className="settings-page-v2__header">
+        <div>
+          <span className="settings-page-v2__eyebrow"><Sparkles size={14} /> Cuenta Bitaxus</span>
+          <h1 id="settings-title">Configuración</h1>
+          <p>Consulta la información de tu cuenta, empresa y seguridad de acceso.</p>
+        </div>
+        <span className="settings-page-v2__status"><ShieldCheck size={15} /> Sesión protegida</span>
+      </header>
+
+      <div className="settings-page-v2__summary-grid">
+        <article className="settings-profile-card">
+          <div className="settings-card__heading">
+            <span className="settings-card__icon settings-card__icon--coral"><UserRound size={18} /></span>
+            <div><p>Perfil de usuario</p><small>Tu identidad de acceso</small></div>
+          </div>
+          <div className="settings-profile-card__identity">
+            <span className="settings-profile-card__avatar" aria-hidden="true">{displayName.slice(0, 1).toUpperCase()}</span>
+            <div><strong>{displayName}</strong><span>{user?.email || "Sin correo registrado"}</span></div>
+          </div>
+          <dl className="settings-key-values settings-key-values--profile">
+            <div><dt>Rol</dt><dd><span className="settings-role-chip">{role}</span></dd></div>
+            <div><dt>Último acceso</dt><dd>{user?.last_login_at ? new Date(user.last_login_at).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" }) : "No disponible"}</dd></div>
+          </dl>
+        </article>
+
+        <article className="settings-company-card">
+          <div className="settings-card__heading">
+            <span className="settings-card__icon settings-card__icon--ink"><Building2 size={18} /></span>
+            <div><p>Información de la empresa</p><small>Datos asociados a tu operación</small></div>
+          </div>
+          <strong className="settings-company-card__name">{tenant?.name || "Sin información registrada"}</strong>
+          <dl className="settings-key-values settings-key-values--company">
+            <div><dt>NIT</dt><dd>{tenant?.nit || "No disponible"}</dd></div>
+            <div><dt>Plan</dt><dd><span className="settings-plan-chip">{planName(tenant?.plan)}</span></dd></div>
+            <div><dt><Mail size={13} /> Correo</dt><dd>{tenant?.email || "No disponible"}</dd></div>
+            <div><dt><MapPin size={13} /> Ubicación</dt><dd>{[tenant?.city, tenant?.country].filter(Boolean).join(", ") || "No disponible"}</dd></div>
+            <div><dt><Phone size={13} /> Teléfono</dt><dd>{tenant?.phone || "No disponible"}</dd></div>
+          </dl>
+        </article>
       </div>
 
-      {/* Profile Section */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-lg font-semibold mb-6 text-gray-900">
-          Perfil de Usuario
-        </h2>
-
-        <div className="space-y-6">
-          <div className="flex items-start gap-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#ff8a86] to-[#d95f61] rounded-full flex items-center justify-center text-white text-2xl font-bold">
-              {user?.name.charAt(0).toUpperCase()}
-            </div>
-
-            <div className="flex-1">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs font-medium text-gray-600">Nombre</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {user?.name}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-gray-600">Email</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {user?.email}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-gray-600">Rol</p>
-                  <div className="mt-1">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#fde8e7] text-[#a64246]">
-                      {user?.role === "admin"
-                        ? "Administrador"
-                        : user?.role === "operator"
-                        ? "Operador"
-                        : "Visualizador"}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-gray-600">
-                    Último acceso
-                  </p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {user?.last_login_at
-                      ? new Date(user.last_login_at).toLocaleDateString()
-                      : "N/A"}
-                  </p>
-                </div>
-              </div>
-            </div>
+      <article className="settings-security-card">
+        <div className="settings-security-card__header">
+          <div>
+            <span className="settings-card__icon settings-card__icon--soft"><ShieldCheck size={18} /></span>
+            <div><h2>Seguridad de la cuenta</h2><p>Administra las preferencias disponibles para proteger tu acceso.</p></div>
           </div>
         </div>
-      </div>
-
-      {/* Tenant Section */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-lg font-semibold mb-6 text-gray-900">
-          Información de la Empresa
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <p className="text-xs font-medium text-gray-600">Nombre</p>
-            <p className="text-lg font-semibold text-gray-900">{tenant?.name}</p>
+        <div className="settings-security-card__rows">
+          <div className="settings-security-row">
+            <span className="settings-security-row__icon"><KeyRound size={17} /></span>
+            <div><strong>Contraseña</strong><p>Se administra de forma segura desde Supabase Auth.</p></div>
+            <button type="button" className="settings-text-button">Gestionar <ChevronRight size={15} /></button>
           </div>
-          <div>
-            <p className="text-xs font-medium text-gray-600">NIT</p>
-            <p className="text-lg font-semibold text-gray-900">{tenant?.nit}</p>
-          </div>
-          <div>
-            <p className="text-xs font-medium text-gray-600">Email</p>
-            <p className="text-lg font-semibold text-gray-900">
-              {tenant?.email}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs font-medium text-gray-600">Plan</p>
-            <div className="mt-1">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#f3f3f1] text-[#141719]">
-                {tenant?.plan === "free"
-                  ? "Gratuito"
-                  : tenant?.plan === "business"
-                  ? "Negocios"
-                  : "Empresarial"}
-              </span>
-            </div>
-          </div>
-          <div>
-            <p className="text-xs font-medium text-gray-600">Ubicación</p>
-            <p className="text-lg font-semibold text-gray-900">
-              {tenant?.city}, {tenant?.country}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs font-medium text-gray-600">Teléfono</p>
-            <p className="text-lg font-semibold text-gray-900">
-              {tenant?.phone || "N/A"}
-            </p>
+          <div className="settings-security-row">
+            <span className="settings-security-row__icon"><ShieldCheck size={17} /></span>
+            <div><strong>Autenticación de dos factores</strong><p>{user?.two_factor_enabled ? "Activada para tu cuenta." : "Desactivada. Recomendamos activarla cuando esté disponible."}</p></div>
+            <span className={`settings-security-state ${user?.two_factor_enabled ? "is-active" : ""}`}>{user?.two_factor_enabled ? "Activa" : "Pendiente"}</span>
           </div>
         </div>
-      </div>
-
-      {/* Security Section */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-lg font-semibold mb-6 text-gray-900">Seguridad</h2>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div>
-              <p className="font-medium text-gray-900">Cambiar Contraseña</p>
-              <p className="text-sm text-gray-600">
-                Actualiza tu contraseña regularmente
-              </p>
-            </div>
-            <button className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm font-medium">
-              Cambiar
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div>
-              <p className="font-medium text-gray-900">Autenticación de dos factores</p>
-              <p className="text-sm text-gray-600">
-                {user?.two_factor_enabled
-                  ? "Activada"
-                  : "Desactivada - Recomendado"}
-              </p>
-            </div>
-            <button className="px-4 py-2 bg-[#d95f61] text-white rounded-md hover:bg-[#b84b50] text-sm font-medium">
-              {user?.two_factor_enabled ? "Desactivar" : "Activar"}
-            </button>
-          </div>
+        <div className="settings-session-action">
+          <div><strong>Sesión actual</strong><p>Salir no elimina tus datos ni modifica la configuración de tu empresa.</p></div>
+          <button type="button" onClick={() => void handleLogout()} disabled={isLoading} className="settings-logout-button"><LogOut size={16} /> {isLoading ? "Cerrando…" : "Cerrar sesión"}</button>
         </div>
-      </div>
-
-      {/* Danger Zone */}
-      <div className="bg-[#fff3f2] border border-[#efb7b7] rounded-lg p-6">
-        <h2 className="text-lg font-semibold mb-4 text-[#8f3c40]">Zona de Peligro</h2>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-[#8f3c40]">Cerrar Sesión</p>
-              <p className="text-sm text-[#a64246]">
-                Cierra tu sesión en todos los dispositivos
-              </p>
-            </div>
-            <button
-              onClick={handleLogout}
-              disabled={isLoading}
-              className="px-4 py-2 bg-[#b84b50] text-white rounded-md hover:bg-[#8f3c40] disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-            >
-              {isLoading ? "Cerrando..." : "Cerrar Sesión"}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      </article>
+    </section>
   );
 }
