@@ -44,6 +44,16 @@ describe("composición de Bitaxus Global", () => {
     expect(source).toContain('event.key === "Escape"');
   });
 
+  it("recoge el importe en la tarjeta y evita repetir un formulario extenso", () => {
+    expect(source).toContain('const [operationAmount, setOperationAmount]');
+    expect(source).toContain('selectedOperationLabel');
+    expect(source).toContain('className="global-operation-amount"');
+    expect(source).toContain('value={operationAmount}');
+    expect(source).toContain('update("source_amount", operationAmount)');
+    expect(source).toContain('global-confirmation-modal');
+    expect(source).toContain('El importe y las monedas ya fueron definidos en la tarjeta Global.');
+  });
+
   it("persiste un par válido, evita pares duplicados y conserva el selector compacto", () => {
     const styles = readFileSync(resolve(process.cwd(), "client/src/index.css"), "utf8");
     expect(source).toContain('GLOBAL_CURRENCY_PAIR_KEY');
