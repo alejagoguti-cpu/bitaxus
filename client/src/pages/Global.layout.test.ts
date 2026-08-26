@@ -51,7 +51,20 @@ describe("composición de Bitaxus Global", () => {
     expect(source).toContain('value={operationAmount}');
     expect(source).toContain('update("source_amount", operationAmount)');
     expect(source).toContain('global-confirmation-modal');
-    expect(source).toContain('El importe y las monedas ya fueron definidos en la tarjeta Global.');
+    expect(source).toContain('Confirma que el valor y las monedas coincidan antes de finalizar.');
+  });
+
+  it("permite intercambiar el par y anticipa el resultado convertido antes de confirmar", () => {
+    const styles = readFileSync(resolve(process.cwd(), "client/src/index.css"), "utf8");
+    expect(source).toContain('const swapCurrencyPair');
+    expect(source).toContain('onClick={swapCurrencyPair}');
+    expect(source).toContain('Intercambiar ${sourceCurrency.code} y ${targetCurrency.code}');
+    expect(source).toContain('const convertedAmount = useMemo');
+    expect(source).toContain('Resultado estimado');
+    expect(source).toContain('global-converted-preview');
+    expect(source).toContain('global-summary-route');
+    expect(source).toContain('Revisa tu operación');
+    expect(styles).toContain('@keyframes conversionResultIn');
   });
 
   it("persiste un par válido, evita pares duplicados y conserva el selector compacto", () => {
