@@ -10,6 +10,10 @@ const hookSource = readFileSync(
   resolve(process.cwd(), "client/src/hooks/useDashboardSupabase.ts"),
   "utf8"
 );
+const homeStyles = readFileSync(
+  resolve(process.cwd(), "client/src/pages/HomeReference.css"),
+  "utf8"
+);
 describe("public dashboard data contract", () => {
   it("uses the real receipt and payment summaries", () => {
     expect(pageSource).toContain("useDashboardWidgets(tenantId, period)");
@@ -50,9 +54,19 @@ describe("public dashboard data contract", () => {
 
   it("permite elegir entre pago individual y dispersión desde la acción de pagos", () => {
     expect(pageSource).toContain("Pago individual o dispersión");
-    expect(pageSource).toContain("setPaymentChoiceOpen(true)");
+    expect(pageSource).toContain("openPaymentChoice");
+    expect(pageSource).toContain("closePaymentChoice");
+    expect(pageSource).toContain('useState<PaymentChoiceStage>("closed")');
     expect(pageSource).toContain('to="/payments/new"');
     expect(pageSource).toContain('to="/dispersions?new=1"');
+  });
+
+  it("anima de forma suave y accesible la apertura y el cierre del selector de pago", () => {
+    expect(pageSource).toContain('"entering" | "open" | "leaving"');
+    expect(pageSource).toContain('setPaymentChoiceStage("leaving")');
+    expect(homeStyles).toContain(".payment-choice-backdrop.is-open");
+    expect(homeStyles).toContain(".payment-choice-backdrop.is-leaving .payment-choice-modal");
+    expect(homeStyles).toContain("prefers-reduced-motion: reduce");
   });
 
   it("funciona sin depender del header global eliminado", () => {

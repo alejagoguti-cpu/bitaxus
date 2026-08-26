@@ -37,6 +37,8 @@ type ActivityItem = {
   createdAt: string;
 };
 
+type PaymentChoiceStage = "closed" | "entering" | "open" | "leaving";
+
 function Icon({ icon: IconComponent, tone = "slate" }: { icon: LucideIcon; tone?: string }) {
   return (
     <span className={`icon-bubble ${tone}`}>
@@ -60,7 +62,9 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
   const [activityCollapsed, setActivityCollapsed] = useState(false);
   const [reviewCollapsed, setReviewCollapsed] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityItem | null>(null);
-  const [paymentChoiceOpen, setPaymentChoiceOpen] = useState(false);
+  const [paymentChoiceStage, setPaymentChoiceStage] = useState<PaymentChoiceStage>("closed");
+  const paymentChoiceFrame = useRef<number | null>(null);
+  const paymentChoiceCloseTimer = useRef<number | null>(null);
   const now = new Date();
   const { receipts, payments, isLoading, error } = useDashboardWidgets(tenantId, period);
   const receiptRows = receipts.data ?? [];
@@ -126,14 +130,35 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
     return () => window.removeEventListener("keydown", handleEscape);
   }, [selectedActivity]);
 
+  const clearPaymentChoiceTimers = () => {
+    if (paymentChoiceFrame.current !== null) window.cancelAnimationFrame(paymentChoiceFrame.current);
+    if (paymentChoiceCloseTimer.current !== null) window.clearTimeout(paymentChoiceCloseTimer.current);
+    paymentChoiceFrame.current = null;
+    paymentChoiceCloseTimer.current = null;
+  };
+
+  const openPaymentChoice = () => {
+    clearPaymentChoiceTimers();
+    setPaymentChoiceStage("entering");
+    paymentChoiceFrame.current = window.requestAnimationFrame(() => setPaymentChoiceStage("open"));
+  };
+
+  const closePaymentChoice = () => {
+    clearPaymentChoiceTimers();
+    setPaymentChoiceStage("leaving");
+    paymentChoiceCloseTimer.current = window.setTimeout(() => setPaymentChoiceStage("closed"), 220);
+  };
+
   useEffect(() => {
-    if (!paymentChoiceOpen) return;
+    if (paymentChoiceStage === "closed") return;
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setPaymentChoiceOpen(false);
+      if (event.key === "Escape") closePaymentChoice();
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [paymentChoiceOpen]);
+  }, [paymentChoiceStage]);
+
+  useEffect(() => () => clearPaymentChoiceTimers(), []);
 
   return (
     <main className="dashboard-page dashboard-reference dashboard-reference--nested">
@@ -190,7 +215,7 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
 
       <section className="quick-actions home-quick-actions">
         <Link to="/receipts/new"><Icon icon={ArrowDownLeft} tone="green" /><b>Programar recaudo</b><ChevronRight size={15} /></Link>
-        <button type="button" className="home-payment-quick-action" onClick={() => setPaymentChoiceOpen(true)} aria-haspopup="dialog" aria-expanded={paymentChoiceOpen}>
+        <button type="button" className="home-payment-quick-action" onClick={openPaymentChoice} aria-haspopup="dialog" aria-expanded={paymentChoiceStage !== "closed"}>
           <Icon icon={ArrowUpRight} tone="coral" /><span><b>Programar pago</b><small>Pago individual o dispersión</small></span><ChevronRight size={15} />
         </button>
         <Link to="/global"><Icon icon={Globe2} tone="purple" /><b>Consultar en Global</b><ChevronRight size={15} /></Link>
@@ -277,20 +302,20 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
         </div>
       )}
 
-      {paymentChoiceOpen && (
-        <div className="payment-choice-backdrop" role="presentation" onMouseDown={() => setPaymentChoiceOpen(false)}>
+      {paymentChoiceStage !== "closed" && (
+        <div className={`payment-choice-backdrop is-${paymentChoiceStage}`} role="presentation" onMouseDown={closePaymentChoice}>
           <section className="payment-choice-modal" role="dialog" aria-modal="true" aria-labelledby="payment-choice-title" onMouseDown={event => event.stopPropagation()}>
-            <button type="button" className="payment-choice-close" onClick={() => setPaymentChoiceOpen(false)} aria-label="Cerrar selección"><X size={17} /></button>
+            <button type="button" className="payment-choice-close" onClick={closePaymentChoice} aria-label="Cerrar selección"><X size={17} /></button>
             <span className="payment-choice-eyebrow">Operaciones de salida</span>
             <h2 id="payment-choice-title">¿Qué deseas programar?</h2>
             <p>Selecciona el tipo de salida para continuar con el formulario correspondiente.</p>
             <div className="payment-choice-options">
-              <Link to="/payments/new" onClick={() => setPaymentChoiceOpen(false)}>
+              <Link to="/payments/new" onClick={closePaymentChoice}>
                 <span className="payment-choice-icon"><ArrowUpRight size={18} /></span>
                 <span><b>Pago individual</b><small>Programa una salida para un proveedor o beneficiario.</small></span>
                 <ChevronRight size={17} />
               </Link>
-              <Link to="/dispersions?new=1" onClick={() => setPaymentChoiceOpen(false)}>
+              <Link to="/dispersions?new=1" onClick={closePaymentChoice}>
                 <span className="payment-choice-icon"><UsersRound size={18} /></span>
                 <span><b>Dispersión</b><small>Programa una salida agrupada para varios destinatarios.</small></span>
                 <ChevronRight size={17} />
