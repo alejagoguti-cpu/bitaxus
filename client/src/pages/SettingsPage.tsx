@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Building2, ChevronRight, KeyRound, LogOut, Mail, MapPin, Phone, ShieldCheck, Sparkles, UserRound } from "lucide-react";
+import { Building2, KeyRound, LogOut, Mail, MapPin, Phone, ShieldCheck, Sparkles, UserRound } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "wouter";
 import "./SettingsPage.css";
@@ -74,7 +74,7 @@ export function SettingsPage() {
           <div className="settings-security-row">
             <span className="settings-security-row__icon"><KeyRound size={17} /></span>
             <div><strong>Contraseña</strong><p>Se administra de forma segura desde Supabase Auth.</p></div>
-            <button type="button" className="settings-text-button">Gestionar <ChevronRight size={15} /></button>
+            <span className="settings-security-note">Administrada</span>
           </div>
           <div className="settings-security-row">
             <span className="settings-security-row__icon"><ShieldCheck size={17} /></span>
