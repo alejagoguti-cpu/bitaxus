@@ -32,6 +32,8 @@ describe("composición de Bitaxus Global", () => {
     expect(source).toContain('setQuoteRefreshKey(value => value + 1)');
     expect(source).toContain('No se pudo consultar la tasa para este par.');
     expect(source).toContain('disabled={quoteStatus === "loading"}');
+    expect(source).toContain('aria-busy={quoteStatus === "loading"}');
+    expect(source).toContain('Actualizando…');
   });
 
   it("aplica el par y su tasa de referencia a los flujos de operación", () => {
