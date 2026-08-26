@@ -5,65 +5,48 @@ import { describe, expect, it } from "vitest";
 const source = readFileSync(resolve(process.cwd(), "client/src/pages/Global.tsx"), "utf8");
 
 describe("composición de Bitaxus Global", () => {
-  it("muestra tres tarjetas principales sin paneles laterales", () => {
-    expect(source).toContain('className="balance-actions"');
+  it("muestra tres tarjetas sin paneles laterales y distingue origen de destino", () => {
     expect(source).toContain('className="balance-card currency-config-card"');
-    expect(source).toContain("Configurar moneda");
-    expect(source).toContain("openCurrencyPicker()");
-    expect(source).toContain('open("Recepción", quickCurrency.code)');
-    expect(source).toContain('open("Conversión", quickCurrency.code)');
-    expect(source).toContain('open("Dispersión", quickCurrency.code)');
+    expect(source).toContain("Configura las monedas");
+    expect(source).toContain('Moneda de origen');
+    expect(source).toContain('Moneda de destino');
+    expect(source).toContain('openCurrencyPicker("Origen")');
+    expect(source).toContain('openCurrencyPicker("Destino")');
+    expect(source).toContain('sourceCurrency.code} · Moneda de origen');
+    expect(source).toContain('targetCurrency.code} · Moneda de destino');
     expect(source).not.toContain("Acciones rápidas");
-    expect(source).not.toContain('className="quick-global panel"');
     expect(source).not.toContain('className="global-aside"');
     expect(source).not.toContain("Guía rápida");
+  });
+
+  it("envía las monedas elegidas a cada flujo operativo", () => {
+    expect(source).toContain('open("Recepción", targetCurrency.code)');
+    expect(source).toContain('open("Conversión", sourceCurrency.code, targetCurrency.code)');
+    expect(source).toContain('open("Dispersión", sourceCurrency.code)');
     expect(source).toContain('event.key === "Escape"');
   });
 
-  it("permite buscar y elegir más de doce monedas antes de registrar una acción rápida", () => {
+  it("persiste el par de monedas válido y evita pares duplicados", () => {
+    expect(source).toContain('GLOBAL_CURRENCY_PAIR_KEY');
+    expect(source).toContain('getSavedCurrencyPair');
+    expect(source).toContain('parsed.source !== parsed.target');
+    expect(source).toContain('window.localStorage.setItem(GLOBAL_CURRENCY_PAIR_KEY');
+    expect(source).toContain('pickerTarget === "Origen"');
+  });
+
+  it("permite buscar y elegir las dieciséis monedas con favoritos y saldo operativo real", () => {
     expect(source).toContain("const GLOBAL_CURRENCIES");
     expect(source).toContain("Hay {GLOBAL_CURRENCIES.length} opciones disponibles.");
     expect(source).toContain('placeholder="Buscar por nombre o código"');
     expect(source).toContain("chooseCurrency(currency)");
-    expect(source).toContain("global-currency-list");
-  });
-
-  it("prioriza favoritas y presenta saldo operativo real al seleccionar una moneda", () => {
-    expect(source).toContain('FAVORITE_CURRENCIES_KEY');
-    expect(source).toContain('window.localStorage.setItem(FAVORITE_CURRENCIES_KEY');
-    expect(source).toContain('favoriteCodes.includes(right.code)');
     expect(source).toContain('Saldo disponible · ${money(balances[currency.code], currency.code)}');
     expect(source).toContain('Sin saldo operativo registrado');
-    expect(source).toContain('balanceOperationsQuery');
-  });
-
-  it("mantiene la moneda activa para la tercera tarjeta de configuración", () => {
-    expect(source).toContain('const [quickCurrencyCode, setQuickCurrencyCode]');
-    expect(source).toContain('isCurrent ? " · Activa" : ""');
-    expect(source).toContain('currencyAction === "Configuración"');
-    expect(source).not.toContain('quick-global-currency-summary');
-    expect(source).not.toContain('quick-currency-options');
-    expect(source).not.toContain('Moneda visible antes de operar');
-  });
-
-  it("no deja contenido de acciones rápidas ni guía en un panel lateral", () => {
-    expect(source).not.toContain('Origen actual: {quickCurrency.code}. Puedes cambiarlo al continuar.');
-    expect(source).not.toContain('<b>Recibir</b><small>{quickCurrency.code}');
-    expect(source).not.toContain('<b>Dispersar</b><small>{quickCurrency.code}');
-    expect(source).not.toContain('<div className="quick-global panel">');
-    expect(source).not.toContain('<aside className="global-aside">');
-  });
-
-  it("muestra una confirmación visual al configurar una moneda o antes de abrir un formulario", () => {
-    expect(source).toContain('setSelectedCurrencyCode(currency.code)');
-    expect(source).toContain('setTimeout(() => {');
-    expect(source).toContain('global-currency-option${isCurrent ? " is-current" : ""}${isSelected ? " is-selected" : ""}');
-    expect(source).toContain('Moneda seleccionada. {currencyAction === "Configuración" ? "Actualizando tarjeta…" : "Abriendo formulario…"}');
     expect(source).toContain('currency-favorite');
   });
 
-  it("conserva las dieciséis opciones dentro de un selector compacto", () => {
+  it("mantiene el selector compacto y responsive", () => {
     const styles = readFileSync(resolve(process.cwd(), "client/src/index.css"), "utf8");
+    expect(styles).toContain(".currency-pair-controls");
     expect(styles).toContain('.global-currency-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))');
     expect(styles).toContain('@media(max-width:560px){.global-currency-list{grid-template-columns:1fr');
   });
