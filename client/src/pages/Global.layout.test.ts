@@ -42,4 +42,10 @@ describe("composición de Bitaxus Global", () => {
     expect(source).toContain('Moneda seleccionada. Abriendo formulario…');
     expect(source).toContain('currency-favorite');
   });
+
+  it("conserva las dieciséis opciones dentro de un selector compacto", () => {
+    const styles = readFileSync(resolve(process.cwd(), "client/src/index.css"), "utf8");
+    expect(styles).toContain('.global-currency-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))');
+    expect(styles).toContain('@media(max-width:560px){.global-currency-list{grid-template-columns:1fr');
+  });
 });
