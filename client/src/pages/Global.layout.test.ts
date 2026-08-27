@@ -19,7 +19,9 @@ describe("experiencia unificada de Bitaxus Global", () => {
   it("mantiene banderas, selectores integrados de origen-destino e intercambio accesible", () => {
     expect(source).toContain('flag: "🇨🇴"');
     expect(source).toContain('flag: "🇺🇸"');
-    expect(source).toContain('>{currency.flag}</i>');
+    expect(source).toContain("function CurrencyFlag");
+    expect(source).toContain("<CurrencyFlag currency={currency}");
+    expect(source).toContain('<svg viewBox="0 0 24 16"');
     expect(source).toContain('className="global-inline-currency"');
     expect(source).toContain('<BrandedSelect className="global-currency-select" value={sourceCurrency.code}');
     expect(source).toContain('<BrandedSelect className="global-currency-select" value={targetCurrency.code}');

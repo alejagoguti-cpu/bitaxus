@@ -9,6 +9,12 @@ describe("Flujo de monedas de Bitaxus Global", () => {
   it("mantiene un catálogo real de monedas con banderas y pares persistentes", () => {
     expect(source).toContain("GLOBAL_CURRENCIES");
     expect(source).toContain("flag:");
+    expect(source).toContain("function CurrencyFlag");
+    expect(source).toContain('<svg viewBox="0 0 24 16"');
+    expect(styles).toContain(".global-page .currency-flag svg");
+    expect(styles).toContain(".global-page .currency-flag-inline");
+    expect(styles).toContain("@media(max-width:700px){.global-page .global-summary-currency .currency-flag");
+    expect(styles).toContain("fuentes emoji del dispositivo");
     expect(source).toContain("GLOBAL_CURRENCY_PAIR_KEY");
     expect(source).toContain("FAVORITE_CURRENCY_PAIRS_KEY");
     expect(source).toContain("localStorage.setItem(GLOBAL_CURRENCY_PAIR_KEY");
