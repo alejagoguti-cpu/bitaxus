@@ -10,3 +10,16 @@ export function filterReconciliationRows(rows: PublicReconciliationRow[], filter
     return (!filters.from || date >= filters.from) && (!filters.to || date <= filters.to) && (filters.status === "Todos los estados" || row.status === filters.status) && (!filters.account || row.account === filters.account) && (!needle || text.includes(needle));
   });
 }
+
+export function getPendingReconciliationRows(rows: PublicReconciliationRow[]) {
+  return rows.filter(row => row.status !== "Conciliada");
+}
+
+export function getAuditSummary(row: PublicReconciliationRow) {
+  if (!row.reconciled_at) return { state: "Pendiente", user: "", date: "" };
+  return {
+    state: "Conciliada",
+    user: row.reconciled_by || "Usuario Bitaxus",
+    date: String(row.reconciled_at),
+  };
+}
