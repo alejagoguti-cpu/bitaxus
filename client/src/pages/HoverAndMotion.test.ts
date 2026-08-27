@@ -22,4 +22,12 @@ describe("Microinteracciones operativas", () => {
     expect(css).toContain("accent-color:#ef5b59");
     expect(css).not.toMatch(/#(?:2563eb|3b82f6|007bff)/i);
   });
+
+  it("mantiene microinteracciones dentro de los breakpoints desktop y móvil", () => {
+    expect(css).toContain("@media(max-width:700px)");
+    expect(css).toContain("@media(max-width:560px)");
+    expect(css).toContain("@media(prefers-reduced-motion:reduce)");
+    expect(css).toMatch(/:hover[^}]*background:[^;]+/);
+    expect(css).toMatch(/:active[^}]*transform:scale\(\.97\)/);
+  });
 });
