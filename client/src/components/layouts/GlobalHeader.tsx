@@ -149,7 +149,7 @@ export function GlobalHeader({ onMenuToggle }: { onMenuToggle?: () => void }) {
         </div>
         <div className="global-header-tool-wrap">
           <button type="button" className="global-header-profile" aria-label="Abrir menú de perfil" aria-expanded={profileOpen} onClick={() => { setProfileOpen(current => !current); setNotificationsOpen(false); setHelpOpen(false); }}>
-            <span>{(user?.name || "U").charAt(0).toUpperCase()}</span><ChevronDown size={14} strokeWidth={1.8} />
+            {user?.avatar_url ? <img src={user.avatar_url} alt="" className="global-header-profile__avatar-image" /> : <span>{(user?.name || "U").charAt(0).toUpperCase()}</span>}<ChevronDown size={14} strokeWidth={1.8} />
           </button>
           {profileOpen && <div className="global-header-popover global-header-profile-menu" role="menu"><b>{user?.name || "Tu cuenta"}</b><p>{company}</p><button type="button" onClick={() => { closeTools(); navigate("/settings"); }}>Configuración</button><button type="button" onClick={() => void logout()}>Cerrar sesión</button></div>}
         </div>

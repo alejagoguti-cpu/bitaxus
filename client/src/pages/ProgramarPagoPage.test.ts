@@ -14,6 +14,10 @@ const dashboardSource = readFileSync(
   resolve(process.cwd(), "client/src/pages/DashboardPage.tsx"),
   "utf8"
 );
+const workspaceSource = readFileSync(
+  resolve(process.cwd(), "client/src/pages/PaymentOperationsWorkspace.tsx"),
+  "utf8"
+);
 
 describe("Programar pago detail view", () => {
   it("loads beneficiaries and source accounts from Supabase", () => {
@@ -35,8 +39,11 @@ describe("Programar pago detail view", () => {
 
   it("is linked from Home and registered as a protected route", () => {
     expect(routerSource).toContain('path: "/payments/new"');
-    expect(routerSource).toContain("component: ProgramarPagoPage");
+    expect(routerSource).toContain("component: LegacyPaymentNewRedirect");
+    expect(routerSource).toContain('return <Redirect to="/payments?new=1" />;');
     expect(dashboardSource).toContain('to="/payments/new"');
+    expect(workspaceSource).toContain("onClick={openForm}");
+    expect(workspaceSource).not.toContain('onClick={() => scope === "all" ? navigate("/payments/new") : openForm()}');
   });
 
   it("refreshes payment and dashboard queries after saving", () => {

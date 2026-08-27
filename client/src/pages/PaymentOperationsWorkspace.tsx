@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
 import {
   CalendarDays,
   CheckCircle2,
@@ -200,7 +199,6 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all", autoOpen =
   const [selectedPayment, setSelectedPayment] = useState<PaymentRow | null>(null);
   const autoOpenHandled = useRef(false);
   const queryClient = useQueryClient();
-  const [, navigate] = useLocation();
 
   useEffect(() => {
     const timer = window.setTimeout(() => setSearchTerm(query.trim()), 300);
@@ -360,7 +358,7 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all", autoOpen =
     <section className="payments-page">
       <header className="payments-header">
         <div><h2>{title}</h2><p>{subtitle}</p></div>
-        <button type="button" className="primary-action payment-top-action" onClick={() => scope === "all" ? navigate("/payments/new") : openForm()}>
+        <button type="button" className="primary-action payment-top-action" onClick={openForm}>
           <span className="schedule-top-icon"><Plus size={17} /></span>
           <span><strong>{scope === "Dispersión" ? "Programar dispersión" : "Programar pago"}</strong><small>{scope === "Dispersión" ? "Crear salida agrupada" : "Pago individual"}</small></span>
           <ChevronRight size={16} />

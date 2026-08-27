@@ -99,6 +99,7 @@ function buildFallbackProfile(authUser: SupabaseUser): AuthProfile {
     email,
     name,
     phone: metadataString(metadata, "phone", "") || undefined,
+    avatar_url: metadataString(metadata, "avatar_url", "") || undefined,
     role,
     two_factor_enabled: false,
     last_login_at: now,
@@ -130,7 +131,14 @@ async function resolveProfile(authUser: SupabaseUser): Promise<AuthProfile> {
 
     if (tenantError || !tenantData) return fallback;
 
-    return { user: userData as User, tenant: tenantData as Tenant };
+    const storedUser = userData as User;
+    return {
+      user: {
+        ...storedUser,
+        avatar_url: metadataString((authUser.user_metadata ?? {}) as Record<string, unknown>, "avatar_url", storedUser.avatar_url ?? "") || undefined,
+      },
+      tenant: tenantData as Tenant,
+    };
   } catch {
     // The public Supabase project may not expose profile tables. Auth itself is
     // still valid, so keep the user signed in with the Auth metadata profile.

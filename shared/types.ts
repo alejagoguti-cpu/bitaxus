@@ -153,6 +153,7 @@ export interface User {
   email: string;
   name: string;
   phone?: string;
+  avatar_url?: string;
   role: UserRole;
   two_factor_enabled: boolean;
   last_login_at?: string;

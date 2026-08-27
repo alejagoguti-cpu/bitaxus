@@ -12,7 +12,6 @@ import { AppLayout } from "@/components/layouts/AppLayout";
 import { LoginPage } from "@/pages/LoginPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { PaymentsPage } from "@/pages/PaymentsPage";
-import { ProgramarPagoPage } from "@/pages/ProgramarPagoPage";
 import { DispersionsPage } from "@/pages/DispersionsPage";
 import { CounterpartiesPage } from "@/pages/CounterpartiesPage";
 import { CounterpartyDetailPage } from "@/pages/CounterpartyDetailPage";
@@ -124,6 +123,10 @@ function LegacyRecaudosPage({ tenantId }: { tenantId?: string }) {
   );
 }
 
+function LegacyPaymentNewRedirect() {
+  return <Redirect to="/payments?new=1" />;
+}
+
 function LegacyGlobalPage() {
   const [, navigate] = useLocation();
   return (
@@ -206,7 +209,7 @@ export const routes = [
   {
     path: "/payments/new",
     title: "Programar pago",
-    component: ProgramarPagoPage,
+    component: LegacyPaymentNewRedirect,
     requiredRoles: [UserRole.ADMIN, UserRole.OPERATOR],
   },
 
