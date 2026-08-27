@@ -13,3 +13,11 @@
 - [x] Redirigir la ruta heredada `/payments/new` al workspace modal sin duplicar formulario.
 - [ ] Validar en producción Pago individual y Dispersión en escritorio y 390 px.
 - [ ] Auditar aperturas, cierres, scroll y ausencia de solapamientos en los pop-ups publicados.
+
+## Filtros avanzados de Conciliación
+
+- [x] Guardar, aplicar y eliminar hasta seis combinaciones de filtros en almacenamiento local.
+- [x] Buscar por referencia, contraparte, comentario y usuario de auditoría reales.
+- [x] Mantener la superficie compacta y responsive en el stylesheet.
+- [x] Proteger el contrato con Vitest.
+- [ ] Validar la nueva UI en una versión publicada sin conciliar movimientos.
