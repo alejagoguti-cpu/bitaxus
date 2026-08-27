@@ -22,5 +22,19 @@ describe("PublicReconciliationPage accounting filters", () => {
     expect(styleSource).toContain("grid-template-columns:repeat(2,minmax(0,1fr))");
     expect(styleSource).toContain("grid-template-columns:1fr");
   });
+
+  it("supports saved filter combinations without inventing or mutating movements", () => {
+    expect(pageSource).toContain('localStorage.getItem("bitaxus-reconciliation-filters")');
+    expect(pageSource).toContain("saveCurrentFilter");
+    expect(pageSource).toContain("applySavedFilter");
+    expect(pageSource).toContain("removeSavedFilter");
+    expect(pageSource).toContain("localStorage.setItem(\"bitaxus-reconciliation-filters\"");
+  });
+
+  it("searches real reconciliation metadata including audit user and comment", () => {
+    expect(helperSource).toContain("row.reconciliation_comment");
+    expect(helperSource).toContain("row.reconciled_by");
+    expect(pageSource).toContain("comentario o usuario");
+  });
 });
 
