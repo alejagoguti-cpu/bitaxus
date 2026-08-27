@@ -22,5 +22,11 @@ describe("operational typography", () => {
     expect(css).toContain("font-size: 20px !important");
     expect(css).toContain("font-size: 15px !important");
   });
+
+  it("keeps table headings emphasized without changing their compact sizes", () => {
+    expect(css).toContain(".counterparties-table th");
+    expect(css).toContain(".payments-table th");
+    expect(css).toContain(".payments-table th,.counterparties-table th,.global-table th,.reports-table th,.reconciliation-table th{height:54px!important;padding:0 16px!important;font-size:11px!important;font-weight:800!important");
+  });
 });
 
