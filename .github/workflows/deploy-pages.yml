@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Build frontend
-        run: pnpm run build:client
+        run: pnpm run build:client && pnpm run postbuild:client
         env:
           GITHUB_ACTIONS: true
           # Estas dos variables son públicas por diseño y están protegidas por RLS.
