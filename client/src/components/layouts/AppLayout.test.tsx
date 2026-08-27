@@ -1,7 +1,11 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AppLayout } from "./AppLayout";
+
+const layoutSource = readFileSync(resolve(process.cwd(), "client/src/components/layouts/AppLayout.tsx"), "utf8");
 
 vi.mock("@/contexts/AuthContext", () => ({
   useAuth: () => ({
@@ -39,6 +43,12 @@ describe("AppLayout en Home", () => {
     expect(screen.getByRole("button", { name: "Seleccionar periodo" })).not.toBeNull();
     expect(screen.getByRole("button", { name: /Notificaciones/ })).not.toBeNull();
     expect(screen.getByRole("button", { name: "Ayuda" })).not.toBeNull();
+  });
+
+  it("mantiene el menú móvil sin scrollbar vertical artificial", () => {
+    expect(layoutSource).toContain("mobile-sidebar-nav");
+    expect(layoutSource).toContain("overflow-hidden");
+    expect(layoutSource).not.toContain("mobile-sidebar-nav min-h-0 flex-1 space-y-1 overflow-y-auto");
   });
 
   it("ofrece un menú móvil con apertura y cierre accesibles", () => {
