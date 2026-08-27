@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowDownLeft, ArrowLeftRight, ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, Download, Globe2, Info, LoaderCircle, RefreshCw, Search, Send, Star, X } from "lucide-react";
+import { ArrowDown, ArrowDownLeft, ArrowLeftRight, ArrowRight, ArrowUp, ArrowUpRight, CheckCircle2, ChevronRight, Download, Globe2, Info, LoaderCircle, RefreshCw, Search, Send, Star, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { BrandedSelect } from "../components/BrandedSelect";
 import HorizontalScrollHint from "../components/HorizontalScrollHint";
 import { useGlobalOperationsSupabase, type GlobalOperationInput, type GlobalOperationStatus, type GlobalOperationType } from "../hooks/useGlobalSupabase";
 
 const money = (value: number, currency: string) => new Intl.NumberFormat("es-CO", { style: "currency", currency, maximumFractionDigits: 0 }).format(value);
 const dateLabel = (value: string) => new Intl.DateTimeFormat("es-CO", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${value}T12:00:00`));
-const FAVORITE_CURRENCIES_KEY = "bitaxus-global-favorite-currencies";
 const GLOBAL_CURRENCY_PAIR_KEY = "bitaxus-global-currency-pair";
+const FAVORITE_CURRENCY_PAIRS_KEY = "bitaxus-global-favorite-currency-pairs";
 
 const GLOBAL_CURRENCIES = [
   { code: "COP", name: "Peso colombiano", symbol: "$", flag: "🇨🇴" },
@@ -29,17 +30,25 @@ const GLOBAL_CURRENCIES = [
 ] as const;
 
 type GlobalCurrency = (typeof GLOBAL_CURRENCIES)[number];
-type CurrencyPickerTarget = "Origen" | "Destino";
 type CurrencyPair = { source: string; target: string };
 type ReferenceQuote = { base: string; quote: string; rate: number; date: string };
 
 const rateLabel = (value: number) => new Intl.NumberFormat("es-CO", { maximumSignificantDigits: 7 }).format(value);
+const parseAmount = (value: string) => Number(value.replaceAll(".", "").replace(",", "."));
+const formatAmount = (value: string) => {
+  const [whole = "", decimal] = value.replaceAll(".", "").replace(/[^\d,]/g, "").split(",");
+  const cleanWhole = whole.replace(/^0+(?=\d)/, "") || (decimal !== undefined ? "0" : "");
+  const formattedWhole = cleanWhole ? new Intl.NumberFormat("es-CO", { maximumFractionDigits: 0 }).format(Number(cleanWhole)) : "";
+  return decimal === undefined ? formattedWhole : `${formattedWhole || "0"},${decimal.slice(0, 2)}`;
+};
+const pairKey = (pair: CurrencyPair) => `${pair.source}-${pair.target}`;
 
-function getSavedFavorites(): string[] {
+function getSavedFavoritePairs(): CurrencyPair[] {
   if (typeof window === "undefined") return [];
   try {
-    const parsed = JSON.parse(window.localStorage.getItem(FAVORITE_CURRENCIES_KEY) ?? "[]");
-    return Array.isArray(parsed) ? parsed.filter((code): code is string => typeof code === "string" && GLOBAL_CURRENCIES.some(currency => currency.code === code)) : [];
+    const parsed = JSON.parse(window.localStorage.getItem(FAVORITE_CURRENCY_PAIRS_KEY) ?? "[]");
+    const isValidCode = (code: unknown): code is string => typeof code === "string" && GLOBAL_CURRENCIES.some(currency => currency.code === code);
+    return Array.isArray(parsed) ? parsed.filter((pair): pair is CurrencyPair => isValidCode(pair?.source) && isValidCode(pair?.target) && pair.source !== pair.target) : [];
   } catch {
     return [];
   }
@@ -62,15 +71,13 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<GlobalOperationStatus | "Todos">("Todos");
   const [modal, setModal] = useState<GlobalOperationType | null>(null);
-  const [currencyAction, setCurrencyAction] = useState<CurrencyPickerTarget | null>(null);
-  const [currencyQuery, setCurrencyQuery] = useState("");
-  const [selectedCurrencyCode, setSelectedCurrencyCode] = useState<string | null>(null);
-  const [favoriteCodes, setFavoriteCodes] = useState<string[]>(getSavedFavorites);
   const [currencyPair, setCurrencyPair] = useState<CurrencyPair>(getSavedCurrencyPair);
+  const [favoritePairs, setFavoritePairs] = useState<CurrencyPair[]>(getSavedFavoritePairs);
   const [operationIntent, setOperationIntent] = useState<GlobalOperationType>("Conversión");
   const [operationAmount, setOperationAmount] = useState("");
   const [referenceQuote, setReferenceQuote] = useState<ReferenceQuote | null>(null);
   const [quoteStatus, setQuoteStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [quoteTrend, setQuoteTrend] = useState<"up" | "down" | null>(null);
   const [quoteRefreshKey, setQuoteRefreshKey] = useState(0);
   const [notice, setNotice] = useState("");
   const [form, setForm] = useState({ source_currency: "COP", target_currency: "USD", source_amount: "", target_amount: "", exchange_rate: "", account: "", counterparty: "", reference: "", description: "", operation_date: new Date().toISOString().slice(0, 10) });
@@ -93,10 +100,11 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
   const targetCurrency = useMemo(() => GLOBAL_CURRENCIES.find(currency => currency.code === currencyPair.target) ?? GLOBAL_CURRENCIES[1], [currencyPair.target]);
   const confirmationSourceCurrency = useMemo(() => GLOBAL_CURRENCIES.find(currency => currency.code === form.source_currency) ?? sourceCurrency, [form.source_currency, sourceCurrency]);
   const confirmationTargetCurrency = useMemo(() => GLOBAL_CURRENCIES.find(currency => currency.code === form.target_currency) ?? targetCurrency, [form.target_currency, targetCurrency]);
+  const currencyOptions = useMemo(() => GLOBAL_CURRENCIES.map(currency => ({ value: currency.code, label: <span className="global-inline-currency"><i aria-hidden="true">{currency.flag}</i><b>{currency.code}</b><small>{currency.name}</small></span> })), []);
 
   const update = (key: keyof typeof form, value: string) => setForm(current => ({ ...current, [key]: value }));
   const open = (type: GlobalOperationType, sourceCode = form.source_currency, targetCode = form.target_currency) => {
-    const numericAmount = Number(operationAmount);
+    const numericAmount = parseAmount(operationAmount);
     const quoteIsCurrent = referenceQuote?.base === sourceCode && referenceQuote.quote === targetCode;
     if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
       setNotice(`Ingresa el importe que vas a ${type === "Recepción" ? "recibir" : type === "Conversión" ? "convertir" : "dispersar"} en la tarjeta de moneda.`);
@@ -109,8 +117,8 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
     setModal(type);
     update("source_currency", sourceCode);
     if (type === "Conversión") update("target_currency", targetCode === sourceCode ? GLOBAL_CURRENCIES.find(currency => currency.code !== sourceCode)?.code ?? "USD" : targetCode);
-    update("source_amount", operationAmount);
-    update("target_amount", type === "Conversión" && quoteIsCurrent ? String(numericAmount * referenceQuote.rate) : "");
+    update("source_amount", String(numericAmount));
+    update("target_amount", type === "Conversión" && quoteIsCurrent ? formatAmount((numericAmount * referenceQuote.rate).toFixed(2).replace(".", ",")) : "");
     update("exchange_rate", type === "Conversión" && quoteIsCurrent ? String(referenceQuote.rate) : "");
     update("description", "");
   };
@@ -118,7 +126,7 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
   const selectedOperationCurrency = operationIntent === "Recepción" ? targetCurrency : sourceCurrency;
   const selectedOperationLabel = operationIntent === "Recepción" ? "Importe a recibir" : operationIntent === "Conversión" ? "Importe a convertir" : "Importe a dispersar";
   const convertedAmount = useMemo(() => {
-    const numericAmount = Number(operationAmount);
+    const numericAmount = parseAmount(operationAmount);
     if (operationIntent !== "Conversión" || quoteStatus !== "ready" || !referenceQuote || !Number.isFinite(numericAmount) || numericAmount <= 0) return null;
     return numericAmount * referenceQuote.rate;
   }, [operationAmount, operationIntent, quoteStatus, referenceQuote]);
@@ -129,21 +137,6 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
     else open("Dispersión", sourceCurrency.code);
   };
 
-  const availableCurrencies = useMemo(() => {
-    const normalizedQuery = currencyQuery.trim().toLocaleLowerCase("es-CO");
-    return GLOBAL_CURRENCIES
-      .filter(currency => `${currency.code} ${currency.name}`.toLocaleLowerCase("es-CO").includes(normalizedQuery))
-      .sort((left, right) => Number(favoriteCodes.includes(right.code)) - Number(favoriteCodes.includes(left.code)) || left.code.localeCompare(right.code));
-  }, [currencyQuery, favoriteCodes]);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(FAVORITE_CURRENCIES_KEY, JSON.stringify(favoriteCodes));
-    } catch {
-      // La selección se mantiene durante la sesión si el navegador no permite persistencia local.
-    }
-  }, [favoriteCodes]);
-
   useEffect(() => {
     try {
       window.localStorage.setItem(GLOBAL_CURRENCY_PAIR_KEY, JSON.stringify(currencyPair));
@@ -153,18 +146,37 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
   }, [currencyPair]);
 
   useEffect(() => {
+    try {
+      window.localStorage.setItem(FAVORITE_CURRENCY_PAIRS_KEY, JSON.stringify(favoritePairs));
+    } catch {
+      // Los pares siguen disponibles durante la sesión si el navegador no permite persistencia local.
+    }
+  }, [favoritePairs]);
+
+  useEffect(() => {
     let active = true;
     setQuoteStatus("loading");
     setReferenceQuote(null);
+    setQuoteTrend(null);
     fetch(`https://api.frankfurter.dev/v2/rate/${sourceCurrency.code}/${targetCurrency.code}`)
       .then(async response => {
         if (!response.ok) throw new Error(`No se pudo consultar la cotización (${response.status}).`);
         return response.json() as Promise<ReferenceQuote>;
       })
-      .then(quote => {
+      .then(async quote => {
         if (!active || !Number.isFinite(quote.rate) || quote.base !== sourceCurrency.code || quote.quote !== targetCurrency.code) return;
         setReferenceQuote(quote);
         setQuoteStatus("ready");
+        const previousDate = new Date(`${quote.date}T12:00:00Z`);
+        previousDate.setUTCDate(previousDate.getUTCDate() - 7);
+        try {
+          const historicalResponse = await fetch(`https://api.frankfurter.dev/v2/rate/${sourceCurrency.code}/${targetCurrency.code}?date=${previousDate.toISOString().slice(0, 10)}`);
+          if (!historicalResponse.ok) return;
+          const historicalQuote = await historicalResponse.json() as ReferenceQuote;
+          if (active && Number.isFinite(historicalQuote.rate) && historicalQuote.rate !== quote.rate) setQuoteTrend(quote.rate > historicalQuote.rate ? "up" : "down");
+        } catch {
+          // La tasa actual se conserva aunque no exista comparación histórica para ese par.
+        }
       })
       .catch(() => {
         if (active) setQuoteStatus("error");
@@ -172,28 +184,10 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
     return () => { active = false; };
   }, [sourceCurrency.code, targetCurrency.code, quoteRefreshKey]);
 
-  const openCurrencyPicker = (target: CurrencyPickerTarget) => {
-    setCurrencyAction(target);
-    setCurrencyQuery("");
-    setSelectedCurrencyCode(null);
-  };
-
-  const toggleFavorite = (code: string) => setFavoriteCodes(current => current.includes(code) ? current.filter(item => item !== code) : [...current, code]);
-
-  const chooseCurrency = (currency: GlobalCurrency) => {
-    if (!currencyAction || selectedCurrencyCode) return;
-    const pickerTarget = currencyAction;
-    setSelectedCurrencyCode(currency.code);
-    window.setTimeout(() => {
-      setCurrencyPair(current => {
-        if (pickerTarget === "Origen") return currency.code === current.target ? { source: currency.code, target: current.source } : { ...current, source: currency.code };
-        return currency.code === current.source ? { source: current.target, target: currency.code } : { ...current, target: currency.code };
-      });
-      setCurrencyAction(null);
-      setCurrencyQuery("");
-      setSelectedCurrencyCode(null);
-    }, 180);
-  };
+  const isCurrentPairFavorite = favoritePairs.some(pair => pairKey(pair) === pairKey(currencyPair));
+  const toggleCurrentPairFavorite = () => setFavoritePairs(current => isCurrentPairFavorite ? current.filter(pair => pairKey(pair) !== pairKey(currencyPair)) : [...current, currencyPair]);
+  const chooseSourceCurrency = (code: string) => setCurrencyPair(current => code === current.target ? { source: code, target: current.source } : { ...current, source: code });
+  const chooseTargetCurrency = (code: string) => setCurrencyPair(current => code === current.source ? { source: current.target, target: code } : { ...current, target: code });
 
   const submit = () => {
     if (!modal) return;
@@ -201,8 +195,8 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
       operation_type: modal,
       source_currency: form.source_currency,
       target_currency: modal === "Conversión" ? form.target_currency : undefined,
-      source_amount: Number(form.source_amount),
-      target_amount: modal === "Conversión" ? Number(form.target_amount) : undefined,
+      source_amount: parseAmount(form.source_amount),
+      target_amount: modal === "Conversión" ? parseAmount(form.target_amount) : undefined,
       exchange_rate: modal === "Conversión" ? Number(form.exchange_rate) : undefined,
       account: form.account || undefined,
       counterparty: form.counterparty || undefined,
@@ -221,17 +215,15 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
   };
 
   useEffect(() => {
-    if ((!modal && !currencyAction) || createOperation.isPending) return;
+    if (!modal || createOperation.isPending) return;
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setModal(null);
-        setCurrencyAction(null);
-        setSelectedCurrencyCode(null);
       }
     };
     document.addEventListener("keydown", closeOnEscape);
     return () => document.removeEventListener("keydown", closeOnEscape);
-  }, [modal, currencyAction, createOperation.isPending]);
+  }, [modal, createOperation.isPending]);
 
   const exportGlobal = () => {
     const columns = ["id", "operation_type", "source_currency", "source_amount", "target_currency", "target_amount", "operation_date", "status"];
@@ -263,10 +255,10 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
           <section className="global-operation-shell global-operation-minimal">
             <div className="minimal-operation-top"><span>Nueva operación</span><div className="global-operation-choice" role="group" aria-label="Selecciona la operación"><button type="button" className={operationIntent === "Recepción" ? "selected" : ""} onClick={() => setOperationIntent("Recepción")}><ArrowDownLeft size={14} />Recibir</button><button type="button" className={operationIntent === "Conversión" ? "selected" : ""} onClick={() => setOperationIntent("Conversión")}><ArrowLeftRight size={14} />Convertir</button><button type="button" className={operationIntent === "Dispersión" ? "selected" : ""} onClick={() => setOperationIntent("Dispersión")}><Send size={14} />Dispersar</button></div></div>
             <div className="minimal-operation-body">
-              <section className="minimal-pair" aria-label="Par de monedas"><span className="minimal-field-label">Par</span><div className="minimal-pair-row"><button className="minimal-currency" type="button" onClick={() => openCurrencyPicker("Origen")}><i aria-hidden="true">{sourceCurrency.flag}</i><span><b>{sourceCurrency.code}</b><small>{money(balances[sourceCurrency.code] ?? 0, sourceCurrency.code)} disponible</small></span><ChevronRight size={14} /></button><button type="button" className="swap-currency-pair" onClick={swapCurrencyPair} aria-label={`Intercambiar ${sourceCurrency.code} y ${targetCurrency.code}`} title="Intercambiar origen y destino"><ArrowLeftRight size={14} /></button><button className="minimal-currency" type="button" onClick={() => openCurrencyPicker("Destino")}><i aria-hidden="true">{targetCurrency.flag}</i><span><b>{targetCurrency.code}</b><small>{money(balances[targetCurrency.code] ?? 0, targetCurrency.code)} disponible</small></span><ChevronRight size={14} /></button></div></section>
-              <section className="minimal-amount"><label className="global-operation-amount"><span>{selectedOperationLabel}</span><div><b aria-hidden="true">{selectedOperationCurrency.symbol}</b><input type="number" inputMode="decimal" min="0.01" step="any" value={operationAmount} onChange={event => setOperationAmount(event.target.value)} placeholder="0,00" aria-label={`${selectedOperationLabel} en ${selectedOperationCurrency.code}`} /><small>{selectedOperationCurrency.code}</small></div></label>{operationIntent === "Conversión" && <div className={`minimal-result${convertedAmount !== null ? " is-ready" : ""}`} aria-live="polite"><span>Recibirás</span><strong key={convertedAmount ?? "empty"}>{convertedAmount !== null ? money(convertedAmount, targetCurrency.code) : `— ${targetCurrency.code}`}</strong></div>}</section>
+              <section className="minimal-pair" aria-label="Par de monedas"><div className="minimal-pair-title"><span className="minimal-field-label">Par</span><button className={`save-currency-pair${isCurrentPairFavorite ? " is-saved" : ""}`} type="button" onClick={toggleCurrentPairFavorite} aria-pressed={isCurrentPairFavorite}><Star size={13} fill={isCurrentPairFavorite ? "currentColor" : "none"} />{isCurrentPairFavorite ? "Guardado" : "Guardar par"}</button></div><div className="minimal-pair-row"><BrandedSelect className="global-currency-select" value={sourceCurrency.code} onChange={chooseSourceCurrency} options={currencyOptions} aria-label="Moneda de origen" /><button type="button" className="swap-currency-pair" onClick={swapCurrencyPair} aria-label={`Intercambiar ${sourceCurrency.code} y ${targetCurrency.code}`} title="Intercambiar origen y destino"><ArrowLeftRight size={14} /></button><BrandedSelect className="global-currency-select" value={targetCurrency.code} onChange={chooseTargetCurrency} options={currencyOptions} aria-label="Moneda de destino" /></div>{favoritePairs.length > 0 && <div className="global-pair-favorites" aria-label="Pares guardados">{favoritePairs.map(pair => { const source = GLOBAL_CURRENCIES.find(currency => currency.code === pair.source); const target = GLOBAL_CURRENCIES.find(currency => currency.code === pair.target); return source && target ? <button key={pairKey(pair)} type="button" className={pairKey(pair) === pairKey(currencyPair) ? "active" : ""} onClick={() => setCurrencyPair(pair)}>{source.flag} {source.code} <ArrowRight size={10} /> {target.flag} {target.code}</button> : null; })}</div>}</section>
+              <section className="minimal-amount"><label className="global-operation-amount"><span>{selectedOperationLabel}</span><div><b aria-hidden="true">{selectedOperationCurrency.symbol}</b><input type="text" inputMode="decimal" value={operationAmount} onChange={event => setOperationAmount(formatAmount(event.target.value))} placeholder="0,00" aria-label={`${selectedOperationLabel} en ${selectedOperationCurrency.code}`} /><small>{selectedOperationCurrency.code}</small></div></label>{operationIntent === "Conversión" && <div className={`minimal-result${convertedAmount !== null ? " is-ready" : ""}`} aria-live="polite"><span>Recibirás</span><strong key={convertedAmount ?? "empty"}>{convertedAmount !== null ? money(convertedAmount, targetCurrency.code) : `— ${targetCurrency.code}`}</strong></div>}</section>
             </div>
-            <footer className="minimal-operation-footer"><section className={`minimal-quote ${quoteStatus}`} aria-live="polite">{quoteStatus === "loading" && <b><LoaderCircle size={14} className="spin" /> Consultando tasa</b>}{quoteStatus === "ready" && referenceQuote && <b>1 {sourceCurrency.code} = {rateLabel(referenceQuote.rate)} {targetCurrency.code}</b>}{quoteStatus === "error" && <b>No se pudo consultar la tasa</b>}<button type="button" onClick={() => setQuoteRefreshKey(value => value + 1)} aria-label={quoteStatus === "loading" ? "Actualizando cotización de referencia" : "Actualizar cotización de referencia"} aria-busy={quoteStatus === "loading"} disabled={quoteStatus === "loading"}>{quoteStatus === "loading" ? <LoaderCircle size={13} className="spin" /> : <RefreshCw size={13} />}</button></section><button type="button" className="global-operation-continue" onClick={startSelectedOperation}>Continuar <ArrowRight size={15} /></button></footer>
+            <footer className="minimal-operation-footer"><section className={`minimal-quote ${quoteStatus}`} aria-live="polite">{quoteStatus === "loading" && <b><LoaderCircle size={14} className="spin" /> Consultando tasa</b>}{quoteStatus === "ready" && referenceQuote && <b>1 {sourceCurrency.code} = {rateLabel(referenceQuote.rate)} {targetCurrency.code}{quoteTrend && <em className={`quote-trend ${quoteTrend}`}><>{quoteTrend === "up" ? <ArrowUp size={12} /> : <ArrowDown size={12} />}</>{quoteTrend === "up" ? "Subió" : "Bajó"}</em>}</b>}{quoteStatus === "error" && <b>No se pudo consultar la tasa</b>}<button type="button" onClick={() => setQuoteRefreshKey(value => value + 1)} aria-label={quoteStatus === "loading" ? "Actualizando cotización de referencia" : "Actualizar cotización de referencia"} aria-busy={quoteStatus === "loading"} disabled={quoteStatus === "loading"}>{quoteStatus === "loading" ? <LoaderCircle size={13} className="spin" /> : <RefreshCw size={13} />}</button></section><button type="button" className="global-operation-continue" onClick={startSelectedOperation}>Continuar <ArrowRight size={15} /></button></footer>
           </section>
 
           <div className="global-activity panel">
@@ -283,8 +275,6 @@ export default function Global({ onNavigate }: { onNavigate: (section: string) =
         </main>
 
       </div>
-
-      {currencyAction && <div className="modal-backdrop global-currency-backdrop" onClick={() => { if (!selectedCurrencyCode) setCurrencyAction(null); }}><section className="action-modal global-currency-modal" role="dialog" aria-modal="true" aria-labelledby="global-currency-title" onClick={event => event.stopPropagation()}><button className="modal-close" onClick={() => { if (!selectedCurrencyCode) setCurrencyAction(null); }} aria-label="Cerrar selector de moneda"><X size={17} /></button><div className="modal-icon"><Globe2 size={17} /></div><h2 id="global-currency-title">Elige moneda de {currencyAction.toLocaleLowerCase("es-CO")}</h2><p>Esta elección actualiza la tarjeta de {currencyAction.toLocaleLowerCase("es-CO")} y la cotización de referencia. Hay {GLOBAL_CURRENCIES.length} opciones disponibles.</p><label className="global-currency-search"><Search size={16} /><input autoFocus value={currencyQuery} onChange={event => setCurrencyQuery(event.target.value)} placeholder="Buscar por nombre o código" aria-label="Buscar moneda" /></label><div className="global-currency-list" role="listbox" aria-label="Monedas disponibles">{availableCurrencies.map(currency => { const isFavorite = favoriteCodes.includes(currency.code); const isSelected = selectedCurrencyCode === currency.code; const isCurrent = (currencyAction === "Origen" ? sourceCurrency.code : targetCurrency.code) === currency.code; const hasBalance = Object.hasOwn(balances, currency.code); return <div className={`global-currency-option${isCurrent ? " is-current" : ""}${isSelected ? " is-selected" : ""}`} key={currency.code} role="option" aria-selected={isSelected}><button className="global-currency-choice" type="button" onClick={() => chooseCurrency(currency)} disabled={Boolean(selectedCurrencyCode)}><span className="currency-symbol" aria-hidden="true">{currency.flag}</span><span><b>{currency.code}{isCurrent ? " · Seleccionada" : ""}</b><small>{currency.name}</small><em>{hasBalance ? `Saldo disponible · ${money(balances[currency.code], currency.code)}` : "Sin saldo operativo registrado"}</em></span>{isSelected ? <CheckCircle2 size={16} /> : <ChevronRight size={16} />}</button><button className={`currency-favorite${isFavorite ? " is-favorite" : ""}`} type="button" aria-pressed={isFavorite} aria-label={`${isFavorite ? "Quitar" : "Marcar"} ${currency.code} como favorita`} onClick={() => toggleFavorite(currency.code)}><Star size={15} fill={isFavorite ? "currentColor" : "none"} /></button></div>; })}{availableCurrencies.length === 0 && <p className="global-currency-empty">No se encontró una moneda con esa búsqueda.</p>}</div>{selectedCurrencyCode && <p className="global-currency-selection-status" role="status">Moneda seleccionada. Actualizando {currencyAction.toLocaleLowerCase("es-CO")}…</p>}</section></div>}
 
       {modal && <div className="modal-backdrop" onClick={() => !createOperation.isPending && setModal(null)}><div className="action-modal global-modal global-confirmation-modal" onClick={event => event.stopPropagation()}><button className="modal-close" onClick={() => !createOperation.isPending && setModal(null)} aria-label="Cerrar"><X size={17} /></button><div className="modal-icon"><Globe2 size={17} /></div><h2>Revisa tu operación</h2><p>Confirma que el valor y las monedas coincidan antes de finalizar.</p><div className="global-operation-summary"><span className="global-summary-kicker">{modal === "Conversión" ? "Conversión preparada" : modal === "Recepción" ? "Recepción preparada" : "Dispersión preparada"}</span><div className="global-summary-route"><div className="global-summary-currency"><i aria-hidden="true">{confirmationSourceCurrency.flag}</i><span><small>{modal === "Recepción" ? "Vas a recibir" : "Monto de origen"}</small><b>{money(Number(form.source_amount), form.source_currency)}</b></span></div>{modal === "Conversión" && <><ArrowRight size={18} className="global-summary-arrow" /><div className="global-summary-currency target"><i aria-hidden="true">{confirmationTargetCurrency.flag}</i><span><small>Recibirás estimado</small><b>{money(Number(form.target_amount), form.target_currency)}</b></span></div></>}</div>{modal === "Conversión" && <div className="global-summary-rate"><span>Tasa de referencia</span><b>1 {form.source_currency} = {rateLabel(Number(form.exchange_rate))} {form.target_currency}</b></div>}<small className="global-summary-context">{modal === "Recepción" ? `Moneda destino · ${form.source_currency}` : modal === "Dispersión" ? `Moneda origen · ${form.source_currency}` : `${form.source_currency} → ${form.target_currency}`}</small></div><div className="modal-actions"><button className="secondary-action" onClick={() => setModal(null)}>Volver</button><button className="primary-action" onClick={submit} disabled={createOperation.isPending}>{createOperation.isPending ? <><LoaderCircle size={14} className="spin" /> Guardando...</> : "Confirmar operación"}</button></div></div></div>}
     </section>
