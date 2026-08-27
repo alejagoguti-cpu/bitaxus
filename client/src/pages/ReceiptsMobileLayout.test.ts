@@ -15,6 +15,8 @@ describe("Recaudos mobile layout", () => {
 
   it("stacks the header action and filters at narrow widths", () => {
     expect(css).toContain("@media (max-width:760px)");
+    expect(css).toContain("@media (max-width:900px)");
+    expect(css).toContain("@media (max-width:560px)");
     expect(css).toContain(".receipts-header-actions .schedule-top{width:100%!important");
     expect(css).toContain(".receipts-filters,.payments-filters,.reports-filters,.reconciliation-filters,.global-filters,.counterparties-filterbar{grid-template-columns:1fr 1fr!important}");
   });
