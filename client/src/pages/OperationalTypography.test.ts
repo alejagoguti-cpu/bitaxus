@@ -3,6 +3,8 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const css = readFileSync(resolve(process.cwd(), "client/src/index.css"), "utf8");
+const receiptModalCss = readFileSync(resolve(process.cwd(), "client/src/pages/ProgramarRecaudoPage.css"), "utf8");
+const paymentModalCss = readFileSync(resolve(process.cwd(), "client/src/pages/PaymentOperationsWorkspace.css"), "utf8");
 
 describe("operational typography", () => {
   it("shares the same desktop heading and body scale across Pagos and Contrapartes", () => {
@@ -27,6 +29,14 @@ describe("operational typography", () => {
     expect(css).toContain(".counterparties-table th");
     expect(css).toContain(".payments-table th");
     expect(css).toContain(".payments-table th,.counterparties-table th,.global-table th,.reports-table th,.reconciliation-table th{height:54px!important;padding:0 16px!important;font-size:11px!important;font-weight:800!important");
+  });
+
+  it("keeps modal typography and layout safe at mobile breakpoints", () => {
+    expect(receiptModalCss).toContain(".receipt-modal-window");
+    expect(receiptModalCss).toContain("@media (max-width: 560px)");
+    expect(receiptModalCss).toContain("max-height: calc(100vh - 20px)");
+    expect(paymentModalCss).toContain(".payment-detail-modal");
+    expect(paymentModalCss).toContain("@media (max-width: 560px)");
   });
 });
 
