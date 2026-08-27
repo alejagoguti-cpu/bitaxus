@@ -42,7 +42,8 @@ describe("Flujo de monedas de Bitaxus Global", () => {
 
   it("protege el contraste editorial focalizado de la tarjeta operativa", () => {
     expect(styles).toContain(".global-page .global-operation-minimal");
-    expect(styles).toContain("linear-gradient(135deg,#262225 0%,#171416 72%,#3f262b 100%)");
+    expect(styles).toContain("background:#282426!important");
+    expect(styles).not.toContain("linear-gradient(135deg,#262225 0%,#171416 72%,#3f262b 100%)");
     expect(styles).toContain("#ef5b59!important;color:#fff!important");
   });
 });
