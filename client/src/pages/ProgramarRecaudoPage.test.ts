@@ -38,6 +38,7 @@ describe("Programar recaudo detail view", () => {
     expect(routerSource).toContain('onSuccess={() => {');
     expect(routerSource).toContain("receipt-success-toast");
     expect(dashboardSource).toContain('to="/receipts?new=1"');
+    expect(routerSource).toContain('new URLSearchParams(window.location.search).get("new") === "1"');
   });
 
   it("emits success only after the real Supabase insert resolves", () => {

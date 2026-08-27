@@ -74,7 +74,7 @@ function LegacyRecaudosPage({ tenantId }: { tenantId?: string }) {
   };
 
   useEffect(() => {
-    if (new URLSearchParams(location.split("?")[1] || "").get("new") === "1") {
+    if (new URLSearchParams(window.location.search).get("new") === "1") {
       setReceiptModalRequest(request => request || 1);
       navigate("/receipts", { replace: true });
     }
