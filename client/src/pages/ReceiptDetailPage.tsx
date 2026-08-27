@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Check, FilePenLine, LoaderCircle, Save, X } from "lucide-react";
+import { ArrowLeft, FilePenLine, LoaderCircle, Save, X } from "lucide-react";
 import { useLocation, useParams } from "wouter";
 import { UserRole } from "@shared/types";
+import OperationToast from "@/components/OperationToast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEditReceiptSupabase, useReceiptSupabase, type ReceiptUpdateInput } from "@/hooks/useReceiptsSupabase";
 import "./RecordDetail.css";
@@ -77,7 +78,7 @@ export function ReceiptDetailPage({ tenantId }: { tenantId?: string }) {
     const input: ReceiptUpdateInput = { concept: form.concept.trim(), amount: Number(form.amount.replace(/[^0-9]/g, "")), receipt_date: form.receiptDate, reference_id: form.reference.trim() || null, description: form.notes.trim() || null, status: form.status };
     setError("");
     editMutation.mutate(input, {
-      onSuccess: () => { setEditing(false); setFeedback("El recaudo se actualizó correctamente."); window.setTimeout(() => setFeedback(""), 4200); },
+      onSuccess: () => { setEditing(false); setFeedback("El recaudo se actualizó correctamente."); },
       onError: mutationError => setError(mutationError.message || "No fue posible actualizar el recaudo."),
     });
   };
@@ -88,7 +89,7 @@ export function ReceiptDetailPage({ tenantId }: { tenantId?: string }) {
   return <section className="record-detail-page">
     <div className="record-detail-toolbar"><button type="button" className="detail-back" onClick={() => navigate("/receipts")}><ArrowLeft size={16} /> Volver a Recaudos</button><div className="record-detail-actions">{canEdit && <button type="button" className="primary-action" onClick={() => { setError(""); setEditing(value => !value); }}>{editing ? <><X size={15} /> Cancelar edición</> : <><FilePenLine size={15} /> Editar recaudo</>}</button>}</div></div>
     <header className="record-detail-header"><div><span className="detail-eyebrow">Detalle de recaudo</span><h1>{payer || "Recaudo sin pagador"}</h1><p>Identificador: {receipt.id}</p></div><span className="detail-status">{receipt.status || "Pendiente"}</span></header>
-    {feedback && <div className="detail-alert success" role="status"><Check size={16} /> {feedback}</div>}
+    {feedback && <OperationToast message={feedback} onClose={() => setFeedback("")} />}
     {error && <div className="detail-alert" role="alert"><X size={16} /> {error}</div>}
     <div className="record-detail-grid">
       <article className="detail-card"><div className="detail-hero"><span className="detail-avatar">{initials}</span><div><span className="detail-eyebrow">Valor recibido</span><strong>{formatAmount(receipt.amount, currency)}</strong><small>{receipt.concept || "Sin concepto"}</small></div></div><div className="detail-list"><div className="detail-row"><span>Cliente / pagador</span><strong>{payer || "Sin pagador"}</strong></div><div className="detail-row"><span>Fecha del recaudo</span><strong>{formatDate(receiptDate)}</strong></div><div className="detail-row"><span>Identificación del pagador</span><strong>{getString(receipt.payer_id) || "No disponible"}</strong></div><div className="detail-row"><span>Referencia</span><strong>{getString(receipt.reference_id) || "Sin referencia"}</strong></div></div></article>

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Check, FilePenLine, LoaderCircle, Save, UserRound, X } from "lucide-react";
+import { ArrowLeft, FilePenLine, LoaderCircle, Save, UserRound, X } from "lucide-react";
 import { useLocation, useParams } from "wouter";
 import { UserRole } from "@shared/types";
+import OperationToast from "@/components/OperationToast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCounterpartySupabase, useUpdateCounterpartySupabase, type CounterpartyUpdateInput, type PublicCounterparty } from "@/hooks/useCounterpartiesSupabase";
 import "./RecordDetail.css";
@@ -68,7 +69,7 @@ export function CounterpartyDetailPage({ tenantId }: { tenantId?: string }) {
     const input: CounterpartyUpdateInput = { ...form, name: form.name.trim(), identification_number: form.identification_number.trim(), phone: form.phone.trim(), email: form.email.trim(), bank: form.bank.trim(), account_type: form.account_type.trim(), account_number: form.account_number.trim() };
     setError("");
     updateMutation.mutate(input, {
-      onSuccess: () => { setEditing(false); setFeedback("La contraparte se actualizó correctamente."); window.setTimeout(() => setFeedback(""), 4200); },
+      onSuccess: () => { setEditing(false); setFeedback("La contraparte se actualizó correctamente."); },
       onError: mutationError => setError(mutationError.message || "No fue posible actualizar la contraparte."),
     });
   };
@@ -79,7 +80,7 @@ export function CounterpartyDetailPage({ tenantId }: { tenantId?: string }) {
   return <section className="record-detail-page">
     <div className="record-detail-toolbar"><button type="button" className="detail-back" onClick={() => navigate("/counterparties")}><ArrowLeft size={16} /> Volver a Contrapartes</button><div className="record-detail-actions">{canEdit && <button type="button" className="primary-action" onClick={() => { setError(""); setEditing(value => !value); }}>{editing ? <><X size={15} /> Cancelar edición</> : <><FilePenLine size={15} /> Editar contraparte</>}</button>}</div></div>
     <header className="record-detail-header"><div><span className="detail-eyebrow">Detalle de contraparte</span><h1>{counterparty.name}</h1><p>Identificador: {counterparty.id}</p></div><span className="detail-status">{counterparty.status}</span></header>
-    {feedback && <div className="detail-alert success" role="status"><Check size={16} /> {feedback}</div>}
+    {feedback && <OperationToast message={feedback} onClose={() => setFeedback("")} />}
     {error && <div className="detail-alert" role="alert"><X size={16} /> {error}</div>}
     <div className="record-detail-grid">
       <article className="detail-card"><div className="detail-hero"><span className="detail-avatar"><UserRound size={20} /></span><div><span className="detail-eyebrow">{counterparty.relation}</span><strong>{counterparty.name}</strong><small>{counterparty.id_type} {counterparty.identification_number}</small></div></div><div className="detail-list"><div className="detail-row"><span>Relación</span><strong>{counterparty.relation}</strong></div><div className="detail-row"><span>Teléfono</span><strong>{counterparty.phone || "Sin teléfono registrado"}</strong></div><div className="detail-row"><span>Correo electrónico</span><strong>{counterparty.email || "Sin correo registrado"}</strong></div><div className="detail-row"><span>Cuenta bancaria</span><strong>{counterparty.account_number ? `${counterparty.bank || "Banco"} · ${counterparty.account_type || "Cuenta"} · ••••${counterparty.account_number.slice(-4)}` : "Sin cuenta registrada"}</strong></div></div></article>

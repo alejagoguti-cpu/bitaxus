@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Check, FilePenLine, LoaderCircle, Save, X } from "lucide-react";
+import { ArrowLeft, FilePenLine, LoaderCircle, Save, X } from "lucide-react";
 import { useLocation, useParams } from "wouter";
 import { UserRole } from "@shared/types";
+import OperationToast from "@/components/OperationToast";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePaymentSupabase, useUpdatePaymentSupabase, type PaymentUpdateInput } from "@/hooks/usePaymentsSupabase";
 import "./RecordDetail.css";
@@ -113,7 +114,6 @@ export function PaymentDetailPage({ tenantId }: { tenantId?: string }) {
       onSuccess: () => {
         setEditing(false);
         setFeedback("La operación se actualizó correctamente.");
-        window.setTimeout(() => setFeedback(""), 4200);
       },
       onError: mutationError => setError(mutationError.message || "No fue posible actualizar la operación."),
     });
@@ -125,7 +125,7 @@ export function PaymentDetailPage({ tenantId }: { tenantId?: string }) {
   return <section className="record-detail-page">
     <div className="record-detail-toolbar"><button type="button" className="detail-back" onClick={() => navigate("/payments")}><ArrowLeft size={16} /> Volver a Pagos y dispersiones</button><div className="record-detail-actions">{canEdit && <button type="button" className="primary-action" onClick={() => { setError(""); setEditing(value => !value); }}>{editing ? <><X size={15} /> Cancelar edición</> : <><FilePenLine size={15} /> Editar operación</>}</button>}</div></div>
     <header className="record-detail-header"><div><span className="detail-eyebrow">{title}</span><h1>{displayName}</h1><p>Identificador: {payment.id}</p></div><span className="detail-status">{payment.status || "Pendiente"}</span></header>
-    {feedback && <div className="detail-alert success" role="status"><Check size={16} /> {feedback}</div>}
+    {feedback && <OperationToast message={feedback} onClose={() => setFeedback("")} />}
     {error && <div className="detail-alert" role="alert"><X size={16} /> {error}</div>}
     <div className="record-detail-grid">
       <article className="detail-card"><div className="detail-hero"><span className="detail-avatar">{initials}</span><div><span className="detail-eyebrow">Resumen de la operación</span><strong>{formatAmount(payment.amount, currency)}</strong><small>{payment.concept || "Sin concepto"} · {payment.payment_type || "Pago individual"}</small></div></div><div className="detail-list"><div className="detail-row"><span>Contraparte / grupo</span><strong>{displayName}</strong></div><div className="detail-row"><span>Fecha programada</span><strong>{formatDate(paymentDate)}</strong></div><div className="detail-row"><span>Cuenta o referencia</span><strong>{reference}</strong></div><div className="detail-row"><span>Periodicidad</span><strong>{payment.monthly ? "Mensual" : "Una sola vez"}</strong></div></div></article>

@@ -14,6 +14,10 @@ const dashboardSource = readFileSync(
   resolve(process.cwd(), "client/src/pages/DashboardPage.tsx"),
   "utf8"
 );
+const receiptStyleSource = readFileSync(
+  resolve(process.cwd(), "client/src/pages/ProgramarRecaudoPage.css"),
+  "utf8"
+);
 
 describe("Programar recaudo detail view", () => {
   it("uses the protected Supabase tables for payers and receipts", () => {
@@ -46,5 +50,14 @@ describe("Programar recaudo detail view", () => {
     expect(pageSource).toContain("onSuccess?.();");
     expect(pageSource).toContain("setSuccess(true);");
     expect(pageSource).toContain("setSubmitting(false);");
+  });
+
+  it("keeps the success toast visible, dismissible and motion-safe", () => {
+    expect(routerSource).toContain("setReceiptToast");
+    expect(routerSource).toContain("window.setTimeout");
+    expect(receiptStyleSource).toContain(".receipt-success-toast");
+    expect(receiptStyleSource).toContain("@keyframes receipt-toast-in");
+    expect(receiptStyleSource).toContain("receipt-toast-progress");
+    expect(receiptStyleSource).toContain("@media (prefers-reduced-motion: reduce)");
   });
 });
