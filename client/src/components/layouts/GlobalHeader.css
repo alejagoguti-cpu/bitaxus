@@ -36,6 +36,8 @@
 .global-header-select svg:first-child { color: #8d949d; flex: 0 0 auto; }
 .global-header-select svg:last-child { margin-left: auto; color: #a3a8ae; }
 .global-header-select:hover, .global-header-select:focus-visible { border-color: #d3d8de; box-shadow: 0 7px 20px rgba(24,31,43,.09); outline: none; }
+.global-header-select--static { cursor: default; }
+.global-header-select--static:hover { border-color: #e8ebef; box-shadow: 0 5px 16px rgba(24,31,43,.045); }
 .global-header-select:active, .global-header-icon-button:active, .global-header-profile:active { transform: scale(.97); }
 .global-header-menu, .global-header-popover {
   position: absolute; top: calc(100% + 8px); right: 0; z-index: 60; min-width: 184px; padding: 7px; display: flex; flex-direction: column; gap: 3px;

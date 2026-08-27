@@ -34,7 +34,8 @@ describe("AppLayout en Home", () => {
     expect(screen.getByRole("button", { name: "Recaudos" })).not.toBeNull();
     expect(container.querySelector(".global-dashboard-header")).not.toBeNull();
     expect(screen.getByRole("heading", { name: "Hola, Alejandra" })).not.toBeNull();
-    expect(screen.getByRole("button", { name: "Seleccionar empresa" })).not.toBeNull();
+    expect(screen.getByLabelText("Empresa activa: OnTarget SAS")).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Seleccionar empresa" })).toBeNull();
     expect(screen.getByRole("button", { name: "Seleccionar periodo" })).not.toBeNull();
     expect(screen.getByRole("button", { name: /Notificaciones/ })).not.toBeNull();
     expect(screen.getByRole("button", { name: "Ayuda" })).not.toBeNull();

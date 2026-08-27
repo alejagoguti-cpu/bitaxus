@@ -37,7 +37,7 @@ describe("Panel de Configuración", () => {
     expect(source).toContain("email_alerts: next.email");
     expect(source).toContain("push_alerts: next.push");
     expect(source).toContain("activity_alerts: next.activity");
-    expect(source).toContain('role="status"');
+    expect(source).toContain("OperationToast");
     expect(source).toContain("Preferencias de notificaciones actualizadas.");
   });
 });

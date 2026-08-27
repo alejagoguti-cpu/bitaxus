@@ -134,7 +134,7 @@ export function GlobalHeader({ onMenuToggle }: { onMenuToggle?: () => void }) {
         <div><h1>Hola, {user?.name || "tu cuenta"}</h1><p>Este es el estado de tu operación.</p></div>
       </div>
       <div className="global-header-controls" ref={toolsRef}>
-        <HeaderDropdown icon={Building2} value={company} options={[company]} onChange={() => undefined} label="Seleccionar empresa" />
+        <div className="global-header-select global-header-select--static" aria-label={`Empresa activa: ${company}`}><Building2 size={14} strokeWidth={1.8} /><span>{company}</span></div>
         <HeaderDropdown icon={CalendarDays} value={period} options={["Este mes", "Últimos 30 días", "Este trimestre"]} onChange={value => setPeriod(value as HeaderPeriod)} label="Seleccionar periodo" />
         <div className="global-header-tool-wrap">
           <button type="button" className="global-header-icon-button" aria-label={`Notificaciones, ${pendingCount} pendientes`} aria-expanded={notificationsOpen} onClick={() => { setNotificationsOpen(current => !current); setHelpOpen(false); setProfileOpen(false); }}>

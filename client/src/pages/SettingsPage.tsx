@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Bell, Building2, Check, KeyRound, LogOut, Mail, MapPin, Pencil, Phone, ShieldCheck, Sparkles, UserRound, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
+import OperationToast from "@/components/OperationToast";
 import { useLocation } from "wouter";
 import "./SettingsPage.css";
 
@@ -135,7 +136,7 @@ export function SettingsPage() {
   return (
     <section className="settings-page-v2" aria-labelledby="settings-title">
       <header className="settings-page-v2__header"><div><span className="settings-page-v2__eyebrow"><Sparkles size={14} /> Cuenta Bitaxus</span><h1 id="settings-title">Configuración</h1><p>Consulta la información de tu cuenta, empresa y seguridad de acceso.</p></div><span className="settings-page-v2__status"><ShieldCheck size={15} /> Sesión protegida</span></header>
-      {feedback && <div className="settings-feedback" role="status"><Check size={15} /> {feedback}</div>}
+      {feedback && <OperationToast title="Configuración actualizada" message={feedback} onClose={() => setFeedback("")} />}
 
       <div className="settings-page-v2__summary-grid">
         <article className="settings-profile-card"><div className="settings-card__heading"><span className="settings-card__icon settings-card__icon--coral"><UserRound size={18} /></span><div><p>Perfil de usuario</p><small>Tu identidad de acceso</small></div><button type="button" className="settings-card-edit" onClick={() => setDialog("profile")}><Pencil size={13} /> Editar</button></div><div className="settings-profile-card__identity"><div className="settings-profile-avatar-wrap">{avatarPreview ? <img src={avatarPreview} alt="Vista previa de foto de perfil" className="settings-profile-card__avatar-image" /> : <span className="settings-profile-card__avatar" aria-hidden="true">{displayName.slice(0, 1).toUpperCase()}</span>}</div><div><strong>{displayName}</strong><span>{user?.email || "Sin correo registrado"}</span></div></div><dl className="settings-key-values settings-key-values--profile"><div><dt>Rol</dt><dd><span className="settings-role-chip">{role}</span></dd></div><div><dt>Último acceso</dt><dd>{user?.last_login_at ? new Date(user.last_login_at).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" }) : "No disponible"}</dd></div></dl></article>
