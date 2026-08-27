@@ -25,6 +25,12 @@ describe("operational typography", () => {
     expect(css).toContain("font-size: 15px !important");
   });
 
+  it("normalizes the visible Pagos header without oversizing its title", () => {
+    expect(css).toContain(".payments-header h2{font-size:22px!important;line-height:1.2!important;font-weight:800!important");
+    expect(css).toContain(".payments-header>div:first-child>p{font-size:13px!important");
+    expect(css).toContain("@media(max-width:700px){.payments-header h2{font-size:20px!important}");
+  });
+
   it("keeps table headings emphasized without changing their compact sizes", () => {
     expect(css).toContain(".counterparties-table th");
     expect(css).toContain(".payments-table th");
