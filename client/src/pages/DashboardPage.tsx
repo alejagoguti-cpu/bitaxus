@@ -214,7 +214,7 @@ export function DashboardPage({ tenantId }: DashboardPageProps) {
       )}
 
       <section className="quick-actions home-quick-actions">
-        <Link to="/receipts/new"><Icon icon={ArrowDownLeft} tone="green" /><b>Programar recaudo</b><ChevronRight size={15} /></Link>
+        <Link to="/receipts?new=1"><Icon icon={ArrowDownLeft} tone="green" /><b>Programar recaudo</b><ChevronRight size={15} /></Link>
         <button type="button" className="home-payment-quick-action" onClick={openPaymentChoice} aria-haspopup="dialog" aria-expanded={paymentChoiceStage !== "closed"}>
           <Icon icon={ArrowUpRight} tone="coral" /><span><b>Programar pago</b><small>Pago individual o dispersión</small></span><ChevronRight size={15} />
         </button>

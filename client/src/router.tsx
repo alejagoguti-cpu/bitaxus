@@ -3,6 +3,8 @@
  * App routes with role-based access control
  */
 
+import { useEffect, useState } from "react";
+import { CheckCircle2, X } from "lucide-react";
 import { Router as RootRouter, Route, Redirect, Switch } from "wouter";
 import { UserRole } from "@shared/types";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
@@ -61,18 +63,64 @@ export function ProtectedRoute({
   );
 }
 
-function LegacyRecaudosPage() {
-  const [, navigate] = useLocation();
+function LegacyRecaudosPage({ tenantId }: { tenantId?: string }) {
+  const [location, navigate] = useLocation();
+  const [receiptModalRequest, setReceiptModalRequest] = useState(0);
+  const [receiptToastVisible, setReceiptToastVisible] = useState(false);
+  const openReceiptModal = () => setReceiptModalRequest(request => request + 1);
+  const closeReceiptModal = () => {
+    setReceiptModalRequest(0);
+    navigate("/receipts");
+  };
+
+  useEffect(() => {
+    if (new URLSearchParams(location.split("?")[1] || "").get("new") === "1") {
+      setReceiptModalRequest(request => request || 1);
+      navigate("/receipts", { replace: true });
+    }
+  }, [location, navigate]);
+
+  useEffect(() => {
+    if (!receiptToastVisible) return;
+    const timeout = window.setTimeout(() => setReceiptToastVisible(false), 4200);
+    return () => window.clearTimeout(timeout);
+  }, [receiptToastVisible]);
+
   return (
-    <Recaudos
-      onNavigate={section =>
-        section === "Pagos y dispersiones"
-          ? navigate("/payments")
-          : section === "Programar recaudo"
-            ? navigate("/receipts/new")
-            : navigate("/")
-      }
-    />
+    <>
+      <Recaudos
+        onNavigate={section =>
+          section === "Pagos y dispersiones"
+            ? navigate("/payments")
+            : section === "Programar recaudo"
+              ? openReceiptModal()
+              : navigate("/")
+        }
+      />
+      {receiptModalRequest > 0 && (
+        <div className="receipt-modal-backdrop" role="presentation">
+          <section className="receipt-modal-window" role="dialog" aria-modal="true" aria-label="Programar recaudo" onMouseDown={event => event.stopPropagation()}>
+            <button type="button" className="receipt-modal-close" onClick={closeReceiptModal} aria-label="Cerrar Programar recaudo"><X size={16} /></button>
+            <ProgramarRecaudoPage
+              tenantId={tenantId}
+              presentation="modal"
+              onClose={closeReceiptModal}
+              onSuccess={() => {
+                closeReceiptModal();
+                setReceiptToastVisible(true);
+              }}
+            />
+          </section>
+        </div>
+      )}
+      {receiptToastVisible && (
+        <div className="receipt-success-toast" role="status" aria-live="polite">
+          <span className="receipt-success-toast-icon"><CheckCircle2 size={17} /></span>
+          <span><strong>Recaudo programado correctamente</strong><small>La operación quedó registrada como pendiente.</small></span>
+          <button type="button" onClick={() => setReceiptToastVisible(false)} aria-label="Cerrar confirmación"><X size={15} /></button>
+        </div>
+      )}
+    </>
   );
 }
 

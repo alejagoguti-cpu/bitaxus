@@ -10,6 +10,10 @@ const routerSource = readFileSync(
   resolve(process.cwd(), "client/src/router.tsx"),
   "utf8"
 );
+const dashboardSource = readFileSync(
+  resolve(process.cwd(), "client/src/pages/DashboardPage.tsx"),
+  "utf8"
+);
 
 describe("Programar recaudo detail view", () => {
   it("uses the protected Supabase tables for payers and receipts", () => {
@@ -27,9 +31,19 @@ describe("Programar recaudo detail view", () => {
     expect(pageSource).toContain("Revisa antes de guardar");
   });
 
-  it("is exposed as a protected route and connected from Recaudos", () => {
+  it("keeps the direct protected route while opening the operational flow as a pop-up", () => {
     expect(routerSource).toContain('path: "/receipts/new"');
     expect(routerSource).toContain("component: ProgramarRecaudoPage");
-    expect(routerSource).toContain('navigate("/receipts/new")');
+    expect(routerSource).toContain('presentation="modal"');
+    expect(routerSource).toContain('onSuccess={() => {');
+    expect(routerSource).toContain("receipt-success-toast");
+    expect(dashboardSource).toContain('to="/receipts?new=1"');
+  });
+
+  it("emits success only after the real Supabase insert resolves", () => {
+    expect(pageSource).toContain("if (presentation === \"modal\") {");
+    expect(pageSource).toContain("onSuccess?.();");
+    expect(pageSource).toContain("setSuccess(true);");
+    expect(pageSource).toContain("setSubmitting(false);");
   });
 });

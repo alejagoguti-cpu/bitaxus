@@ -109,7 +109,14 @@ function getAuthErrorMessage(error: unknown, fallback: string) {
   return fallback;
 }
 
-export function ProgramarRecaudoPage({ tenantId }: { tenantId?: string }) {
+type ProgramarRecaudoPageProps = {
+  tenantId?: string;
+  presentation?: "page" | "modal";
+  onClose?: () => void;
+  onSuccess?: () => void;
+};
+
+export function ProgramarRecaudoPage({ tenantId, presentation = "page", onClose, onSuccess }: ProgramarRecaudoPageProps) {
   const { user } = useAuth();
   const [, navigate] = useLocation();
   const queryClient = useQueryClient();
@@ -206,9 +213,14 @@ export function ProgramarRecaudoPage({ tenantId }: { tenantId?: string }) {
   const selectedConcept = concepts.find(item => item.value === concept)?.label || "Concepto pendiente";
   const hasChanges = Boolean(selectedPayer || payerSearch || amount || concept || description || date);
 
+  function closeEditor() {
+    if (onClose) onClose();
+    else navigate("/receipts");
+  }
+
   function requestExit() {
     if (hasChanges) setConfirmExit(true);
-    else navigate("/receipts");
+    else closeEditor();
   }
 
   function resetDraft() {
@@ -288,6 +300,10 @@ export function ProgramarRecaudoPage({ tenantId }: { tenantId?: string }) {
       queryClient.invalidateQueries({ queryKey: ["receipts"] }),
     ]);
     setSubmitting(false);
+    if (presentation === "modal") {
+      onSuccess?.();
+      return;
+    }
     setSuccess(true);
   }
 
@@ -465,7 +481,7 @@ export function ProgramarRecaudoPage({ tenantId }: { tenantId?: string }) {
       </div>
 
       {newPayerOpen && <div className="detail-modal-backdrop" onMouseDown={() => setNewPayerOpen(false)}><section className="detail-payer-modal" role="dialog" aria-modal="true" aria-labelledby="new-payer-title" onMouseDown={event => event.stopPropagation()}><button type="button" className="detail-modal-close" onClick={() => setNewPayerOpen(false)} aria-label="Cerrar inscripción"><X size={17} /></button><span className="detail-modal-icon"><UserRound size={18} /></span><span className="detail-eyebrow">DIRECTORIO DE PAGADORES</span><h2 id="new-payer-title">Inscribir nuevo pagador</h2><p>Guarda los datos de la persona o empresa para usarla en este y futuros recaudos.</p><div className="detail-type-toggle" role="radiogroup" aria-label="Tipo de pagador"><button type="button" className={newPayerType === "Persona natural" ? "active" : ""} role="radio" aria-checked={newPayerType === "Persona natural"} onClick={() => setNewPayerType("Persona natural")}><UserRound size={15} /><span><strong>Persona natural</strong><small>Cliente individual</small></span></button><button type="button" className={newPayerType === "Persona jurídica" ? "active" : ""} role="radio" aria-checked={newPayerType === "Persona jurídica"} onClick={() => setNewPayerType("Persona jurídica")}><Building2 size={15} /><span><strong>Persona jurídica</strong><small>Empresa u organización</small></span></button></div><div className="detail-modal-grid"><label>Tipo de identificación<BrandedSelect value={newPayerIdType} onChange={setNewPayerIdType} aria-label="Tipo de identificación" options={idTypes.map(type => ({ value: type, label: type }))} /></label><label>Número de identificación <em>*</em><input className="detail-modal-input" value={newPayerId} onChange={event => setNewPayerId(event.target.value)} placeholder={newPayerIdType === "NIT" ? "900123456-7" : "10.987.654"} /></label><label className="full-modal-field">Nombres y apellidos / Razón social <em>*</em><input className="detail-modal-input" value={newPayerName} onChange={event => setNewPayerName(event.target.value)} placeholder="Laura Valencia o Empresa S.A.S." /></label><label>Correo electrónico <span className="optional-label">Opcional</span><input className="detail-modal-input" type="email" value={newPayerEmail} onChange={event => setNewPayerEmail(event.target.value)} placeholder="correo@empresa.com" /></label><label>Teléfono <span className="optional-label">Opcional</span><input className="detail-modal-input" value={newPayerPhone} onChange={event => setNewPayerPhone(event.target.value)} placeholder="300 123 4567" /></label></div>{payerError && <div className="detail-form-error" role="alert"><Info size={15} /><span>{payerError}</span></div>}<div className="detail-modal-actions"><button type="button" className="secondary-detail-action" onClick={() => setNewPayerOpen(false)}>Cancelar</button><button type="button" className="primary-detail-action" disabled={payerSubmitting} onClick={() => void savePayer()}>{payerSubmitting ? <><LoaderCircle size={15} className="spin" /> Guardando…</> : <>Guardar pagador <Check size={15} /></>}</button></div></section></div>}
-      {confirmExit && <div className="detail-modal-backdrop" onMouseDown={() => setConfirmExit(false)}><section className="detail-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="discard-title" onMouseDown={event => event.stopPropagation()}><span className="detail-confirm-icon"><Info size={18} /></span><h2 id="discard-title">¿Salir sin guardar?</h2><p>Los datos que ingresaste se perderán si sales de esta vista.</p><div className="detail-modal-actions"><button type="button" className="secondary-detail-action" onClick={() => setConfirmExit(false)}>Continuar editando</button><button type="button" className="primary-detail-action" onClick={() => navigate("/receipts")}>Salir sin guardar</button></div></section></div>}
+      {confirmExit && <div className="detail-modal-backdrop" onMouseDown={() => setConfirmExit(false)}><section className="detail-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="discard-title" onMouseDown={event => event.stopPropagation()}><span className="detail-confirm-icon"><Info size={18} /></span><h2 id="discard-title">¿Salir sin guardar?</h2><p>Los datos que ingresaste se perderán si sales de esta vista.</p><div className="detail-modal-actions"><button type="button" className="secondary-detail-action" onClick={() => setConfirmExit(false)}>Continuar editando</button><button type="button" className="primary-detail-action" onClick={closeEditor}>Salir sin guardar</button></div></section></div>}
     </section>
   );
 }
