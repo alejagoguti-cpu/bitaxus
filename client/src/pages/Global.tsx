@@ -53,7 +53,7 @@ function FlagArtwork({ code }: { code: string }) {
 }
 
 function CurrencyFlag({ currency, className = "" }: { currency: GlobalCurrency; className?: string }) {
-  return <i className={`currency-flag ${className}`} aria-hidden="true"><svg viewBox="0 0 24 16" focusable="false"><FlagArtwork code={currency.code} /></svg></i>;
+  return <i className={`currency-flag ${className}`} aria-hidden="true"><svg viewBox="0 0 24 16" preserveAspectRatio="xMidYMid slice" focusable="false"><FlagArtwork code={currency.code} /></svg></i>;
 }
 
 const rateLabel = (value: number) => new Intl.NumberFormat("es-CO", { maximumSignificantDigits: 7 }).format(value);

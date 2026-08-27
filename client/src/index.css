@@ -1257,3 +1257,16 @@ select option:checked,select option:hover,select option:focus{background:#ef5b59
 .global-page .currency-flag-inline svg{width:100%;height:100%}
 .global-page .global-summary-currency .currency-flag{width:32px;height:32px}
 @media(max-width:700px){.global-page .global-summary-currency .currency-flag{width:29px;height:29px}}
+
+/* Tratamiento de bandera basado en la referencia móvil: círculo blanco, nítido y sin borde oscuro. */
+.global-page .global-inline-currency .currency-flag{width:34px;height:34px;background:#fff!important;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(31,24,26,.16)!important;padding:3px}
+.global-page .global-inline-currency .currency-flag svg{border-radius:50%;box-shadow:0 0 0 1px rgba(31,24,26,.08)}
+.global-page .global-operation-minimal .global-inline-currency .currency-flag{background:#fff!important;color:#282426!important}
+.global-page .branded-select-option .global-inline-currency .currency-flag{width:26px;height:26px;padding:2px;border-width:1px}
+.global-page .global-summary-currency .currency-flag{width:36px;height:36px;padding:3px}
+.global-page .currency-flag-inline{width:20px!important;height:20px!important;padding:2px!important;border:1px solid #fff!important}
+@media(max-width:700px){
+  .global-page .global-inline-currency .currency-flag{width:38px;height:38px}
+  .global-page .branded-select-option .global-inline-currency .currency-flag{width:26px;height:26px}
+  .global-page .global-summary-currency .currency-flag{width:32px;height:32px}
+}

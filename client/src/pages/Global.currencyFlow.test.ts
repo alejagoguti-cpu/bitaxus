@@ -10,8 +10,11 @@ describe("Flujo de monedas de Bitaxus Global", () => {
     expect(source).toContain("GLOBAL_CURRENCIES");
     expect(source).toContain("flag:");
     expect(source).toContain("function CurrencyFlag");
-    expect(source).toContain('<svg viewBox="0 0 24 16"');
+    expect(source).toContain('<svg viewBox="0 0 24 16" preserveAspectRatio="xMidYMid slice"');
     expect(styles).toContain(".global-page .currency-flag svg");
+    expect(styles).toContain(".global-page .global-inline-currency .currency-flag");
+    expect(styles).toContain("border:2px solid #fff");
+    expect(styles).toContain("padding:3px");
     expect(styles).toContain(".global-page .currency-flag-inline");
     expect(styles).toContain("@media(max-width:700px){.global-page .global-summary-currency .currency-flag");
     expect(styles).toContain("fuentes emoji del dispositivo");
