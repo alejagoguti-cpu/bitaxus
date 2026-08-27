@@ -10,6 +10,9 @@ const activeSources = [
   "client/src/pages/CounterpartiesPage.tsx",
   "client/src/pages/SettingsPage.tsx",
   "client/src/pages/ReportsPage.tsx",
+  "client/src/pages/Global.tsx",
+  "client/src/pages/Recaudos.tsx",
+  "client/src/pages/PublicReconciliationPage.tsx",
 ].map(read);
 
 describe("Auditoría de controles activos", () => {
@@ -17,6 +20,14 @@ describe("Auditoría de controles activos", () => {
     for (const source of activeSources) {
       expect(source).not.toMatch(/onClick=\{\(\) => undefined\}/);
       expect(source).not.toMatch(/onChange=\{\(\) => undefined\}/);
+      expect(source).not.toMatch(/href=["'](?:#|)["']/);
+    }
+  });
+
+  it("mantiene acciones principales con handlers o navegación explícita", () => {
+    const requiredTokens = ["onClick", "onChange", "useNavigate", "Link", "href="];
+    for (const source of activeSources) {
+      expect(requiredTokens.some(token => source.includes(token))).toBe(true);
     }
   });
 
