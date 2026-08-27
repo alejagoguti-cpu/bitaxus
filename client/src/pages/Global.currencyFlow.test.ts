@@ -26,4 +26,10 @@ describe("Flujo de monedas de Bitaxus Global", () => {
     expect(source).toContain("quoteIsCurrent");
     expect(source).toContain("Espera la cotización de referencia");
   });
+
+  it("mantiene Dispersar como intención explícita y no como CTA heredado", () => {
+    expect(source).toContain('operationIntent === "Dispersión"');
+    expect(source).toContain(">Dispersar</button>");
+    expect(source).not.toContain("Usar en un pago");
+  });
 });

@@ -24,5 +24,12 @@ describe("submission loading feedback", () => {
     expect(counterpartySource).toContain("disabled={createMutation.isPending}");
     expect(counterpartySource).toContain("Guardando…");
   });
+
+  it("confirms the saved operation with the shared coral toast and preserves Dispersión", () => {
+    expect(operationsSource).toContain('import OperationToast from "@/components/OperationToast"');
+    expect(operationsSource).toContain('completedMode === "Dispersión"');
+    expect(operationsSource).toContain("Dispersión programada correctamente");
+    expect(operationsSource).toContain('onClose={() => setSuccess("")}');
+  });
 });
 

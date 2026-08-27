@@ -17,6 +17,7 @@ import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import HorizontalScrollHint from "@/components/HorizontalScrollHint";
 import ExportActions from "@/components/ExportActions";
 import OperationDetailModal from "@/components/OperationDetailModal";
+import OperationToast from "@/components/OperationToast";
 import { validatePaymentDraft, type PaymentMode } from "./paymentFlow";
 import "./PaymentFlow.css";
 import "./ReceiptSuccess.css";
@@ -194,7 +195,7 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all", autoOpen =
   const [monthly, setMonthly] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState("");
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<PaymentRow | null>(null);
   const autoOpenHandled = useRef(false);
@@ -290,7 +291,7 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all", autoOpen =
     setError("");
     setConfirmDiscard(false);
   };
-  const openForm = () => { reset(); setSuccess(false); setFormOpen(true); };
+  const openForm = () => { reset(); setSuccess(""); setFormOpen(true); };
   const requestClose = () => { if (hasChanges) setConfirmDiscard(true); else setFormOpen(false); };
 
   useEffect(() => {
@@ -347,11 +348,11 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all", autoOpen =
       queryClient.invalidateQueries({ queryKey: ["dashboard-payments"] }),
       queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] }),
     ]);
+    const completedMode = mode;
     reset();
     setFormOpen(false);
     setSubmitting(false);
-    setSuccess(true);
-    window.setTimeout(() => setSuccess(false), 4_200);
+    setSuccess(completedMode === "Dispersión" ? "La dispersión quedó registrada y aparece en tu actividad." : "El pago quedó registrado y aparece en tu actividad.");
   };
 
   return (
@@ -366,7 +367,7 @@ export function PaymentOperationsWorkspace({ tenantId, scope = "all", autoOpen =
       </header>
 
       {!isSupabaseConfigured && <div className="payment-form-error" role="alert">Supabase no está configurado en este entorno. Agrega las variables públicas para cargar y guardar operaciones.</div>}
-      {success && <div className="receipt-success-message operation-success-message" role="status" aria-live="polite"><span className="receipt-success-icon"><CheckCircle2 size={18} /></span><span><b>{mode === "Dispersión" ? "Dispersión programada correctamente" : "Pago programado correctamente"}</b><small>La operación quedó registrada y aparece en tu actividad.</small></span><button type="button" onClick={() => setSuccess(false)} aria-label="Cerrar mensaje de éxito"><X size={15} /></button><span className="receipt-success-progress" /></div>}
+      {success && <OperationToast title={success.startsWith("La dispersión") ? "Dispersión programada correctamente" : "Pago programado correctamente"} message={success} onClose={() => setSuccess("")} />}
 
       <div className="payments-tabs">{tabs.map(item => <button type="button" key={item} className={tab === item ? "selected" : ""} onClick={() => setTab(item)}>{item}</button>)}</div>
 
