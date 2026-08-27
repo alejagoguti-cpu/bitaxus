@@ -1221,3 +1221,31 @@ select option:checked,select option:hover,select option:focus{background:#ef5b59
 .payments-header>div:first-child>p{font-size:13px!important;line-height:1.4!important;color:#747b83!important}
 .payments-header-actions .primary-action{min-height:48px!important}
 @media(max-width:700px){.payments-header h2{font-size:20px!important}.payments-header>div:first-child>p{font-size:12px!important}.payments-header-actions .primary-action{width:100%!important}}
+
+/* Global: contraste editorial focalizado sin convertir la app completa en modo oscuro. */
+.global-page .global-operation-minimal{position:relative;overflow:visible;border-color:#3b3235!important;background:linear-gradient(135deg,#262225 0%,#171416 72%,#3f262b 100%)!important;box-shadow:0 22px 42px rgba(25,18,20,.22),inset 0 1px 0 rgba(255,255,255,.08)!important;color:#fff!important}
+.global-page .global-operation-minimal:before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at 94% 4%,rgba(239,91,89,.2),transparent 34%);z-index:0}
+.global-page .global-operation-minimal>*{position:relative;z-index:1}
+.global-page .global-operation-minimal .minimal-operation-top>span,.global-page .global-operation-minimal .minimal-field-label{color:#ffaaa5!important}
+.global-page .global-operation-minimal .minimal-operation-top{color:#fff}
+.global-page .global-operation-minimal .global-operation-choice{background:rgba(255,255,255,.09)!important;border:1px solid rgba(255,255,255,.1)}
+.global-page .global-operation-minimal .global-operation-choice button{color:#d8cbcd!important}
+.global-page .global-operation-minimal .global-operation-choice button.selected{background:#ef5b59!important;color:#fff!important;box-shadow:0 8px 18px rgba(239,91,89,.3)!important}
+.global-page .global-operation-minimal .minimal-currency,.global-page .global-operation-minimal .global-currency-select{background:rgba(255,255,255,.1)!important;color:#fff!important;border:1px solid rgba(255,255,255,.14)!important}
+.global-page .global-operation-minimal .minimal-currency b,.global-page .global-operation-minimal .global-inline-currency b{color:#fff!important}
+.global-page .global-operation-minimal .minimal-currency small,.global-page .global-operation-minimal .global-inline-currency small{color:#cbbfc1!important}
+.global-page .global-operation-minimal .minimal-currency i,.global-page .global-operation-minimal .global-inline-currency i{background:#fff!important;color:#272023!important}
+.global-page .global-operation-minimal .swap-currency-pair{border-color:rgba(255,255,255,.18)!important;background:#fff!important;color:#30282b!important}
+.global-page .global-operation-minimal .global-operation-amount>div{border-bottom-color:rgba(255,255,255,.22)!important}
+.global-page .global-operation-minimal .global-operation-amount b,.global-page .global-operation-minimal .global-operation-amount small{color:#cbbfc1!important}
+.global-page .global-operation-minimal .global-operation-amount input{color:#fff!important}
+.global-page .global-operation-minimal .global-operation-amount input::placeholder{color:#9c8e92!important}
+.global-page .global-operation-minimal .minimal-result{color:#cbbfc1!important}
+.global-page .global-operation-minimal .minimal-result strong{color:#fff!important}
+.global-page .global-operation-minimal .minimal-operation-footer{border-top-color:rgba(255,255,255,.12)!important}
+.global-page .global-operation-minimal .minimal-quote{color:#cbbfc1!important}
+.global-page .global-operation-minimal .minimal-quote b{color:#fff!important}
+.global-page .global-operation-minimal .minimal-quote button{background:#fff0ee!important;color:#bd4c4f!important}
+.global-page .global-operation-minimal .global-operation-continue{background:#ef5b59!important;color:#fff!important;box-shadow:0 12px 22px rgba(239,91,89,.32)!important}
+@media(max-width:700px){.global-page .global-operation-minimal{margin-inline:-2px}}
+@media(prefers-reduced-motion:reduce){.global-page .global-operation-minimal,.global-page .global-operation-minimal *{transition:none!important;animation:none!important}}

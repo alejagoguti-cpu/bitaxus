@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const source = readFileSync(resolve(process.cwd(), "client/src/pages/Global.tsx"), "utf8");
+const styles = readFileSync(resolve(process.cwd(), "client/src/index.css"), "utf8");
 
 describe("Flujo de monedas de Bitaxus Global", () => {
   it("mantiene un catálogo real de monedas con banderas y pares persistentes", () => {
@@ -31,5 +32,11 @@ describe("Flujo de monedas de Bitaxus Global", () => {
     expect(source).toContain('operationIntent === "Dispersión"');
     expect(source).toContain(">Dispersar</button>");
     expect(source).not.toContain("Usar en un pago");
+  });
+
+  it("protege el contraste editorial focalizado de la tarjeta operativa", () => {
+    expect(styles).toContain(".global-page .global-operation-minimal");
+    expect(styles).toContain("linear-gradient(135deg,#262225 0%,#171416 72%,#3f262b 100%)");
+    expect(styles).toContain("#ef5b59!important;color:#fff!important");
   });
 });
