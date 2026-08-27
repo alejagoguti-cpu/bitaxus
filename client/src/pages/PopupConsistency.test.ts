@@ -29,5 +29,31 @@ describe("operational pop-up consistency", () => {
       expect(source(file)).toContain("<OperationToast");
     }
   });
+
+  it("covers every mounted operational modal with dialog, modal semantics and keyboard close", () => {
+    const mountedModals = [
+      "PaymentOperationsWorkspace.tsx",
+      "CounterpartiesPage.tsx",
+      "ReportsPage.tsx",
+      "ProgramarRecaudoPage.tsx",
+    ];
+    for (const file of mountedModals) {
+      const page = source(file);
+      expect(page).toContain('role="dialog"');
+      expect(page).toContain('aria-modal="true"');
+      expect(page).toMatch(/event\.key\s*(?:===|!==)\s*["']Escape["']/);
+    }
+  });
+
+  it("keeps active modal surfaces scrollable and actions accessible on narrow screens", () => {
+    const workspace = source("PaymentOperationsWorkspace.tsx");
+    const counterparties = source("CounterpartiesPage.tsx");
+    const reports = source("ReportsPage.tsx");
+    expect(workspace).toContain("shared-operation-modal");
+    expect(counterparties).toContain("modal-actions");
+    expect(reports).toContain("report-modal");
+    expect(style).toContain("max-height");
+    expect(style).not.toContain("overflow-y: hidden");
+  });
 });
 
